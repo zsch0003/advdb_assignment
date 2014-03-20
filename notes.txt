@@ -1,0 +1,208 @@
+20140311
+--------
+
+ * people, roles/groups, offices
+   * just 'group' should cover it - can be singleton, but user's shouldn't care
+   * but individuals need to be recorded
+ * applicants, application,
+ * research area
+   * tags and/or school structure
+ * workflows
+   * _frame-filling_ really
+     * _required info_
+     * _source doc_, _entered by_, _verified by_
+   * create, edit by user
+   * series of steps 
+     * person role involve, purpose of step, pre-reqs, post-reqs
+     * or step suggestions, with manual progression
+     * hand-over to group for purpose
+       * 'action'
+       * could be to hand-over to self 
+     * flag for attention
+ * aggregation of documents
+   * common docs, plus appendices with description field
+     * _mandatory docs_
+   * and conversation records
+     * phone, email
+   * attached to a particular stage?
+     * nah - too hard
+ * proforma letters
+   *
+
+ * very few repeatable cases, formulae
+ * need to support description, tracking, discovery
+   * support quick status overviews
+   * _comments_
+   * _latest change_
+   * like a version control system really
+   * record what has most recently been asked for
+     * _hand-over_ to applicant
+     * _rfi_
+     * _rfa_
+ * don't get in the way with too much process proscription
+ * topic tags
+
+
+20140313
+--------
+
+ * Paul Colder
+   * schools HR coordinator
+ * current db:
+   * email
+     * originate to one or more
+     * 'dear esteemed prof...'
+     * sometimes attaches info about prev deg, research interests
+     * if it's an area of interest to potential supervisor, then they start a
+       conversation for information gathering
+     * then formal app starts
+     * initial contact process v. unstructured
+     * more than one person gets involved - no visibility of each other
+     * things get forgotten
+   * please can we have more structure
+     * speed up processing
+     * esp. if student looks good
+     * if not likely to go ahead, resolve this asap
+     * consolidate all this info
+     * various ppl in uni
+     * ∃ beginnings of a schema
+       * absolute starting essentials
+       * rough conceptual schema
+       * ∃ unspec.d entities
+       * relationships to be confirmed
+       * should look at the official process & forms etc on the web
+         * should be a good place to start
+         * form-based could be difficult to translated to rdb schema
+         * should do this
+           * nb differences between domestic & international
+         * _we want to use this_
+         * could get backing by uni
+           * uni develops in-house or tenders out
+         * looking at official app material
+           * boring but necessary
+             * how would applicant pay
+               * no academic interest
+             * similarly visas
+             * we're more interested in academic
+               * grades, academic interests,
+ * questions from us:
+   * workflows
+     * in general this would get in the way
+     * more of a repository
+     * to the extent of checklists
+   * out-of-bounds research interests
+     * ie broadcast inquiries
+     * not worth following-up
+       * need to do initial filtering by uni recipient of contact email
+       * if put in, needs to stay there
+       * get culled at the first step
+       * _stop multiple academics replying to same applicant_
+         * if someone drops it, we wouldn't have this problem
+       * need to check - is it already there
+         * keep track of multiple potential supervisors
+     * do we want to force applicant to use a web-based system
+       * that steps further beyond this system
+         * academic staff are entering this information
+           * is this worth following up at all
+           * ⇒ noisy data
+           * professional staff may be doing this
+   * how many staff?
+     * 40-50
+     * all would get these from time to time
+     * could be 10-15 per week
+     * atm, ignoring two thirds
+   * updating this when new documents
+   * first contact
+     * non-normal
+     * most common - paragraph of text
+       * details about applicant
+         * academent transcript
+         * cv
+         * research proposal
+         * very many different doc formats (mostly pdf)
+   * need to decide function and boundaries of system
+     * make sure you don't overreach
+     * mission statement
+   * minimum requirement
+     * Pauls min
+       * academeic statement for qualifying degree (masters/honours)
+       * a research proposal
+       * payment
+       * cv
+       * ie checklist
+       * ie unstructured
+
+  * users
+    * comp. sci. academics
+    * mathemicians who will get frustrated
+    * need to cover the spectrum
+    *
+
+  * areas of research
+    * start with a finite list
+      * academics have a list - ie their web page
+      * support adding more
+    * FOR codes
+      * field of research codes
+      * gov provided things
+      * coarse-grained (4/5 to cover the school)
+      * also need keywords / free text
+    * uni staff std web page
+      * areas of research
+        * FORs, and
+        * supervisory interests
+          * could distill these
+    * ∃ find a supervisor web page (flinders)
+      * could be a good source
+      * Office of Graduate Studies
+
+  * correspondence
+    * hyperlinks or document data in the DB
+    * shouldn't put the data itself in DB
+      * for each applicant:
+        * gen. a folder with ID
+        * save all docs in here
+        * in DB, can resolve folder
+        * much of this would be in front end
+        * we just need folder name, number of files
+        
+
+  * _no frontend_
+    * keep it in mind
+    * need to recommend an implementation
+
+  * GPA is non-std
+
+  * school has a shared file space
+    * eg statement of assessement methods
+
+
+  * handing-over
+    * yes need to support this
+    * alerts may be sufficient
+      * notification trigger - filtered to research interests
+        * matching research area
+        * don't forget, at least 2 supervisors, so need to keep them all
+          informed
+        * research may well cross areas
+        
+  * response correspondence may have files attached
+    * 'record all correspondence' means put in a record of date, time, person
+      who responded etc - not correspondence itself
+      * ie comments, timestamped
+      * make a note that it's done
+
+  * most things on checklist could be found on official web-based
+    *
+
+  * _define user views required_
+    * plain english or grid
+  * once this is done, go back to user/client and ask them about it
+    * and make refinements
+    * ie _review conceptual diagram_
+  * and we should be thinking all the way through test requirements
+    * data types and
+  * conceptual design due week 6
+    * tutors will give tech feed back
+    * Paul & Denise will give user feed back
+      
