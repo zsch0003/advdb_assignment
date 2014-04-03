@@ -265,3 +265,36 @@ Requirements spec todo:
        personal information. Access will have to be logged and shown to always
        be in the course of members of staff work.
    
+
+20140403
+--------
+
+ * mark-up of Staff inheritance reln
+   * currently 'a set'?
+ * application requires RHD staff member as manages
+   * may need to relax this - be able to create an application w/o manager
+ * publication
+   * +series title etc etc etc
+ * documents
+   * links fromm docs to, e.g. visa, publication, etc
+ * GPA
+   * how to do this?
+ * referee
+   * spoken english vs written
+   * same ref multiple applicants?
+   * distinct refs same applicant?
+ * comments other than decisions?
+   * or is every comment a type of decsision
+ * last modification date
+   * every change require a comment?
+ * proformas
+ * checklist
+ * document versions
+ * keeping a history of hand-overs?
+   * timestamps? or mark as 'previous'?
+ * 
+
+
+ * comments
+   * optionally specialised to decision, hand-over, rfi etc
+ * 
