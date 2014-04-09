@@ -206,3 +206,95 @@
     * tutors will give tech feed back
     * Paul & Denise will give user feed back
       
+
+20140326
+--------
+
+Requirements spec todo:
+
+ * data formats
+ * GPA score details
+   * warn if GPA isn't good enough
+     * http://www.foreigncredits.com/Resources/GPA-Calculator/
+   * 
+ * 'proforma' not 'template'
+   * acknowledgement of receipt
+ * more detail on staff tracking
+   * name and timestamp of the person who created the record
+ * academic staff make report of potential candidates showing summary of
+   application - filtered to research area
+ * more details about FoR codes
+   * dynamic keywords
+ * new applications since a specified date
+ *
+
+ * [Connelly p 365]
+   * initial db size
+     * There is only a need to record currently active applications, not to
+       record old applications.
+     * Hence, in this case the rate of growth is far more important than the
+       initial size.
+   * db rate of growth
+     * There are 40 members of CSEM staff and most would be contacted by 20-40
+       potential applicants during peak periods
+     * Of these, at least one third would be immediately judged unsuitable and
+       never be recorded in our system.
+   * types and average number of record searches
+     * Most frequent searches are expected to be recalling applications that
+       have been worked on recently. This may be run 100 times per weekday.
+     * Next most frequent search would be searching for applications given
+       matching Field of Research codes. This may be run 30 times per weekday.
+     * And next searching for record by name, when deciding whether to create
+       new records.
+   * networking and shared access requirements
+     * We need to support at least 10 staff using the application
+       simultaneously.
+     * 
+   * performance
+     * All searches should return within one second.
+   * security
+     * Only the information a staff member requires to do their job will be
+       allowed.
+     * Views will be used to restrict operations available to certain users.
+   * backup and recovery
+     * The database should be backed-up every week night.
+     * Recovery procedures should be tested every three months to ensure they
+       can be relied upon.
+   * legal issues
+     * Of primary concern here is privacy legislation, due to the collation of
+       personal information. Access will have to be logged and shown to always
+       be in the course of members of staff work.
+   
+
+20140403
+--------
+
+ * mark-up of Staff inheritance reln
+   * currently 'a set'?
+ * application requires RHD staff member as manages
+   * may need to relax this - be able to create an application w/o manager
+ * publication
+   * +series title etc etc etc
+ * documents
+   * links fromm docs to, e.g. visa, publication, etc
+ * GPA
+   * how to do this?
+ * referee
+   * spoken english vs written
+   * same ref multiple applicants?
+   * distinct refs same applicant?
+ * comments other than decisions?
+   * or is every comment a type of decsision
+ * last modification date
+   * every change require a comment?
+ * proformas
+ * checklist
+ * document versions
+ * keeping a history of hand-overs?
+   * timestamps? or mark as 'previous'?
+ * 
+
+
+ * comments
+   * optionally specialised to decision, hand-over, rfi etc
+ * 
