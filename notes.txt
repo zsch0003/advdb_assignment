@@ -297,4 +297,15 @@ Requirements spec todo:
 
  * comments
    * optionally specialised to decision, hand-over, rfi etc
- * 
+
+
+20140410
+--------
+
+transaction numbering:
+
+ * s was last
+   * added n
+   * added o
+
+
