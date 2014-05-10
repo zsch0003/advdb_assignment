@@ -327,3 +327,12 @@ Current issues
  * applicant multiplicity with application and degree won't allow creation in
    comfortable order
  * shouldn't uni staff member enters in be 0..*?
+
+
+20140510
+--------
+
+ * as it stands, we won't know which app doc is related to which application. we
+   may need to re-instate relationship between application and document
+
+
