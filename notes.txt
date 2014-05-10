@@ -297,4 +297,33 @@ Requirements spec todo:
 
  * comments
    * optionally specialised to decision, hand-over, rfi etc
- * 
+
+
+20140410
+--------
+
+transaction numbering:
+
+ * s was last
+   * added n
+   * added o
+
+
+20140508
+--------
+
+Current issues
+
+ * what is StudyLoadLocation
+ * are we allowed to go and change earlier submissions?
+ * do we need fills out and enters in?
+ * is version number part of the primary key for application?
+ * publication and visa have applicationID - shouldn't it be applicantid?
+ * is application a weak entity
+ * what happened to superclass/subclass with staff
+ * can we rename Uni Staff Member to Staff
+ * how to derrive non-identifying relationships?
+ * in Document: discrepancy between DocID and AppDocID
+ * applicant multiplicity with application and degree won't allow creation in
+   comfortable order
+ * shouldn't uni staff member enters in be 0..*?
