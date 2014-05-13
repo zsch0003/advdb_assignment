@@ -339,3 +339,10 @@ Current issues
  * shouldn't we have many referees?
  * lost Visa(visastatusid) in 
 
+
+20140513
+--------
+
+ * email needs to be nullable
+ * sex needs to be nullable
+ 
