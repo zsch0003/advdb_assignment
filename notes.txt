@@ -334,5 +334,8 @@ Current issues
 
  * as it stands, we won't know which app doc is related to which application. we
    may need to re-instate relationship between application and document
-
+   * which Application(PayDocID)
+   * which Degree(DocID)
+ * shouldn't we have many referees?
+ * lost Visa(visastatusid) in 
 
