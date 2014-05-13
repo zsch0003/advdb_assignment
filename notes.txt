@@ -336,3 +336,10 @@ Current issues
    may need to re-instate relationship between application and document
 
 
+
+20140513
+--------
+
+ * email needs to be nullable
+ * sex needs to be nullable
+ 
