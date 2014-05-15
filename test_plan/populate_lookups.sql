@@ -75,7 +75,47 @@ INSERT INTO AwardType (Type, Description)
 VALUES ('PhD', 'PhD in any field in the school');
 
 INSERT INTO AwardType (Type, Description)
+VALUES ('PhD (Comp Sc)', 'PhD in Computer Science');
+
+INSERT INTO AwardType (Type, Description)
 VALUES ('masters', 'Masters by research in any field in the school');
 
 INSERT INTO AwardType (Type, Description)
 VALUES ('MIT', 'Masters IT');
+
+
+--------------------------------------------------------------------------------
+-- ResearchArea
+
+INSERT INTO ResearchArea (FORCode, Description)
+VALUES (100503, 'computer communication networks') ;
+
+INSERT INTO ResearchArea (FORCode, Description)
+VALUES (080199, 'artificial intelligence and image processing not elsewhere classified');
+
+INSERT INTO ResearchArea (FORCode, Description)
+VALUES (080399, 'computer software not elsewhere classified');
+
+INSERT INTO ResearchArea (FORCode, Description)
+VALUES (080499, 'data format not elsewhere classified');
+
+INSERT INTO ResearchArea (FORCode, Description)
+VALUES (080699, 'information systems not elsewhere classified');
+
+INSERT INTO ResearchArea (FORCode, Description)
+VALUES (089999, 'information and computing sciences not elsewhere classified');
+
+
+--------------------------------------------------------------------------------
+-- DecisionTypes
+INSERT INTO DecisionType (type)
+VALUES ('GPA too low');
+
+INSERT INTO DecisionType (type)
+VALUES ('TOEFL/IELTS score too low');
+
+INSERT INTO DecisionType (type)
+VALUES ('Hand over');
+
+INSERT INTO DecisionType (type)
+VALUES ('RFI');

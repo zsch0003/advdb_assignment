@@ -68,18 +68,19 @@ WHERE Correspondence.ApplicationID = 2 ;
 
 --------------------------------------------------------------------------------
 -- g) Look up which staff member updated an Application most recently
--- TODO
 SELECT UniversityStaffMember.FName, UniversityStaffMember.LName
 FROM UniversityStaffMember, Application
 WHERE Application.ApplicationID = 3
-  AND Application.LastToUpdateStaffID = UniversityStaffMember.StaffID ;
-
+  AND Application.LastToModifyStaffID = UniversityStaffMember.StaffID ;
+-- expect 'Paul' 'Calder'
 
 --------------------------------------------------------------------------------
 -- h) Check for any decision recorded about an application
--- TODO
 SELECT * FROM Decision
-WHERE Decision.ApplicationID = 11 ;
+WHERE Decision.ApplicationID = 4 ;
+-- expect COUNT = 1
+-- expect StaffID = 1001
+-- expect dectype = 'RFI'
 
 --------------------------------------------------------------------------------
 -- i) Look up an existing application and attach a new standard type document to
@@ -115,17 +116,17 @@ WHERE Application.ApplicationID = 611 ;
 SELECT *
 FROM Application
 WHERE Application.applicationStatus = 'ongoing'
-  AND Application.LastToUpdateStaffID = 1 ; 
+  AND Application.LastToModifyStaffID = 1 ; 
 
 --------------------------------------------------------------------------------
 -- n) Record making a decision about an application
--- TODO
 -- tested in populate.sql script
 
 --------------------------------------------------------------------------------
 -- o) Update the status of an application
--- TODO
--- tested in populate.sql script
+UPDATE Application
+SET Application.ApplicationStatus = 'complete.declined'
+WHERE Application.ApplicationID = 611 ;
 
 --------------------------------------------------------------------------------
 -- p) Look up, add to, and delete from own current research areas
@@ -147,26 +148,29 @@ WHERE Application.DateAdded >= '2014.05.14'
 
 --------------------------------------------------------------------------------
 -- r) Flag interest in an application
--- TODO
--- tested in populate script
+INSERT INTO UniversityStaffMember_Application (StaffID, ApplicationID)
+VALUES (1000, 07);
+
+INSERT INTO UniversityStaffMember_Application (StaffID, ApplicationID)
+VALUES (1002, 07);
 
 --------------------------------------------------------------------------------
 -- s) Retrieve all staff who have flagged an application, or have edited an
 -- application or applicant record most recently
--- TODO: flags
 SELECT UniversityStaffMember.FName, UniversityStaffMember.LName
 FROM UniversityStaffMember, UniversityStaffMember_Application
-WHERE UniversityStaffMember_Application.ApplicationID = 6 
+WHERE UniversityStaffMember_Application.ApplicationID = 7
   AND UniversityStaffMember_Application.StaffID = UniversityStaffMember.StaffID;
+-- expect Denise de Vries and John Roddick
 
 SELECT UniversityStaffMember.FName, UniversityStaffMember.LName
 FROM Application, UniversityStaffMember
-WHERE Application.ApplicationID = 6 
-  AND Application.LastToUpdateStaffID = UniversityStaffMember.StaffID ;
+WHERE Application.ApplicationID = 7 
+  AND Application.LastToModifyStaffID = UniversityStaffMember.StaffID ;
+-- expect Denise de Vries
 
 --------------------------------------------------------------------------------
 -- t) Retrieve all ongoing applications
 SELECT *
 FROM Application
 WHERE Application.applicationStatus = 'ongoing' ;
-

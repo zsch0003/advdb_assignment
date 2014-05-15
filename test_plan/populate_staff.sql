@@ -50,3 +50,8 @@ VALUES (1002, 080199);
 INSERT INTO UniversityStaffMember_ResearchArea (StaffID, FORCode)
 VALUES (1002, 080699);
 
+
+--------------------------------------------------------------------------------
+-- Jennie Brand
+INSERT INTO UniversityStaffMember(StaffID, LName, FName, canSupervise)
+VALUES (1003, 'Brand', 'Jennie', 0);
