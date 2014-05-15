@@ -70,5 +70,12 @@ INSERT INTO DocumentStatus (Status, Description)
 VALUES ('summary', 'Not an original source document.');
 
 --------------------------------------------------------------------------------
--- CorrespondenceMethod
+-- AwardType
+INSERT INTO AwardType (Type, Description)
+VALUES ('PhD', 'PhD in any field in the school');
 
+INSERT INTO AwardType (Type, Description)
+VALUES ('masters', 'Masters by research in any field in the school');
+
+INSERT INTO AwardType (Type, Description)
+VALUES ('MIT', 'Masters IT');
