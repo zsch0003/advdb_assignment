@@ -346,3 +346,9 @@ Current issues
  * email needs to be nullable
  * sex needs to be nullable
  
+20140514
+--------
+
+ * in conceptual, Application(PayMethID) should be PaymentMethod
+ * in conceptual, still have Application(VersionNumber)
+ 
