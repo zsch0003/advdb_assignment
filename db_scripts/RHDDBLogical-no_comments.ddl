@@ -252,6 +252,6 @@ ALTER TABLE Degree ADD INDEX holds (ApplicantID), ADD CONSTRAINT holds FOREIGN K
 ALTER TABLE Publication ADD INDEX authored (ApplicantID), ADD CONSTRAINT authored FOREIGN KEY (ApplicantID) REFERENCES Applicant (ApplicantID) ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE Visa ADD INDEX `may have` (ApplicantID), ADD CONSTRAINT `may have` FOREIGN KEY (ApplicantID) REFERENCES Applicant (ApplicantID) ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE Application ADD INDEX seeks (AwardType), ADD CONSTRAINT seeks FOREIGN KEY (AwardType) REFERENCES `Award Type` (Type) ON UPDATE Cascade ON DELETE Restrict;
-ALTER TABLE Application ADD INDEX `last to update` (LastModifiedByStaffID), ADD CONSTRAINT `last to update` FOREIGN KEY (LastModifiedByStaffID) REFERENCES `University Staff Member` (StaffID) ON UPDATE Cascade ON DELETE Set null;
+ALTER TABLE Application ADD INDEX `last to update` (LastModifiedByStaffID), ADD CONSTRAINT `last to update` FOREIGN KEY (LastModifiedByStaffID) REFERENCES `University Staff Member` (StaffID) ;
 ALTER TABLE Applicant ADD INDEX `last to modify` (LastModifiedByStaffID), ADD CONSTRAINT `last to modify` FOREIGN KEY (LastModifiedByStaffID) REFERENCES `University Staff Member` (StaffID);
-ALTER TABLE Correspondence ADD INDEX using (corrMethod), ADD CONSTRAINT using FOREIGN KEY (corrMethod) REFERENCES `Correspondence Method` (Method) ON UPDATE Cascade ON DELETE Restrict;
+ALTER TABLE Correspondence ADD INDEX using btree (corrMethod), ADD CONSTRAINT  FOREIGN KEY (corrMethod) REFERENCES `Correspondence Method` (Method) ON UPDATE Cascade ON DELETE Restrict;
