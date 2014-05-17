@@ -60,7 +60,7 @@ CREATE TABLE Degree (
   YearCompleted             date , 
   GPA                       int(10) , 
   InstitutionName           varchar(100) , 
-  InstituitonCountryISOCode int(2) NOT NULL , 
+  InstituitonCountryISOCode char(2) NOT NULL , 
   PRIMARY KEY (DegID), 
   UNIQUE INDEX (DegID), 
   INDEX (ApplicantID)) ;
@@ -109,17 +109,17 @@ CREATE TABLE Applicant (
   EnglishProficient         bit(1) , 
   StudentID                 int(10) , 
   DateAdded                 date NOT NULL , 
-  AddressCountryISOCode     int(2), 
-  NationalityCountryISOCode int(2), 
+  AddressCountryISOCode     char(2), 
+  NationalityCountryISOCode char(2), 
   LastModifiedByStaffID     int(10) NOT NULL , 
   PRIMARY KEY (ApplicantID), 
   UNIQUE INDEX (ApplicantID)) ;
 CREATE TABLE Visa (
   VisaID               int(10) NOT NULL AUTO_INCREMENT , 
-  OriginCountryISOCode int(2) NOT NULL , 
+  OriginCountryISOCode char(2) NOT NULL , 
   ValidFrom            date , 
   ValidTo              date , 
-  CountryISOCode       int(2) NOT NULL , 
+  CountryISOCode       char(2) NOT NULL , 
   visaStatus           varchar(50) NOT NULL , 
   ApplicantID          int(10) NOT NULL , 
   PRIMARY KEY (VisaID), 
@@ -182,7 +182,7 @@ CREATE TABLE `Award Type` (
   PRIMARY KEY (Type), 
   UNIQUE INDEX (Type)) ;
 CREATE TABLE Country (
-  CountryISOCode int(2) NOT NULL AUTO_INCREMENT , 
+  CountryISOCode char(2) NOT NULL , 
   Name           varchar(50) NOT NULL UNIQUE , 
   PRIMARY KEY (CountryISOCode)) ;
 CREATE TABLE `Supervise as` (
