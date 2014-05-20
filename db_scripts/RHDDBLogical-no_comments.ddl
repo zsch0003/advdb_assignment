@@ -9,16 +9,16 @@ CREATE TABLE `Payment Method` (
 CREATE TABLE Application (
   ApplicationID         int(10) NOT NULL AUTO_INCREMENT, 
   ApplicantID           int(10) NOT NULL , 
-  AddressConfirmed      int(1) NOT NULL , 
-  DegreeConfirmed       int(1) NOT NULL , 
-  VisaStatusConfirmed   int(1) NOT NULL , 
-  ProposalConfirmed     int(1) NOT NULL , 
-  HasReasearchAreas     int(1) NOT NULL , 
-  HasPrimarySuper       int(1) NOT NULL , 
-  PayMethConfirmed      int(1) NOT NULL , 
-  EngProfConfirmed      int(1) NOT NULL , 
-  RefereesConfirmed     int(1) NOT NULL , 
-  RequireMoreInfo       int(1), 
+  AddressConfirmed      int(1) NOT NULL DEFAULT 0, 
+  DegreeConfirmed       int(1) NOT NULL DEFAULT 0, 
+  VisaStatusConfirmed   int(1) NOT NULL DEFAULT 0, 
+  ProposalConfirmed     int(1) NOT NULL DEFAULT 0, 
+  HasReasearchAreas     int(1) NOT NULL DEFAULT 0, 
+  HasPrimarySuper       int(1) NOT NULL DEFAULT 0, 
+  PayMethConfirmed      int(1) NOT NULL DEFAULT 0, 
+  EngProfConfirmed      int(1) NOT NULL DEFAULT 0, 
+  RefereesConfirmed     int(1) NOT NULL DEFAULT 0, 
+  RequireMoreInfo       int(1) , 
   ProposedStartDate     date , 
   ProposalSummary       varchar(2000) , 
   flindersCampus        int(1) , 
@@ -60,7 +60,7 @@ CREATE TABLE Degree (
   YearCompleted             date , 
   GPA                       int(10) , 
   InstitutionName           varchar(100) , 
-  InstituitonCountryISOCode char(2) NOT NULL , 
+  InstitutionCountryISOCode char(2) NOT NULL , 
   PRIMARY KEY (DegID), 
   UNIQUE INDEX (DegID), 
   INDEX (ApplicantID)) ;
@@ -79,8 +79,8 @@ CREATE TABLE Referee (
   UNIQUE INDEX (RefID)) ;
 CREATE TABLE Document (
   DocID         int(10) NOT NULL AUTO_INCREMENT , 
-  Title         varchar(254) NOT NULL , 
-  Description   varchar(2000) NOT NULL , 
+  Title         varchar(254) , 
+  Description   varchar(2000) , 
   UploadLink    varchar(254) NOT NULL , 
   ApplicationID int(10), 
   ApplicantID   int(10) NOT NULL , 
@@ -100,7 +100,7 @@ CREATE TABLE Applicant (
   StreetAddress             varchar(255) , 
   Suburb                    varchar(100) , 
   Postcode                  int(10) , 
-  City                      int(10) , 
+  City                      varchar(50) , 
   State                     varchar(50) , 
   Mobile                    varchar(50) , 
   Phone                     varchar(50) , 
@@ -223,7 +223,7 @@ ALTER TABLE Document ADD INDEX associated (ApplicationID), ADD CONSTRAINT associ
 ALTER TABLE Document ADD INDEX provides (ApplicantID), ADD CONSTRAINT provides FOREIGN KEY (ApplicantID) REFERENCES Applicant (ApplicantID) ON UPDATE Cascade ON DELETE Cascade;
 ALTER TABLE Decision ADD INDEX hasDecisionType (dectype), ADD CONSTRAINT hasDecisionType FOREIGN KEY (dectype) REFERENCES `Decision Type` (type);
 ALTER TABLE Visa ADD INDEX `originates in` (CountryISOCode), ADD CONSTRAINT `originates in` FOREIGN KEY (CountryISOCode) REFERENCES Country (CountryISOCode) ON UPDATE Cascade ON DELETE Restrict;
-ALTER TABLE Degree ADD INDEX `studied in` (InstituitonCountryISOCode), ADD CONSTRAINT `studied in` FOREIGN KEY (InstituitonCountryISOCode) REFERENCES Country (CountryISOCode) ON UPDATE Cascade ON DELETE Restrict;
+ALTER TABLE Degree ADD INDEX `studied in` (InstitutionCountryISOCode), ADD CONSTRAINT `studied in` FOREIGN KEY (InstitutionCountryISOCode) REFERENCES Country (CountryISOCode) ON UPDATE Cascade ON DELETE Restrict;
 ALTER TABLE Applicant ADD INDEX `lives in` (AddressCountryISOCode), ADD CONSTRAINT `lives in` FOREIGN KEY (AddressCountryISOCode) REFERENCES Country (CountryISOCode) ON UPDATE Cascade ON DELETE Restrict;
 ALTER TABLE Applicant ADD INDEX `nationality of` (NationalityCountryISOCode), ADD CONSTRAINT `nationality of` FOREIGN KEY (NationalityCountryISOCode) REFERENCES Country (CountryISOCode) ON UPDATE Cascade ON DELETE Restrict;
 ALTER TABLE Application ADD INDEX `will pay using` (PaymentMethod), ADD CONSTRAINT `will pay using` FOREIGN KEY (PaymentMethod) REFERENCES `Payment Method` (Method) ON UPDATE Cascade ON DELETE Restrict;

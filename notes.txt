@@ -426,8 +426,10 @@ Current issues
 
   * W00t!
 
+  * change Applicant(City) from int(10) to varchar(50)
 
+  * set default values for XConfirmed fields
 
+  * allow document title and description to be null
 
-
- 
+  * typo in Degree(InstituitonCountryISOCode)
