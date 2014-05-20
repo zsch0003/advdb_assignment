@@ -1,7 +1,5 @@
 -- -----------------------------------------------------------------------------
 -- ApplicationStatus
-DELETE FROM `application status`;
-
 INSERT INTO `application status` (Status, Description)
 VALUES ('ongoing', 'Application/information gathering is currently ongoing' ) ;
 
@@ -20,8 +18,6 @@ VALUES ('complete.lapsed', 'No activity for a significant period.' ) ;
 
 -- -----------------------------------------------------------------------------
 -- DocumentType
-DELETE FROM `document type`;
-
 INSERT INTO `document type` (Type, Description)
 VALUES ('application', 'A completed RHD application form.') ;
 
@@ -61,8 +57,6 @@ VALUES ('general', 'A type of document other than decribed above.') ;
 
 -- -----------------------------------------------------------------------------
 -- DocumentStatus
-DELETE FROM `document status`;
-
 INSERT INTO `document status` (Status, Description)
 VALUES ('original.english', 'Original document in English');
 
@@ -77,8 +71,6 @@ VALUES ('summary', 'Not an original source document.');
 
 -- -----------------------------------------------------------------------------
 -- AwardType
-DELETE FROM `award type`; 
-
 INSERT INTO `award type` (Type, Description)
 VALUES ('PhD', 'PhD in any field in the school');
 
@@ -94,8 +86,6 @@ VALUES ('MIT', 'Masters IT');
 
 -- -----------------------------------------------------------------------------
 -- ResearchArea
-DELETE FROM `research area`;
-
 INSERT INTO `research area` (FORCode, Description, ResearchArea, GeneralArea)
 VALUES (100503, 'computer communication networks', '', '');
 
@@ -117,8 +107,6 @@ VALUES (089999, 'information and computing sciences not elsewhere classified', '
 
 -- -----------------------------------------------------------------------------
 -- DecisionTypes
-DELETE FROM `decision type` ;
-
 INSERT INTO `decision type` (type)
 VALUES ('GPA too low');
 

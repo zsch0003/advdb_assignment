@@ -5,6 +5,15 @@
 --   Document    x31 - x39
 
 -- -----------------------------------------------------------------------------
+-- Reset tables and import other info
+DELETE FROM `application_research area`;
+DELETE FROM decision;
+DELETE FROM degree;
+DELETE FROM document;
+DELETE FROM application;
+DELETE FROM applicant;
+
+-- -----------------------------------------------------------------------------
 -- Application for PhD studies.txt
 -- 01
 INSERT INTO applicant (ApplicantID, FName, LName, Email, Mobile, StreetAddress, 
