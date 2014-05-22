@@ -1,6 +1,6 @@
-DELETE FROM `application_research area`;
-DELETE FROM decision;
-DELETE FROM degree;
-DELETE FROM document;
-DELETE FROM application;
-DELETE FROM applicant;
+DELETE FROM `Application_Research Area`;
+DELETE FROM Decision;
+DELETE FROM Degree;
+DELETE FROM Document;
+DELETE FROM Application;
+DELETE FROM Applicant;
