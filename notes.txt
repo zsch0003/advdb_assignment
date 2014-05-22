@@ -433,3 +433,10 @@ Current issues
   * allow document title and description to be null
 
   * typo in Degree(InstituitonCountryISOCode)
+
+
+20140522
+--------
+
+ * typo in Application(HasReasearchAreas)
+ * 

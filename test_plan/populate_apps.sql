@@ -82,7 +82,7 @@ VALUES (03, 'Azzam', 'Alwash', '1234567', '2014-05-03', 1003) ;
 INSERT INTO Application (ApplicationID, ApplicantID, awardType, ProposalSummary, 
 ProposedStartDate, DateAdded, DateLastChecked, DateLastModified, LastModifiedByStaffID, ApplicationStatus)
 VALUES (311, 03, 'PhD (Comp Sc)', 
-'Genetic algorithms for Arabic character recognition', '2015-07-01', '2014-05-03', '2014-05-03', '2014-05-03', 1003, 'ongoing') ;
+'Genetic algorithms for Arabic character recognition', '2015-07-01', '2014-05-03', '2014-05-03', '2014-05-03', 1001, 'ongoing') ;
 
 INSERT INTO Degree (ApplicantID, Name, Type, GPA, InstitutionCountryISOCode)
 VALUES (03, 'IS and CS', 'bachelors', 4.27, 'IQ') ;
