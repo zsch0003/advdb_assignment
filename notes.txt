@@ -352,3 +352,84 @@ Current issues
  * in conceptual, Application(PayMethID) should be PaymentMethod
  * in conceptual, still have Application(VersionNumber)
  
+
+20140517
+--------
+
+ * connecting to local mysql
+   * 127.0.0.1 (port can be blank)
+   * dolphins
+   *
+
+ * problem
+   * the name of foreign key "has a" is duplicated
+   * eliminated dupes
+
+ * mysql admin
+
+        CREATE USER 'rhd'@'localhost' IDENTIFIED BY 'rhd';
+
+        CREATE DATABASE rhd CHARACTER SET = utf8;
+
+        GRANT ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP ON rhd.* to 'rhd'@'localhost';
+
+* 
+
+ * then log in as user and connect to rhd
+
+        mysql -u rhd -h 127.0.0.1 -D rhd -p
+
+
+ * and run the file
+
+       source RHDDBLogical.ddl
+
+ * create script to drop everything:
+
+        cat RHDDBLogical.ddl | grep -o 'CREATE [^(]*' | sed 's/CREATE /DROP IF EXISTS /' | sed 's/$/;/'
+
+ * the 'mysql < in > out' command stops at first command fail; using 'source' in
+   mysql prompt keeps trying
+
+ * getting 'comment for table XX is too long (max = 60)'
+   * vpuml puts doco in as comment
+   * so i'll just strip those comments out for the moment
+
+        cat RHDDBLogical.ddl | sed "s/comment[ =]*'[^']*'//" > RHDDBLogical-no_comments.ddl
+
+ * getting
+
+        ERROR 1071 (42000) at line 37: Specified key was too long; max key lengh is 767 bytes
+
+   * had to drop uniqueness constraint on:
+     * `Document Status`(Description)
+     * `Visa Status`(description)
+     * `Application Status`(Description)
+     * `Document Type`(Description)
+     * `Award Type`(Description)
+
+  * getting
+
+         ERROR 1005 (HY000) at line 255: Can't create table 'rhd.#sql-638_29' (errno: 150)
+
+    * is it because we have LastToModifyStaffID set to NOT NULL, but had SET
+      NULL in our constraint?
+    * removing NOT NULL didn't seem to help
+    * removed the ON UPDATE... bit
+
+  * getting
+
+           ERROR 1064 (42000) at line 257: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '(corrMethod), ADD CONSTRAINT using FOREIGN KEY (corrMethod) REFERENCES `Correspo' at line 1
+
+     * after 'using' do we need 'btree|hash' ?
+     * added 'add index using *btree*' and removed 'add constraint *using*'
+
+  * W00t!
+
+  * change Applicant(City) from int(10) to varchar(50)
+
+  * set default values for XConfirmed fields
+
+  * allow document title and description to be null
+
+  * typo in Degree(InstituitonCountryISOCode)
