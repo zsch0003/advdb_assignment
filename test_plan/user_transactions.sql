@@ -63,8 +63,8 @@ WHERE Application.applicationStatus <> 'complete.accepted'
 -- e) Look up all correspondences relevant to an application
 -- TODO: correspondence info
 SELECT * FROM Correspondence
-WHERE Correspondence.ApplicationID = 2 ;
-
+WHERE Correspondence.ApplicationID = 411 ;
+-- two rows, id 441 and 442, 
 
 -- -----------------------------------------------------------------------------
 -- f) Create new applicant and associated application records
@@ -105,7 +105,7 @@ WHERE Decision.ApplicationID = 4 ;
 -- k) Look up an existing application and list outstanding information
 -- (checklist).
 SELECT applicationStatus, AddressConfirmed, DegreeConfirmed, 
-VisaStatusConfirmed, ProposalConfirmed, HasReasearchAreas, HasPrimarySuper,
+VisaStatusConfirmed, ProposalConfirmed, HasResearchAreas, HasPrimarySuper,
 PayMethConfirmed, EngProfConfirmed 
 FROM Application
 WHERE Application.ApplicationID = 611 ;

@@ -3,6 +3,7 @@
 --   Application x11 - x19
 --   Degree      x21 - x29
 --   Document    x31 - x39
+--   Correspondence x41 - x49
 
 -- -----------------------------------------------------------------------------
 -- Reset tables and import other info
@@ -124,6 +125,13 @@ VALUES ('/mnt/data/rhd/04/general/0002.pdf', 04, 'general', 'original.english');
 INSERT INTO Decision ( DecID, ApplicationID, Date, dectype, Comment, StaffID)
 VALUES (1, 411, '2014.05.15', 'RFI', 
 'Have asked for more info about Masters project', 1001 );
+
+INSERT INTO Correspondence (CorrID, `Date`, Summary, ApplicationID, StaffID)
+VALUES (441, '2014-05-04', 'Initial inquiry from applicant', 411, 1001);
+  
+INSERT INTO Correspondence (CorrID, `Date`, Summary, ApplicationID, StaffID)
+VALUES (442, '2014-05-04', 'Asked applicant for more information', 411, 1001);
+  
 
 -- -----------------------------------------------------------------------------
 -- Fwd Flinders Application.txt

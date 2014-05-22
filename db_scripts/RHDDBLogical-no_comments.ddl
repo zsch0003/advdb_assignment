@@ -13,7 +13,7 @@ CREATE TABLE Application (
   DegreeConfirmed       int(1) NOT NULL DEFAULT 0, 
   VisaStatusConfirmed   int(1) NOT NULL DEFAULT 0, 
   ProposalConfirmed     int(1) NOT NULL DEFAULT 0, 
-  HasReasearchAreas     int(1) NOT NULL DEFAULT 0, 
+  HasResearchAreas      int(1) NOT NULL DEFAULT 0, 
   HasPrimarySuper       int(1) NOT NULL DEFAULT 0, 
   PayMethConfirmed      int(1) NOT NULL DEFAULT 0, 
   EngProfConfirmed      int(1) NOT NULL DEFAULT 0, 
