@@ -440,3 +440,7 @@ Current issues
 
  * typo in Application(HasReasearchAreas)
  * 
+ * create views, roles, etc in test plan
+ * monitor and tune - response/throughput timings
+ * document the test plan
+   * invalid input
