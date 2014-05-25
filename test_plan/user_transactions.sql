@@ -8,6 +8,7 @@
 SELECT * FROM Applicant 
 WHERE Applicant.FName = 'Shirin' 
   AND Applicant.LName = 'Ebadi' ;
+-- one row, ApplicantID 1
 
 -- TODO: need to add some publication info
 SELECT * FROM Publication, Applicant 
@@ -23,7 +24,7 @@ WHERE Degree.ApplicantID = Applicant.ApplicantID
 -- two rows, ids 121 and 122, bachelor and masters
 
 -- TODO: need to add visa info
-SELECT Visa.VisaStatus FROM Visa, Applicant
+SELECT Visa.* FROM Visa, Applicant
 WHERE Visa.ApplicantID = Applicant.ApplicantID 
   AND Applicant.FName = 'Shirin'
   AND Applicant.LName = 'Ebadi' ;
@@ -54,9 +55,7 @@ WHERE Application.ApplicantID = Applicant.ApplicantID
 -- -----------------------------------------------------------------------------
 -- d) Look up incomplete applications
 SELECT * FROM Application
-WHERE Application.applicationStatus <> 'complete.accepted' 
-  AND  Application.applicationStatus <> 'complete.declined'
-  AND  Application.applicationStatus <> 'complete.lapsed' ;
+WHERE Application.applicationStatusID < 10500;
 -- expect all 11 applications
 
 -- -----------------------------------------------------------------------------
@@ -84,7 +83,7 @@ WHERE Application.ApplicationID = 311
 -- h) Check for any decision recorded about an application
 -- TODO: some Decision info
 SELECT * FROM Decision
-WHERE Decision.ApplicationID = 4 ;
+WHERE Decision.ApplicationID = 411 ;
 -- expect COUNT = 1
 -- expect StaffID = 1001
 -- expect dectype = 'RFI'
@@ -104,11 +103,13 @@ WHERE Decision.ApplicationID = 4 ;
 -- -----------------------------------------------------------------------------
 -- k) Look up an existing application and list outstanding information
 -- (checklist).
-SELECT applicationStatus, AddressConfirmed, DegreeConfirmed, 
-VisaStatusConfirmed, ProposalConfirmed, HasResearchAreas, HasPrimarySuper,
-PayMethConfirmed, EngProfConfirmed 
-FROM Application
-WHERE Application.ApplicationID = 611 ;
+SELECT `Application Status`.Status, Application.AddressConfirmed, Application.DegreeConfirmed, 
+Application.VisaStatusConfirmed, Application.ProposalConfirmed, Application.HasResearchAreas, 
+Application.HasPrimarySuper, Application.PayMethConfirmed, Application.EngProfConfirmed 
+FROM `Application Status`, Application
+WHERE Application.ApplicationID = 611 
+  AND `Application Status`.ApplicationStatusID = Application.applicationStatusID;
+-- expect count == 1; status=ongoing, others 0/false
 
 -- -----------------------------------------------------------------------------
 -- l) Update the checklist to confirm that a mandatory information requirement
@@ -116,13 +117,15 @@ WHERE Application.ApplicationID = 611 ;
 UPDATE Application 
 SET AddressConfirmed = 1 
 WHERE Application.ApplicationID = 611 ;
+-- expect success
+-- rerun k), expect AddressConfirmed == 1/true
 
 -- -----------------------------------------------------------------------------
 -- m) Retrieve all on-going applications for which the user has made the most
 -- recent correspondence
 SELECT *
 FROM Application
-WHERE Application.applicationStatus = 'ongoing'
+WHERE Application.applicationStatusID = 10000
   AND Application.LastModifiedByStaffID = 1002 ; 
 -- three rows, ids 111, 611 and 1011
 
@@ -133,27 +136,36 @@ WHERE Application.applicationStatus = 'ongoing'
 -- -----------------------------------------------------------------------------
 -- o) Update the status of an application
 UPDATE Application
-SET Application.ApplicationStatus = 'complete.declined'
+SET Application.applicationStatusID = 10501
 WHERE Application.ApplicationID = 611 ;
 -- now two rows for transaction m
+-- TODO: test update using join(?)
 
 -- -----------------------------------------------------------------------------
 -- p) Look up, add to, and delete from own current research areas
-SELECT *
-FROM ResearchArea, `University Staff Member`_ResearchArea
-WHERE ResearchArea.FORCode = `University Staff Member`_ResearchArea.FORCode 
-  AND `University Staff Member`_ResearchArea.StaffID = 1 ;
+SELECT `Research Area`.FORCode, `Research Area`.Description
+FROM `Research Area`, `University Staff Member_Research Area`
+WHERE `Research Area`.FORCode = `University Staff Member_Research Area`.FORCode 
+  AND `University Staff Member_Research Area`.StaffID = 1000 ;
+-- expect count == 4, 80399, 80499, 80699, 89999
+
+-- insert tested in populate_apps script
+
+DELETE FROM `University Staff Member_Research Area`
+WHERE StaffID = 1000
+  AND FORCode = 89999;
+-- rerun p), should get count==3 
 
 -- -----------------------------------------------------------------------------
 -- q) Search for all applications in certain research areas that have been added
 -- since a certain time
--- TODO: dates
-SELECT * 
+SELECT Application.* 
 FROM Application, `Application_Research Area`
 WHERE Application.DateAdded >= '2014-05-01' 
   AND Application.ApplicationID = `Application_Research Area`.ApplicationID
   AND `Application_Research Area`.FORCode = 100503 ;
 -- expect 1 row, id 611
+-- TODO test dates more thoroughly
 
 -- -----------------------------------------------------------------------------
 -- r) Flag interest in an application
@@ -182,5 +194,5 @@ WHERE Application.ApplicationID = 711
 -- t) Retrieve all ongoing applications
 SELECT *
 FROM Application
-WHERE Application.applicationStatus = 'ongoing' ;
+WHERE Application.applicationStatusID = 10000;
 -- 10 rows by this stage
