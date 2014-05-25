@@ -1,22 +1,24 @@
 -- -----------------------------------------------------------------------------
 -- ApplicationStatus
+-- [10000..10499] reserved for all kinds of ongoing statuses
+-- [10500..10999] reserved for all kinds of completed statuses
 INSERT INTO `Application Status` (ApplicationStatusID, Status, Description)
 VALUES (10000, 'ongoing', 
 'Application/information gathering is currently ongoing' ) ;
 
 INSERT INTO `Application Status` (ApplicationStatusID, Status, Description)
-VALUES (10001, 'complete.accepted', 
+VALUES (10500, 'complete.accepted', 
 'Application accepted. Elevated to RHD office.' ) ;
 
 INSERT INTO `Application Status` (ApplicationStatusID, Status, Description)
-VALUES (10002, 'complete.declined', 
+VALUES (10501, 'complete.declined', 
 'Application declined. School chooses not to pursue.' ) ;
 
 INSERT INTO `Application Status` (ApplicationStatusID, Status, Description)
-VALUES (10003, 'complete.withdrawn', 'Application withdrawn by applicant.' ) ;
+VALUES (10502, 'complete.withdrawn', 'Application withdrawn by applicant.' ) ;
 
 INSERT INTO `Application Status` (ApplicationStatusID, Status, Description)
-VALUES (10004, 'complete.lapsed', 'No activity for a significant period.' ) ;
+VALUES (10503, 'complete.lapsed', 'No activity for a significant period.' ) ;
 
 
 -- -----------------------------------------------------------------------------
