@@ -4,3 +4,4 @@ DELETE FROM Degree;
 DELETE FROM Document;
 DELETE FROM Application;
 DELETE FROM Applicant;
+DELETE FROM Correspondence;
