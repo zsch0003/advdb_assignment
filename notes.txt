@@ -444,3 +444,13 @@ Current issues
  * monitor and tune - response/throughput timings
  * document the test plan
    * invalid input
+   
+
+mysql at csem
+====================
+
+ * mysql.csem.flinders.edu.au
+ * phpmyadmin.csem.flinders.edu.au
+
+
+everything's being created as MyISAM
