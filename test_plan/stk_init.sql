@@ -19,8 +19,11 @@ BEGIN
   DECLARE tablesDone INTEGER DEFAULT 0;
 
   -- iterate over all the tables in RHD DB
-  DECLARE curs CURSOR FOR SELECT TABLE_NAME from information_schema.tables t
-                          WHERE t.TABLE_SCHEMA = 'rhd' ;
+  DECLARE curs CURSOR FOR SELECT t.TABLE_NAME from information_schema.tables t
+                          WHERE t.TABLE_SCHEMA = 'rhd' 
+                            AND t.table_type = 'BASE TABLE';
+
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET tablesDone = 1 ;
 
   OPEN curs ;
 
@@ -31,6 +34,13 @@ BEGIN
       IF tablesDone = 1 THEN
         LEAVE test_count ; 
       END IF ;
+
+      SET @s = CONCAT('SELECT COUNT(*) FROM rhd.`', tableName, '` INTO @rowCount') ; 
+      PREPARE rowCountStmt FROM @s ; 
+      EXECUTE rowCountStmt ;
+
+      CALL stk_unit.assert_false(rowCount = 0, CONCAT('Table has zero rows: ',
+                                               tableName)) ;
 
     END LOOP test_count ;
         
