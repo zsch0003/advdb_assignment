@@ -454,3 +454,25 @@ mysql at csem
 
 
 everything's being created as MyISAM
+
+
+Permissions on CREATE VIEW to user
+========================================
+
+        GRANT ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP, CREATE VIEW
+        ON rhd.* to 'rhd'@'localhost';
+
+        GRANT ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,CREATE VIEW
+        ON *.* to 'rhd'@'localhost';
+
+        GRANT ALL
+        ON rhd.* to 'rhd'@'localhost';
+
+MySQL Utilities
+========================================
+
+        show databases;
+
+        show tables;
+
+        
