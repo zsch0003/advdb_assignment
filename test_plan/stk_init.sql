@@ -35,9 +35,10 @@ BEGIN
         LEAVE test_count ; 
       END IF ;
 
-      SET @s = CONCAT('SELECT COUNT(*) FROM rhd.`', tableName, '` INTO @rowCount') ; 
+      SET @s = CONCAT('SELECT COUNT(*) FROM rhd.`', tableName, '` into @OUTVAR') ; 
       PREPARE rowCountStmt FROM @s ; 
-      EXECUTE rowCountStmt ;
+      EXECUTE rowCountStmt;
+      SELECT @OUTVAR INTO rowCount;
 
       CALL stk_unit.assert_false(rowCount = 0, CONCAT('Table has zero rows: ',
                                                tableName)) ;
