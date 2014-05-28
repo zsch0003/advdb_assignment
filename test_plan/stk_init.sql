@@ -49,6 +49,27 @@ BEGIN
   
 END $$
 
+
+CREATE PROCEDURE test_utrans_a()
+BEGIN
+  DECLARE appID INT(10);
+  DECLARE v_count INT;
+
+  SELECT ApplicantID, COUNT(*) 
+  FROM rhd.Applicant 
+  WHERE Applicant.FName = 'Shirin' 
+    AND Applicant.LName = 'Ebadi' 
+  INTO appID, v_count ;
+
+  CALL stk_unit.assert_true(
+    v_count = 1, 
+    'Expected exactly one applicant of given name') ;
+
+  CALL stk_unit.assert_true(
+    appID = 1, 
+    'Expected exactly one applicant of given name') ;
+END $$
+
 DELIMITER ;
 
 --  DECLARE CONTINUE HANDLER FOR NOT FOUND SET tablesDone = 1 ;
