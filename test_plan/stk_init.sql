@@ -15,6 +15,8 @@ DELIMITER $$
 CREATE PROCEDURE test_populate_contents()
 BEGIN
   DECLARE rowCount INT;
+  DECLARE tableName varchar(64) DEFAULT "";
+  DECLARE tablesDone INTEGER DEFAULT 0;
 
   -- iterate over all the tables in RHD DB
   DECLARE curs CURSOR FOR SELECT TABLE_NAME from information_schema.tables t
@@ -22,9 +24,21 @@ BEGIN
 
   OPEN curs ;
 
+  test_count: LOOP
+
+      FETCH curs INTO tableName ;
+
+      IF tablesDone = 1 THEN
+        LEAVE test_count ; 
+      END IF ;
+
+    END LOOP test_count ;
+        
   CLOSE curs ;
-  
   
 END $$
 
 DELIMITER ;
+
+--  DECLARE CONTINUE HANDLER FOR NOT FOUND SET tablesDone = 1 ;
+
