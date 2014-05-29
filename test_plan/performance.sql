@@ -10,43 +10,48 @@
 -- get all the email addresses
 DROP TABLE IF EXISTS applicant_emails ;
 CREATE TEMPORARY TABLE applicant_emails 
-SELECT a.Email FROM rhd.Applicant a ;
+SELECT a.Email FROM Applicant a ;
 
 DROP PROCEDURE IF EXISTS perf_app_emails ;
 DELIMITER $$
 
-CREATE PROCEDURE perf_app_emails()
+CREATE PROCEDURE perf_app_emails(IN iterations INT)
 BEGIN
 
-  DECLARE email_value VARCHAR(100) DEFAULT "" ;
-  DECLARE email_end INT DEFAULT 0 ;
-  DECLARE email_cursor CURSOR FOR SELECT Email from applicant_emails ;
-  DECLARE CONTINUE HANDLER FOR NOT FOUND SET email_end = 1;
+  DECLARE time_elapsed FLOAT;
+  DECLARE time_start INT DEFAULT NOW();
+  DECLARE counter INT DEFAULT iterations ;
+--  SELECT time_start ;
 
-  OPEN email_cursor ;
+  WHILE counter > 0 DO
 
-  test_email: LOOP
+    SELECT Application.ApplicationID FROM Application, Applicant
+    WHERE Applicant.ApplicantID = Application.ApplicantID
+      AND Applicant.Email IN 
+      (
+	SELECT Email FROM applicant_emails
+      )
+    ;
 
-    FETCH email_cursor INTO email_value ; 
+    SET counter = counter - 1 ;
 
-    IF email_end = 1 THEN
-      LEAVE test_email ; 
-    END IF ; 
+  END WHILE ; 
 
-    SELECT Application.ApplicationID FROM rhd.Applicant, rhd.Application
-    WHERE Application.ApplicantID = Applicant.ApplicantID
-      AND Applicant.Email = email_value ;
-
-  END LOOP test_email ; 
-
-  CLOSE email_cursor ;
+  SET time_elapsed = NOW() - time_start ;
+--  SELECT time_elapsed ;
 
 END $$
 
 DELIMITER ;
 
 -- CALL perf_app_emails() ;
-SELECT BENCHMARK (10,  CALL perf_app_emails() ) ;
+-- SELECT BENCHMARK (10,  CALL perf_app_emails() ) ;
+
+CALL perf_app_emails(1000) ;
 
 
 DROP TABLE applicant_emails ;
+
+
+-- Let's try a nested query (subquery) instead
+
