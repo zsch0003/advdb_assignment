@@ -50,7 +50,7 @@ BEGIN
 END $$
 
 
-CREATE PROCEDURE test_utrans_a()
+CREATE PROCEDURE test_utrans_a1()
 BEGIN
   DECLARE appID INT(10);
   DECLARE v_count INT;
@@ -68,6 +68,78 @@ BEGIN
   CALL stk_unit.assert_true(
     appID = 1, 
     'Expected exactly one applicant of given name') ;
+END $$
+
+-- CREATE PROCEDURE test_utrans_a2()
+-- BEGIN
+--   DECLARE pubID INT(10);
+--   DECLARE v_count INT;
+
+--   SELECT p.PubID, COUNT(*) FROM rhd.Publication p, rhd.Applicant a
+--   WHERE p.ApplicantID = a.ApplicantID 
+--     AND a.FName = 'Shirin'
+--     AND a.LName = 'Ebadi'
+--   INTO pubID, 
+
+--   SELECT ApplicantID, COUNT(*) 
+--   FROM rhd.Applicant 
+--   WHERE Applicant.FName = 'Shirin' 
+--     AND Applicant.LName = 'Ebadi' 
+--   INTO appID, v_count ;
+
+--   CALL stk_unit.assert_true(
+--     v_count = 1, 
+--     'Expected exactly one applicant of given name') ;
+
+--   CALL stk_unit.assert_true(
+--     appID = 1, 
+--     'Expected exactly one applicant of given name') ;
+-- END $$
+
+CREATE PROCEDURE test_utrans_a3() 
+BEGIN
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_a3_actuals
+  SELECT d.DegID FROM rhd.Degree d, rhd.Applicant a
+  WHERE d.ApplicantID = a.ApplicantID 
+    AND a.FName = 'Shirin'
+    AND a.LName = 'Ebadi' ;
+
+  -- create a temporary table to store the expected results
+  CREATE TEMPORARY TABLE utrans_a3_expecteds (
+    DegID int(10) NOT NULL,
+    PRIMARY KEY (DegID)
+  ) ;
+  INSERT INTO utrans_a3_expecteds (DegID)
+  VALUES (121), (122);
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_a3_problems
+  SELECT problems.DegID
+  FROM
+  (
+      SELECT actuals.DegID
+      FROM utrans_a3_actuals actuals
+      UNION ALL
+      SELECT expecteds.DegID
+      FROM utrans_a3_expecteds expecteds
+  )  problems
+  GROUP BY problems.DegID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.DegID 
+  ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_a3_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_a3_expecteds ;
+  DROP TABLE utrans_a3_actuals ;
+  DROP TABLE utrans_a3_problems ;
 END $$
 
 DELIMITER ;
