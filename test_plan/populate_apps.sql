@@ -1,3 +1,5 @@
+SELECT "Loading populate_apps.sql" ;
+
 -- IDs
 --   Applicant 1-9-
 --   Application x11 - x19
@@ -21,22 +23,23 @@ DELETE FROM Correspondence;
 INSERT INTO Applicant (ApplicantID, FName, LName, Email, Mobile, StreetAddress, 
 City, Postcode, AddressCountryISOCode, DateAdded, LastModifiedByStaffID)
 VALUES (01, 'Shirin', 'Ebadi', 'shirin.ebadi@keb.com.de', 
-'+49 (176) 6488 9999', 'Zwillingstr 99, App 099', 'Munich', 80807, 'DE', '2014-05-01', 
-1001);
+'+49 (176) 6488 9999', 'Zwillingstr 99, App 099', 'Munich', 80807, 'DE', 
+'2014-05-01', 1001);
 
 INSERT INTO Degree (DegID, ApplicantID, Name, Type, YearCompleted, 
 InstitutionName, InstitutionCountryISOCode) 
 VALUES (121, 01, 'Electrical Engineering with expertise in Control
-Theory and Reat-Time Applications', 'bachelor', '2005-12-31', 'University of Tabriz',
-'IR') ;
+Theory and Reat-Time Applications', 'bachelor', '2005-12-31', 
+'University of Tabriz', 'IR') ;
 
-INSERT INTO Degree (DegID, ApplicantID, Name, Type, YearCompleted, InstitutionName,
-InstitutionCountryISOCode) 
+INSERT INTO Degree (DegID, ApplicantID, Name, Type, YearCompleted, 
+InstitutionName, InstitutionCountryISOCode) 
 VALUES (122, 01, 'Electrical Engineering with expertise in Control
-Theory and Reat-Time Applications', 'masters', '2008-12-31', 'University of Tabriz',
-'IR') ;
+Theory and Reat-Time Applications', 'masters', '2008-12-31', 
+'University of Tabriz', 'IR') ;
 
-INSERT INTO Application (ApplicationID, ApplicantID, awardID, DateAdded, DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
+INSERT INTO Application (ApplicationID, ApplicantID, awardID, DateAdded, 
+DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
 VALUES (111, 01, 40000, '2014-05-01', '2014-05-01', '2014-05-01', 1002, 10000) ;
 
 INSERT INTO Document (DocID, UploadLink, ApplicantID, DocTypeID, DocStatusID)
@@ -46,31 +49,36 @@ VALUES (131, '/mnt/data/rhd/01/CV/001.pdf', 01, 20001, 30000);
 -- -----------------------------------------------------------------------------
 -- FW Your kind supervision for my intended PhD.txt
 -- 2
-INSERT INTO Applicant (ApplicantID, FName, LName, Email, Mobile, Phone, DateAdded, LastModifiedByStaffID)
+INSERT INTO Applicant (ApplicantID, FName, LName, Email, Mobile, Phone, 
+DateAdded, LastModifiedByStaffID)
 VALUES (2, 'Mohammad', 'Almalki', 'don.memo@hotmail.com', '+966 565907070', 
 '+966 12 527000000 ext 4951', '2014-05-02', 1003);
 
-INSERT INTO Application (ApplicantID, ApplicationID, awardID, DateAdded, DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
+INSERT INTO Application (ApplicantID, ApplicationID, awardID, DateAdded, 
+DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
 VALUES (2, 211, 40000, '2014-05-02', '2014-05-02', '2014-05-02', 1003, 10000) ;
 
 INSERT INTO Degree (DegID, ApplicantID, Name, Type, YearCompleted, 
 InstitutionName, InstitutionCountryISOCode) 
-VALUES (221, 2, 'IT', 'master', '2010-12-31',
+VALUES (221, 2, 'IT', 'master', '2010-12-31', 
 'University of Technology Sydney', 'AU') ;
 
 INSERT INTO Document (UploadLink, ApplicantID, DocTypeID, DocStatusID)
 VALUES ('/mnt/data/rhd/02/CV/001.pdf', 
 02, 20001, 30000) ;
 
-INSERT INTO Document (UploadLink, ApplicantID, DocTypeID, Description, DocStatusID)
+INSERT INTO Document (UploadLink, ApplicantID, DocTypeID, Description, 
+DocStatusID)
 VALUES ('/mnt/data/rhd/02/transcript/001.pdf', 
 02, 20005, 'transcript of masters course', 30000) ;
 
-INSERT INTO Document (UploadLink, ApplicantID, DocTypeID, Description, DocStatusID)
+INSERT INTO Document (UploadLink, ApplicantID, DocTypeID, Description, 
+DocStatusID)
 VALUES ('/mnt/data/rhd/02/certificate/001.pdf', 
 02, 20004, 'bachelors certificate', 30000) ;
 
-INSERT INTO Document (UploadLink, ApplicantID, ApplicationID, DocTypeID, DocStatusID)
+INSERT INTO Document (UploadLink, ApplicantID, ApplicationID, DocTypeID, 
+DocStatusID)
 VALUES ('/mnt/data/rhd/02/proposal/001.pdf', 
 02, 211, 20007, 30000) ;
 
@@ -78,13 +86,16 @@ VALUES ('/mnt/data/rhd/02/proposal/001.pdf',
 -- -----------------------------------------------------------------------------
 -- Fwd Flinders Application - PhD (Comp Sc) - Sem 2 2015.txt
 -- 3
-INSERT INTO Applicant (ApplicantID, FName, LName, StudentID, DateAdded, LastModifiedByStaffID)
+INSERT INTO Applicant (ApplicantID, FName, LName, StudentID, DateAdded, 
+LastModifiedByStaffID)
 VALUES (03, 'Azzam', 'Alwash', '1234567', '2014-05-03', 1003) ;
 
 INSERT INTO Application (ApplicationID, ApplicantID, awardID, ProposalSummary, 
-ProposedStartDate, DateAdded, DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
+ProposedStartDate, DateAdded, DateLastChecked, DateLastModified, 
+LastModifiedByStaffID, applicationStatusID)
 VALUES (311, 03, 'PhD (Comp Sc)', 
-'Genetic algorithms for Arabic character recognition', '2015-07-01', '2014-05-03', '2014-05-03', '2014-05-03', 1001, 10000) ;
+'Genetic algorithms for Arabic character recognition', '2015-07-01', 
+'2014-05-03', '2014-05-03', '2014-05-03', 1001, 10000) ;
 
 INSERT INTO Degree (ApplicantID, Name, Type, GPA, InstitutionCountryISOCode)
 VALUES (03, 'IS and CS', 'bachelors', 4.27, 'IQ') ;
@@ -92,9 +103,9 @@ VALUES (03, 'IS and CS', 'bachelors', 4.27, 'IQ') ;
 INSERT INTO Degree (ApplicantID, Name, Type, GPA, InstitutionCountryISOCode)
 VALUES (03, 'IT', 'masters', 6.79, 'MY') ;
 
-INSERT INTO Document (UploadLink, ApplicantID, ApplicationID, DocTypeID, DocStatusID)
-VALUES ('/mnt/data/rhd/03/Application/0001.pdf',
-03, 311, 'Application', 30000);
+INSERT INTO Document (UploadLink, ApplicantID, ApplicationID, DocTypeID, 
+DocStatusID)
+VALUES ('/mnt/data/rhd/03/Application/0001.pdf', 03, 311, 'Application', 30000);
 
 
 

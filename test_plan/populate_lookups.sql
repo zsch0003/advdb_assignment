@@ -1,3 +1,5 @@
+SELECT "Loading populate_lookups.sql" ;
+
 -- -----------------------------------------------------------------------------
 -- ApplicationStatus
 -- [10000..10499] reserved for all kinds of ongoing statuses

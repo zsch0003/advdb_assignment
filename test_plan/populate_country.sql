@@ -1,5 +1,7 @@
 -- -----------------------------------------------------------------------------
 -- Country
+SELECT "Loading populate_country.sql" ;
+
 INSERT INTO Country (CountryISOCode, Name)
 VALUES 
 ('AD', 'Andorra'),

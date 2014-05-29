@@ -1,6 +1,8 @@
 -- -----------------------------------------------------------------------------
 -- UNIVERSITY STAFF MEMBERS
 -- -----------------------------------------------------------------------------
+SELECT "Loading populate_staff.sql" ;
+
 -- Denise de Vries
 INSERT INTO `University Staff Member` (StaffID, LName, FName, canSupervise,
 email)
