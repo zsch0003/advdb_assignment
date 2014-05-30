@@ -152,7 +152,7 @@ CREATE TABLE Degree (DegID int(10) NOT NULL AUTO_INCREMENT comment 'The primary 
   YearCompleted date comment 'The year the degree was completed or will be completed',
   GPA int(10) comment 'The GPA of the degree',
   InstitutionName varchar(100) comment 'The name of the institution',
-  InstitutionCountryISOCode int(2) NOT NULL comment 'the country the institution is based in',
+  InstitutionCountryISOCode char(2) NOT NULL comment 'the country the institution is based in',
   PRIMARY KEY (DegID),
   INDEX (ApplicantID)
 )
@@ -192,7 +192,9 @@ comment='Links to any relevant documents along with descriptions,
   types and statuses.'
 ENGINE=InnoDB;
 
-CREATE TABLE Applicant (ApplicantID int(10) NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the applicant',
+CREATE TABLE Applicant (
+  ApplicantID int(10) NOT NULL AUTO_INCREMENT 
+    comment 'The primary key that uniquely identifies the applicant',
   FName varchar(50) NOT NULL comment 'First name',
   LName varchar(50) comment 'Last name',
   PrefTitle varchar(10) comment 'Title Mr,
@@ -213,7 +215,7 @@ CREATE TABLE Applicant (ApplicantID int(10) NOT NULL AUTO_INCREMENT comment 'The
   EnglishProficient int(1) comment 'English ability',
   StudentID int(10) comment 'The flinders university student id if they are or have been enrolled at flinders university',
   DateAdded date NOT NULL comment 'The date the applicant was added to the system',
-  AddressCountryISOCode int(2),
+  AddressCountryISOCode char(2),
   NationalityCountryISOCode int(2),
   LastModifiedByStaffID int(10) NOT NULL comment 'the staff member ID of the last person to modify the applicant (all modifications are recorded in the decision table)',
   PRIMARY KEY (ApplicantID),
@@ -225,10 +227,10 @@ comment='Holds the applicant specific details'
 ENGINE=InnoDB;
 
 CREATE TABLE Visa (VisaID int(10) NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the visa',
-  OriginCountryISOCode int(2) NOT NULL comment 'the country the applicant states they are from',
+  OriginCountryISOCode char(2) NOT NULL comment 'the country the applicant states they are from',
   ValidFrom date comment 'When the visa is valid from',
   ValidTo date comment 'When the visa is valid to',
-  CountryISOCode int(2) NOT NULL comment 'the applicant country,
+  CountryISOCode char(2) NOT NULL comment 'the applicant country,
   the visa is granted to',
   ApplicantID int(10) NOT NULL comment 'the ID of the applicant who holds or may hold this visa',
   VisaStatusID int(10) NOT NULL,
@@ -328,7 +330,9 @@ CREATE TABLE `Award Type` (AwardID int(10) NOT NULL AUTO_INCREMENT,
 comment='the possible award types (degrees) sought by an application'
 ENGINE=InnoDB;
 
-CREATE TABLE Country (CountryISOCode int(2) NOT NULL AUTO_INCREMENT comment 'the country corresponding ISO 3166-1 alpha-2 code',
+CREATE TABLE Country (
+  CountryISOCode char(2) NOT NULL
+    comment 'the country corresponding ISO 3166-1 alpha-2 code',
   Name varchar(50) NOT NULL UNIQUE comment 'the full name of the country',
   PRIMARY KEY (CountryISOCode)
 )
