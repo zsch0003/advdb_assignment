@@ -11,7 +11,20 @@ FROM Applicant appt
 INNER JOIN Application app ON  appt.ApplicantID = app.ApplicantID 
 INNER JOIN `Application Status` AppStat 
   ON  AppStat.ApplicationStatusID = app.applicationStatusID
-WHERE appt.LastModifiedByStaffID = 1003 ;
+WHERE appt.LastModifiedByStaffID = 1000 
+
+UNION 
+
+SELECT appt.FName, appt.LName, appt.Email, app.DateLastModified, 
+AppStat.Status
+FROM Applicant appt
+INNER JOIN Application app ON  appt.ApplicantID = app.ApplicantID 
+INNER JOIN `Application Status` AppStat 
+  ON  AppStat.ApplicationStatusID = app.applicationStatusID
+INNER JOIN `Supervise as` super ON super.ApplicationID = app.ApplicationID
+WHERE super.StaffID = 1000 
+;
+
 
 -- CREATE VIEW `Overview for staff` AS
 -- SELECT appt.FName, appt.LName, appt.Email 

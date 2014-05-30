@@ -47,6 +47,10 @@ VALUES (111, 01, 40000, '2014-05-01', '2014-05-01', '2014-05-01', 1002, 10000) ;
 INSERT INTO Document (DocID, UploadLink, ApplicantID, DocTypeID, DocStatusID)
 VALUES (131, '/mnt/data/rhd/01/CV/001.pdf', 01, 20001, 30000);
 
+-- Denise to supervise this
+INSERT INTO `Supervise as` (PrimarySupervisor, ApplicationID, StaffID)
+VALUES (1, 111, 1000);
+
 
 -- -----------------------------------------------------------------------------
 -- FW Your kind supervision for my intended PhD.txt
@@ -86,6 +90,9 @@ DocStatusID)
 VALUES ('/mnt/data/rhd/02/proposal/001.pdf', 
 02, 211, 20007, 30000) ;
 
+-- Denise to supervise this (associate supervision)
+INSERT INTO `Supervise as` (PrimarySupervisor, ApplicationID, StaffID)
+VALUES (0, 211, 1000);
 
 -- -----------------------------------------------------------------------------
 -- Fwd Flinders Application - PhD (Comp Sc) - Sem 2 2015.txt
@@ -113,7 +120,9 @@ INSERT INTO Document (UploadLink, ApplicantID, ApplicationID, DocTypeID,
 DocStatusID)
 VALUES ('/mnt/data/rhd/03/Application/0001.pdf', 03, 311, 20000, 30000);
 
-
+-- Denise to supervise this 
+INSERT INTO `Supervise as` (PrimarySupervisor, ApplicationID, StaffID)
+VALUES (1, 311, 1000);
 
 -- -----------------------------------------------------------------------------
 -- Fwd Flinders Application - PhD (Computer Science) Sem 2 2014 .txt
@@ -122,7 +131,7 @@ SELECT "Populating Applicant 4 info" ;
 
 INSERT INTO Applicant (ApplicantID, FName, LName, StudentID, DateAdded,
 LastModifiedByStaffID)
-VALUES (04, 'Mustafa', 'Al Lami', 2130106, '2014-05-04', 1003);
+VALUES (04, 'Mustafa', 'Al Lami', 2130106, '2014-05-04', 1000);
 
 INSERT INTO Application (ApplicationID, ApplicantID, awardID, ProposalSummary,
 DateAdded, DateLastChecked, DateLastModified, LastModifiedByStaffID,
@@ -275,7 +284,7 @@ SELECT "Populating Applicant 7 info" ;
 
 INSERT INTO Applicant (ApplicantID, FName, DateAdded, Email,
 LastModifiedByStaffID)
-VALUES (07, 'Nemo', '2014-05-07', 'nemo@gmail.com', 1003) ;
+VALUES (07, 'Nemo', '2014-05-07', 'nemo@gmail.com', 1000) ;
 
 INSERT INTO Degree (DegID, ApplicantID, Name, Type, InstitutionName, 
 InstitutionCountryISOCode)
@@ -288,7 +297,7 @@ VALUES (722, 07, 'Software development and engineering',
 
 INSERT INTO Application (ApplicationID, ApplicantID, awardID, DateAdded,
 DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
-VALUE (711, 07, 40000, '2014-05-07', '2014-05-07', '2014-05-07', 1003, 10000) ; 
+VALUE (711, 07, 40000, '2014-05-07', '2014-05-07', '2014-05-07', 1000, 10000) ; 
 
 INSERT INTO Document (UploadLink, ApplicantID, DocTypeID, DocStatusID)
 VALUES ('/mnt/data/rhd/07/resume/0001.pdf', 07, 20002, 30000);
@@ -336,11 +345,11 @@ SELECT "Populating Applicant 9 info" ;
 INSERT INTO Applicant (ApplicantID, FName, LName, Email, DateAdded,
 LastModifiedByStaffID)
 VALUES (09, 'Abdul-Allah', 'Al-Sadhan', 'abdul-allah.al-sadhan@gmail.com',
-'2014-05-09', 1003) ;
+'2014-05-09', 1000) ;
 
 INSERT INTO Application (ApplicationID, ApplicantID, awardID, DateAdded,
 DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
-VALUES (911, 09, 40000, '2014-05-09', '2014-05-09', '2014-05-09', 1003, 10000);
+VALUES (911, 09, 40000, '2014-05-09', '2014-05-09', '2014-05-09', 1000, 10000);
 
 -- -----------------------------------------------------------------------------
 -- PhD Student2.txt
