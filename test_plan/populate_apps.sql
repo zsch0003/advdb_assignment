@@ -120,23 +120,23 @@ VALUES ('/mnt/data/rhd/03/Application/0001.pdf', 03, 311, 20000, 30000);
 -- 4
 SELECT "Populating Applicant 4 info" ;
 
-INSERT INTO Applicant (ApplicantID, FName, LName, StudentID, DateAdded, LastModifiedByStaffID)
+INSERT INTO Applicant (ApplicantID, FName, LName, StudentID, DateAdded,
+LastModifiedByStaffID)
 VALUES (04, 'Mustafa', 'Al Lami', 2130106, '2014-05-04', 1003);
 
-INSERT INTO Application (ApplicationID, ApplicantID, awardID, ProposalSummary, DateAdded, DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
-VALUES (411, 04, 40000, 
-'Cloud computing for large scale data analysis', '2014-05-04', '2014-05-04', '2014-05-04', 1003, 10000) ;
-
+INSERT INTO Application (ApplicationID, ApplicantID, awardID, ProposalSummary,
+DateAdded, DateLastChecked, DateLastModified, LastModifiedByStaffID,
+applicationStatusID)
+VALUES (411, 04, 40000, 'Cloud computing for large scale data analysis',
+'2014-05-04', '2014-05-04', '2014-05-04', 1003, 10000) ;
 
 INSERT INTO Document (UploadLink, ApplicantID, DocTypeID, DocStatusID)
 VALUES ('/mnt/data/rhd/04/faculty_assessment_memo/0001.pdf',
 04, 20003, 30000);
 
-
 INSERT INTO Document (UploadLink, ApplicantID, DocTypeID, DocStatusID)
 VALUES ('/mnt/data/rhd/04/general/0001.pdf',
 04, 20011, 30000);
-
 
 INSERT INTO Document (UploadLink, ApplicantID, DocTypeID, DocStatusID)
 VALUES ('/mnt/data/rhd/04/general/0002.pdf', 04, 20011, 30000);
@@ -273,7 +273,8 @@ VALUES ('/mnt/data/rhd/06/reference/0002.pdf', 06, 611, 20008, 30000) ;
 -- 7
 SELECT "Populating Applicant 7 info" ;
 
-INSERT INTO Applicant (ApplicantID, FName, DateAdded, Email, LastModifiedByStaffID)
+INSERT INTO Applicant (ApplicantID, FName, DateAdded, Email,
+LastModifiedByStaffID)
 VALUES (07, 'Nemo', '2014-05-07', 'nemo@gmail.com', 1003) ;
 
 INSERT INTO Degree (DegID, ApplicantID, Name, Type, InstitutionName, 
@@ -285,43 +286,46 @@ InstitutionCountryISOCode)
 VALUES (722, 07, 'Software development and engineering',
 'masters', 'West Bengal University', 'IN') ;
 
-INSERT INTO Application (ApplicationID, ApplicantID, awardID, 
-DateAdded, DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
+INSERT INTO Application (ApplicationID, ApplicantID, awardID, DateAdded,
+DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
 VALUE (711, 07, 40000, '2014-05-07', '2014-05-07', '2014-05-07', 1003, 10000) ; 
 
 INSERT INTO Document (UploadLink, ApplicantID, DocTypeID, DocStatusID)
-VALUES ('/mnt/data/rhd/07/resume/0001.pdf',
-07, 20002, 30000);
+VALUES ('/mnt/data/rhd/07/resume/0001.pdf', 07, 20002, 30000);
 
 -- add the publication to documents
-INSERT INTO Document (UploadLink, ApplicantID, DocTypeID, Description, DocStatusID)
-VALUES ('/mnt/data/rhd/07/publication/0001.pptx',
-07, 20009, 
-'Six-plus presenting a six-element framework for sentiment analysis.pptx', 30000);
+INSERT INTO Document (UploadLink, ApplicantID, DocTypeID, Description,
+DocStatusID)
+VALUES ('/mnt/data/rhd/07/publication/0001.pptx', 07, 20009, 'Six-plus
+presenting a six-element framework for sentiment analysis.pptx', 30000);
 
-INSERT INTO Document (UploadLink, ApplicantID, DocTypeID, Description, DocStatusID)
-VALUES ('/mnt/data/rhd/07/publication/0002.docx',
-07, 20009, 
-'The price prediction framework based upon representation of the opinions', 30000);
+INSERT INTO Document (UploadLink, ApplicantID, DocTypeID, Description,
+DocStatusID)
+VALUES ('/mnt/data/rhd/07/publication/0002.docx', 07, 20009, 'The price
+prediction framework based upon representation of the opinions', 30000);
 
-INSERT INTO Document (UploadLink, ApplicantID, DocTypeID, Description, DocStatusID)
-VALUES ('/mnt/data/rhd/07/publication/0003.docx',
-07, 20009, 
-'The classification framework for the representation of opinions.docx', 30000);
+INSERT INTO Document (UploadLink, ApplicantID, DocTypeID, Description,
+DocStatusID)
+VALUES ('/mnt/data/rhd/07/publication/0003.docx', 07, 20009, 
+'The classification framework for the representation of opinions', 30000);
 
 -- -----------------------------------------------------------------------------
 -- PhD Student.txt
 -- 8
 SELECT "Populating Applicant 8 info" ;
 
-INSERT INTO Applicant (ApplicantID, FName, Email, DateAdded, LastModifiedByStaffID)
+INSERT INTO Applicant (ApplicantID, FName, Email, DateAdded,
+LastModifiedByStaffID)
 VALUES (08, 'Sara', 'sara@gmail.com', '2014-05-08', 1003) ;
 
 INSERT INTO Degree (DegID, ApplicantID, Name, Type, YearCompleted, GPA, 
 InstitutionCountryISOCode)
-VALUES (821, 08, 'Masters Comp Sc (Information Security)', 'masters', '2013-12-31', 6.79, 'MY');
 
-INSERT INTO Application (ApplicationID, ApplicantID, awardID, DateAdded, DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
+VALUES (821, 08, 'Masters Comp Sc (Information Security)', 'masters',
+'2013-12-31', 6.79, 'MY');
+
+INSERT INTO Application (ApplicationID, ApplicantID, awardID, DateAdded,
+DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
 VALUES (811, 08, 40000, '2014-05-08', '2014-05-08', '2014-05-08', 1003, 10000);
 
 -- -----------------------------------------------------------------------------
@@ -329,10 +333,13 @@ VALUES (811, 08, 40000, '2014-05-08', '2014-05-08', '2014-05-08', 1003, 10000);
 -- 9
 SELECT "Populating Applicant 9 info" ;
 
-INSERT INTO Applicant (ApplicantID, FName, LName, Email, DateAdded, LastModifiedByStaffID)
-VALUES (09, 'Abdul-Allah', 'Al-Sadhan', 'abdul-allah.al-sadhan@gmail.com', '2014-05-09', 1003) ;
+INSERT INTO Applicant (ApplicantID, FName, LName, Email, DateAdded,
+LastModifiedByStaffID)
+VALUES (09, 'Abdul-Allah', 'Al-Sadhan', 'abdul-allah.al-sadhan@gmail.com',
+'2014-05-09', 1003) ;
 
-INSERT INTO Application (ApplicationID, ApplicantID, awardID, DateAdded, DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
+INSERT INTO Application (ApplicationID, ApplicantID, awardID, DateAdded,
+DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
 VALUES (911, 09, 40000, '2014-05-09', '2014-05-09', '2014-05-09', 1003, 10000);
 
 -- -----------------------------------------------------------------------------
@@ -340,10 +347,13 @@ VALUES (911, 09, 40000, '2014-05-09', '2014-05-09', '2014-05-09', 1003, 10000);
 -- 10
 SELECT "Populating Applicant 10 info" ;
 
-INSERT INTO Applicant (ApplicantID, FName, LName, Email, DateAdded, LastModifiedByStaffID)
-VALUES (10, 'Fahd', 'Al-Hayyan', 'fahd.al-hayyan@ut.edu.sa', '2014-05-10', 1002) ;
+INSERT INTO Applicant (ApplicantID, FName, LName, Email, DateAdded,
+LastModifiedByStaffID)
+VALUES (10, 'Fahd', 'Al-Hayyan', 'fahd.al-hayyan@ut.edu.sa', '2014-05-10', 1002)
+;
 
-INSERT INTO Application (ApplicationID, ApplicantID, awardID, DateAdded, DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
+INSERT INTO Application (ApplicationID, ApplicantID, awardID, DateAdded,
+DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
 VALUES (1011, 10, 40000, '2014-05-10', '2014-05-10', '2014-05-10', 1002, 10000);
 
 -- -----------------------------------------------------------------------------
@@ -351,9 +361,11 @@ VALUES (1011, 10, 40000, '2014-05-10', '2014-05-10', '2014-05-10', 1002, 10000);
 -- 11
 SELECT "Populating Applicant 11 info" ;
 
-INSERT INTO Applicant (ApplicantID, FName, LName, Email, DateAdded, LastModifiedByStaffID)
+INSERT INTO Applicant (ApplicantID, FName, LName, Email, DateAdded,
+LastModifiedByStaffID)
 VALUES (11, 'Venkatraman', 'Ramakrishnan', 
 'venkatraman.ramakrishnan@gmail.com', '2014-05-11', 1003);
 
-INSERT INTO Application (ApplicationID, ApplicantID, awardID, DateAdded, DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
+INSERT INTO Application (ApplicationID, ApplicantID, awardID, DateAdded,
+DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
 VALUES (1111, 11, 40000, '2014-05-11', '2014-05-11', '2014-05-11', 1003, 10000);
