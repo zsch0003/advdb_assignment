@@ -94,6 +94,8 @@ ENGINE=InnoDB;
 
 CREATE TABLE Application (
   ApplicationID int(10) NOT NULL AUTO_INCREMENT,
+  ApplicantEmail varchar (100) 
+    comment 'Denormalised column to improve retrieval of applications via email address',
   ApplicantID int(10) NOT NULL 
     comment 'the ID of the applicant who proposed this application',
   AddressConfirmed int(1) NOT NULL comment 'All contact details appear valid',
@@ -136,7 +138,8 @@ CREATE TABLE Application (
   PRIMARY KEY (ApplicationID),
   INDEX (ApplicantID),
   INDEX (applicationStatusID),
-  INDEX (awardID)
+  INDEX (awardID),
+  INDEX (ApplicantEmail)
 )
 comment='Holds the application details including a checklist of recorded information and applicaiton stage'
 ENGINE=InnoDB;
