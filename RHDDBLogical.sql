@@ -433,6 +433,7 @@ CREATE TABLE `University Staff Member_Application` (
 comment='the staff members who have flagged an application to come back and check later'
 ENGINE=InnoDB;
 
+
 -- -----------------------------------------------------------------------------
 -- Add constraints and indexes
 SELECT "Adding indexes and FK constraints" ;
@@ -636,3 +637,16 @@ ADD INDEX `using` (CorrMethodID),
 ADD CONSTRAINT `using` FOREIGN KEY (CorrMethodID)
   REFERENCES `Correspondence Method` (CorrMethodID) 
   ON UPDATE Cascade ON DELETE Restrict;
+
+-- a table to log & email changes
+DROP TABLE IF EXISTS `Reportable changes` ; 
+CREATE TABLE `Reportable changes` (
+  ChangeID int(10) NOT NULL AUTO_INCREMENT comment 'PK',
+  TimestampUTC char(19) NOT NULL,
+  ChangeType varchar(50) NOT NULL,
+  Message varchar(500) NOT NULL,
+  ChangeAgent varchar(50),
+  RecipientEmail varchar(100) ,
+  EmailSentTimestampUTC char(19),
+  PRIMARY KEY (ChangeID)
+);
