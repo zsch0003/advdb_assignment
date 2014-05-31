@@ -211,7 +211,59 @@ BEGIN
   DROP TABLE utrans_a5_problems ;
 END $$
 
--- one row, id 131, cv
+
+-- -----------------------------------------------------------------------------
+-- b) Look up applicant’s applications by applicant name
+
+CREATE PROCEDURE test_utrans_b() 
+BEGIN
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_b_actuals
+  SELECT App.ApplicationID, AwType.Type AS awardType
+  FROM rhd.Applicant Appt
+  INNER JOIN rhd.Application App ON Appt.ApplicantID = App.ApplicantID 
+  INNER JOIN rhd.`Award Type` AwType ON App.AwardID = AwType.AwardID
+  WHERE Appt.FName = 'Shirin'
+    AND Appt.LName = 'Ebadi'
+  ;
+
+  -- create a temporary table to store the expected results
+  -- expect ApplicationID = 111, Type = 'PhD'
+  CREATE TEMPORARY TABLE utrans_b_expecteds (
+    ApplicationID int(10) NOT NULL,
+    awardType varchar(50)
+  ) ;
+  INSERT INTO utrans_b_expecteds (ApplicationID, awardType)
+  VALUES (111, 'PhD');
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_b_problems
+  SELECT problems.*
+  FROM
+  (
+      SELECT actuals.*
+      FROM utrans_b_actuals actuals
+      UNION ALL
+      SELECT expecteds.*
+      FROM utrans_b_expecteds expecteds
+  )  problems
+  GROUP BY problems.ApplicationID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.ApplicationID
+  ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_b_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_b_expecteds ;
+  DROP TABLE utrans_b_actuals ;
+  DROP TABLE utrans_b_problems ;
+END $$
 
 
 DELIMITER ;
