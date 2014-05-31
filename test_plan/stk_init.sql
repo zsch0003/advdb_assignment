@@ -453,6 +453,58 @@ BEGIN
   DROP TABLE utrans_g_problems ;
 END $$
 
+-- -----------------------------------------------------------------------------
+-- h) Check for any decision recorded about an application
+-- TODO: some Decision info
+CREATE PROCEDURE test_utrans_h() 
+BEGIN
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_h_actuals
+  SELECT Decision.StaffID, DT.type
+  FROM rhd.Application App
+  INNER JOIN rhd.Decision ON Decision.ApplicationID = App.ApplicationID
+  INNER JOIN rhd.`Decision Type` DT 
+    ON DT.DecisionTypeID = Decision.DecisionTypeID
+  WHERE App.ApplicationID = 411 ;
+
+  -- create a temporary table to store the expected results
+  -- expect COUNT = 1
+  -- expect StaffID = 1001
+  -- expect dectype = 'RFI'
+  CREATE TEMPORARY TABLE utrans_h_expecteds (
+    StaffID int(10),
+    type varchar(50)
+  ) ;
+  INSERT INTO utrans_h_expecteds (StaffID, type)
+  VALUES (1001, 'RFI' ) ;
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_h_problems
+  SELECT problems.*
+  FROM
+  (
+      SELECT actuals.*
+      FROM utrans_h_actuals actuals
+      UNION ALL
+      SELECT expecteds.*
+      FROM utrans_h_expecteds expecteds
+  )  problems
+  GROUP BY problems.StaffID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.StaffID ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_h_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_h_expecteds ;
+  DROP TABLE utrans_h_actuals ;
+  DROP TABLE utrans_h_problems ;
+END $$
 
 DELIMITER ;
 
