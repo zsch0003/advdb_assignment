@@ -1,9 +1,23 @@
--- sudo bash -c 'mysql -h localhost -D rhd  < ../stk_unit1.0-rc6/sql/stk_unit.sql'
+-- -----------------------------------------------------------------------------
+-- The unit tests for RHD DB.
+-- 
+-- First, load up the stk_unit utility. This must be done as DB admin. E.g.:
+-- 
+--     sudo bash -c \
+--       'mysql -h localhost -D rhd  < ../stk_unit1.0-rc6/sql/stk_unit.sql'
+--
+-- Then, read this file in as root.
 -- had to run as system root => we won't be able to run this on the uni system
+--
+-- Run the test by issuing, as root:
+--
+--     CALL stk_unit.tc('test_rhd');
+--    
+--------------------------------------------------------------------------------
 
-CONNECT mysql
+CONNECT mysql ; 
 
-DROP DATABASE test_rhd ;
+DROP DATABASE IF EXISTS test_rhd ;
 
 CREATE DATABASE test_rhd CHARACTER SET = utf8;
 
@@ -142,7 +156,63 @@ BEGIN
   DROP TABLE utrans_a3_problems ;
 END $$
 
-DELIMITER ;
 
---  DECLARE CONTINUE HANDLER FOR NOT FOUND SET tablesDone = 1 ;
+-- a4 TODO: need to add visa info
+
+-- -----------------------------------------------------------------------------
+-- a5
+CREATE PROCEDURE test_utrans_a5() 
+BEGIN
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_a5_actuals
+  SELECT d.DocID, dt.Type AS DocType 
+  FROM rhd.Applicant App 
+  INNER JOIN rhd.Document d ON d.ApplicantID = App.ApplicantID 
+  INNER JOIN rhd.`Document Type` dt ON d.DocTypeID = dt.DocTypeID 
+  WHERE App.FName = 'Shirin'
+    AND App.LName = 'Ebadi'
+  ;
+
+  -- create a temporary table to store the expected results
+  -- one row, id 131, cv
+  CREATE TEMPORARY TABLE utrans_a5_expecteds (
+    DocID int(10) NOT NULL,
+    DocType varchar(50)
+  ) ;
+  INSERT INTO utrans_a5_expecteds (DocID, DocType)
+  VALUES (131, 'cv');
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_a5_problems
+  SELECT problems.*
+  FROM
+  (
+      SELECT actuals.*
+      FROM utrans_a5_actuals actuals
+      UNION ALL
+      SELECT expecteds.*
+      FROM utrans_a5_expecteds expecteds
+  )  problems
+  GROUP BY problems.DocID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.DocID
+  ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_a5_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_a5_expecteds ;
+  DROP TABLE utrans_a5_actuals ;
+  DROP TABLE utrans_a5_problems ;
+END $$
+
+-- one row, id 131, cv
+
+
+DELIMITER ;
 
