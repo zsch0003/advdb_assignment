@@ -356,6 +356,103 @@ BEGIN
   DROP TABLE utrans_d_problems ;
 END $$
 
+-- -----------------------------------------------------------------------------
+-- e) Look up all correspondences relevant to an application
+CREATE PROCEDURE test_utrans_e() 
+BEGIN
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_e_actuals
+  SELECT Corr.CorrID
+  FROM rhd.Application App
+  INNER JOIN rhd.Correspondence Corr ON Corr.ApplicationID = App.ApplicationID
+  WHERE App.ApplicationID = 411 ;
+
+  -- create a temporary table to store the expected results
+  -- two rows, id 441 and 442, 
+  CREATE TEMPORARY TABLE utrans_e_expecteds (
+    CorrID int(10) NOT NULL
+  ) ;
+  INSERT INTO utrans_e_expecteds (CorrID)
+  VALUES (441), (442) ;
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_e_problems
+  SELECT problems.*
+  FROM
+  (
+      SELECT actuals.*
+      FROM utrans_e_actuals actuals
+      UNION ALL
+      SELECT expecteds.*
+      FROM utrans_e_expecteds expecteds
+  )  problems
+  GROUP BY problems.CorrID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.CorrID ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_e_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_e_expecteds ;
+  DROP TABLE utrans_e_actuals ;
+  DROP TABLE utrans_e_problems ;
+END $$
+
+-- -----------------------------------------------------------------------------
+-- g) Look up which staff member updated an Application most recently
+CREATE PROCEDURE test_utrans_g() 
+BEGIN
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_g_actuals
+  SELECT USM.StaffID, USM.FName, USM.LName
+  FROM rhd.Application App
+  INNER JOIN rhd.`University Staff Member` USM 
+    ON USM.StaffID = App.LastModifiedByStaffID
+  WHERE App.ApplicationID = 311 ;
+
+  -- create a temporary table to store the expected results
+  -- expect 'Paul' 'Calder'
+  CREATE TEMPORARY TABLE utrans_g_expecteds (
+    StaffID int(10),
+    FName varchar(50),
+    LName varchar(50)
+  ) ;
+  INSERT INTO utrans_g_expecteds (StaffID, FName, LName)
+  VALUES (1001, 'Paul', 'Calder') ;
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_g_problems
+  SELECT problems.*
+  FROM
+  (
+      SELECT actuals.*
+      FROM utrans_g_actuals actuals
+      UNION ALL
+      SELECT expecteds.*
+      FROM utrans_g_expecteds expecteds
+  )  problems
+  GROUP BY problems.StaffID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.StaffID ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_g_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_g_expecteds ;
+  DROP TABLE utrans_g_actuals ;
+  DROP TABLE utrans_g_problems ;
+END $$
+
 
 DELIMITER ;
 
