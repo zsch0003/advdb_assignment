@@ -128,3 +128,17 @@ VALUES (50002, 'Hand over');
 
 INSERT INTO `Decision Type` (DecisionTypeID, type)
 VALUES (50003, 'RFI');
+
+-- -----------------------------------------------------------------------------
+-- CorrespondenceMethod
+INSERT INTO `Correspondence Method` (CorrMethodID, Method)
+VALUES (60000, 'email');
+
+INSERT INTO `Correspondence Method` (CorrMethodID, Method)
+VALUES (60001, 'telephone');
+
+INSERT INTO `Correspondence Method` (CorrMethodID, Method)
+VALUES (60002, 'carrier pigeon');
+
+INSERT INTO `Correspondence Method` (CorrMethodID, Method)
+VALUES (69999, 'other');
