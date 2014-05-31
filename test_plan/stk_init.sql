@@ -639,6 +639,56 @@ BEGIN
 
 END $$
 
+-- -----------------------------------------------------------------------------
+-- m) Retrieve all on-going applications for which the user has made the most
+-- recent correspondence
+CREATE PROCEDURE test_utrans_m() 
+BEGIN
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_m_actuals
+  SELECT App.ApplicationID
+  FROM rhd.Application App
+  INNER JOIN rhd.`Application Status` AppStat
+    ON AppStat.ApplicationStatusID = App.ApplicationStatusID
+  WHERE AppStat.Status LIKE 'ongoing%'
+    AND App.LastModifiedByStaffID = 1002 ;
+
+  -- create a temporary table to store the expected results
+  -- three rows, ids 111, 611 and 1011
+  CREATE TEMPORARY TABLE utrans_m_expecteds (
+    ApplicationID int(10)
+  ) ;
+  INSERT INTO utrans_m_expecteds
+  VALUES (111), (611), (1011) ;
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_m_problems
+  SELECT problems.*
+  FROM
+  (
+      SELECT actuals.*
+      FROM utrans_m_actuals actuals
+      UNION ALL
+      SELECT expecteds.*
+      FROM utrans_m_expecteds expecteds
+  )  problems
+  GROUP BY problems.ApplicationID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.ApplicationID ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_m_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_m_expecteds ;
+  DROP TABLE utrans_m_actuals ;
+  DROP TABLE utrans_m_problems ;
+
+END $$
 
 DELIMITER ;
 
