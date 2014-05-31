@@ -13,7 +13,7 @@
 --
 --     CALL stk_unit.tc('test_rhd');
 --    
---------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
 
 CONNECT mysql ; 
 
@@ -455,7 +455,6 @@ END $$
 
 -- -----------------------------------------------------------------------------
 -- h) Check for any decision recorded about an application
--- TODO: some Decision info
 CREATE PROCEDURE test_utrans_h() 
 BEGIN
 
@@ -504,6 +503,67 @@ BEGIN
   DROP TABLE utrans_h_expecteds ;
   DROP TABLE utrans_h_actuals ;
   DROP TABLE utrans_h_problems ;
+END $$
+
+-- -----------------------------------------------------------------------------
+-- k) Look up an existing application and list outstanding information
+-- (checklist).
+CREATE PROCEDURE test_utrans_k() 
+BEGIN
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_k_actuals
+  SELECT App.ApplicationID, AppStat.Status, 
+    App.AddressConfirmed, App.DegreeConfirmed, 
+    App.VisaStatusConfirmed, App.ProposalConfirmed, App.HasResearchAreas, 
+    App.HasPrimarySuper, App.PayMethConfirmed, App.EngProfConfirmed 
+  FROM rhd.Application App
+  INNER JOIN rhd.`Application Status` AppStat
+    ON AppStat.ApplicationStatusID = App.ApplicationStatusID
+  WHERE App.ApplicationID = 611 ;
+
+  -- create a temporary table to store the expected results
+  -- expect count == 1; status=ongoing, others 0/false
+  CREATE TEMPORARY TABLE utrans_k_expecteds (
+    ApplicationID int(10),
+    Status varchar(50),
+    AddressConfirmed int(1),
+    DegreeConfirmed int(1),
+    VisaStatusConfirmed int(1),
+    ProposalConfirmed int(1),
+    HasResearchAreas int(1),
+    HasPrimarySuper int(1),
+    PayMethConfirmed int(1),
+    EngProfConfirmed int(1)
+  ) ;
+  INSERT INTO utrans_k_expecteds
+  VALUES (611, 'ongoing', 0, 0, 0, 0, 0, 0, 0, 0 ) ;
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_k_problems
+  SELECT problems.*
+  FROM
+  (
+      SELECT actuals.*
+      FROM utrans_k_actuals actuals
+      UNION ALL
+      SELECT expecteds.*
+      FROM utrans_k_expecteds expecteds
+  )  problems
+  GROUP BY problems.ApplicationID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.ApplicationID ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_k_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_k_expecteds ;
+  DROP TABLE utrans_k_actuals ;
+  DROP TABLE utrans_k_problems ;
 END $$
 
 DELIMITER ;
