@@ -142,8 +142,7 @@ BEGIN
   )  problems
   GROUP BY problems.DegID
   HAVING COUNT(*) = 1
-  ORDER BY problems.DegID 
-  ;
+  ORDER BY problems.DegID ;
 
   -- report an error if the 'problems' table isn't empty
   CALL stk_unit.assert_table_empty( 
@@ -171,8 +170,7 @@ BEGIN
   INNER JOIN rhd.Document d ON d.ApplicantID = App.ApplicantID 
   INNER JOIN rhd.`Document Type` dt ON d.DocTypeID = dt.DocTypeID 
   WHERE App.FName = 'Shirin'
-    AND App.LName = 'Ebadi'
-  ;
+    AND App.LName = 'Ebadi' ;
 
   -- create a temporary table to store the expected results
   -- one row, id 131, cv
@@ -197,8 +195,7 @@ BEGIN
   )  problems
   GROUP BY problems.DocID
   HAVING COUNT(*) = 1
-  ORDER BY problems.DocID
-  ;
+  ORDER BY problems.DocID ;
 
   -- report an error if the 'problems' table isn't empty
   CALL stk_unit.assert_table_empty( 
@@ -225,8 +222,7 @@ BEGIN
   INNER JOIN rhd.Application App ON Appt.ApplicantID = App.ApplicantID 
   INNER JOIN rhd.`Award Type` AwType ON App.AwardID = AwType.AwardID
   WHERE Appt.FName = 'Shirin'
-    AND Appt.LName = 'Ebadi'
-  ;
+    AND Appt.LName = 'Ebadi' ;
 
   -- create a temporary table to store the expected results
   -- expect ApplicationID = 111, Type = 'PhD'
@@ -251,8 +247,7 @@ BEGIN
   )  problems
   GROUP BY problems.ApplicationID
   HAVING COUNT(*) = 1
-  ORDER BY problems.ApplicationID
-  ;
+  ORDER BY problems.ApplicationID ;
 
   -- report an error if the 'problems' table isn't empty
   CALL stk_unit.assert_table_empty( 
@@ -263,6 +258,102 @@ BEGIN
   DROP TABLE utrans_b_expecteds ;
   DROP TABLE utrans_b_actuals ;
   DROP TABLE utrans_b_problems ;
+END $$
+
+-- -----------------------------------------------------------------------------
+-- c) Look up applicant’s applications by applicant email
+CREATE PROCEDURE test_utrans_c() 
+BEGIN
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_c_actuals
+  SELECT App.ApplicationID, AwType.Type AS awardType
+  FROM rhd.Applicant Appt
+  INNER JOIN rhd.Application App ON Appt.ApplicantID = App.ApplicantID 
+  INNER JOIN rhd.`Award Type` AwType ON App.AwardID = AwType.AwardID
+  WHERE Appt.Email = 'don.memo@hotmail.com' ;
+
+  -- create a temporary table to store the expected results
+  -- expect ApplicationID = 211, Type = 'PhD'
+  CREATE TEMPORARY TABLE utrans_c_expecteds (
+    ApplicationID int(10) NOT NULL,
+    awardType varchar(50)
+  ) ;
+  INSERT INTO utrans_c_expecteds (ApplicationID, awardType)
+  VALUES (211, 'PhD');
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_c_problems
+  SELECT problems.*
+  FROM
+  (
+      SELECT actuals.*
+      FROM utrans_c_actuals actuals
+      UNION ALL
+      SELECT expecteds.*
+      FROM utrans_c_expecteds expecteds
+  )  problems
+  GROUP BY problems.ApplicationID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.ApplicationID ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_c_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_c_expecteds ;
+  DROP TABLE utrans_c_actuals ;
+  DROP TABLE utrans_c_problems ;
+END $$
+
+-- -----------------------------------------------------------------------------
+-- d) Look up incomplete applications
+CREATE PROCEDURE test_utrans_d() 
+BEGIN
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_d_actuals
+  SELECT App.ApplicationID
+  FROM rhd.Application App
+  WHERE App.applicationStatusID < 10500 ;
+
+  -- create a temporary table to store the expected results
+  -- expect all 11 applications
+  CREATE TEMPORARY TABLE utrans_d_expecteds (
+    ApplicationID int(10) NOT NULL
+  ) ;
+  INSERT INTO utrans_d_expecteds (ApplicationID)
+  VALUES (111), (211), (311), (411), (511), (611), (711), (811), (911), (1011),
+  (1111) ;
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_d_problems
+  SELECT problems.*
+  FROM
+  (
+      SELECT actuals.*
+      FROM utrans_d_actuals actuals
+      UNION ALL
+      SELECT expecteds.*
+      FROM utrans_d_expecteds expecteds
+  )  problems
+  GROUP BY problems.ApplicationID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.ApplicationID ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_d_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_d_expecteds ;
+  DROP TABLE utrans_d_actuals ;
+  DROP TABLE utrans_d_problems ;
 END $$
 
 
