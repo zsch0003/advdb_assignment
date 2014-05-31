@@ -566,5 +566,79 @@ BEGIN
   DROP TABLE utrans_k_problems ;
 END $$
 
+-- -----------------------------------------------------------------------------
+-- l) Update the checklist to confirm that a mandatory information requirement
+-- has been met
+CREATE PROCEDURE test_utrans_l() 
+BEGIN
+
+  UPDATE rhd.Application 
+  SET AddressConfirmed = 1 
+  WHERE Application.ApplicationID = 611 ;
+  -- expect success
+  -- rerun k), expect AddressConfirmed == 1/true
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_l_actuals
+  SELECT App.ApplicationID, AppStat.Status, 
+    App.AddressConfirmed, App.DegreeConfirmed, 
+    App.VisaStatusConfirmed, App.ProposalConfirmed, App.HasResearchAreas, 
+    App.HasPrimarySuper, App.PayMethConfirmed, App.EngProfConfirmed 
+  FROM rhd.Application App
+  INNER JOIN rhd.`Application Status` AppStat
+    ON AppStat.ApplicationStatusID = App.ApplicationStatusID
+  WHERE App.ApplicationID = 611 ;
+
+  -- create a temporary table to store the expected results
+  -- expect count == 1; status=ongoing, others 0/false
+  CREATE TEMPORARY TABLE utrans_l_expecteds (
+    ApplicationID int(10),
+    Status varchar(50),
+    AddressConfirmed int(1),
+    DegreeConfirmed int(1),
+    VisaStatusConfirmed int(1),
+    ProposalConfirmed int(1),
+    HasResearchAreas int(1),
+    HasPrimarySuper int(1),
+    PayMethConfirmed int(1),
+    EngProfConfirmed int(1)
+  ) ;
+  INSERT INTO utrans_l_expecteds
+  VALUES (611, 'ongoing', 1, 0, 0, 0, 0, 0, 0, 0 ) ;
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_l_problems
+  SELECT problems.*
+  FROM
+  (
+      SELECT actuals.*
+      FROM utrans_l_actuals actuals
+      UNION ALL
+      SELECT expecteds.*
+      FROM utrans_l_expecteds expecteds
+  )  problems
+  GROUP BY problems.ApplicationID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.ApplicationID ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_l_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_l_expecteds ;
+  DROP TABLE utrans_l_actuals ;
+  DROP TABLE utrans_l_problems ;
+
+  -- reset to initial state
+  UPDATE rhd.Application 
+  SET AddressConfirmed = 1 
+  WHERE Application.ApplicationID = 611 ;
+
+END $$
+
+
 DELIMITER ;
 
