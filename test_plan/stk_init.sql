@@ -977,11 +977,6 @@ BEGIN
 END $$
 
 -- s2) Last staff member to modify an application
--- SELECT `University Staff Member`.FName, `University Staff Member`.LName
--- FROM Application, `University Staff Member`
--- WHERE Application.ApplicationID = 711 
---  AND Application.LastModifiedByStaffID = `University Staff Member`.StaffID ;
--- expect Jennie Brand
 CREATE PROCEDURE test_utrans_s2() 
 BEGIN
 
@@ -1030,6 +1025,60 @@ BEGIN
   DROP TABLE utrans_s2_problems ;
 
 END $$
+
+-- -----------------------------------------------------------------------------
+-- t) Retrieve all ongoing applications
+-- SELECT *
+-- FROM Application
+-- WHERE Application.applicationStatusID = 10000;
+CREATE PROCEDURE test_utrans_t() 
+BEGIN
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_t_actuals
+  SELECT App.ApplicationID
+  FROM rhd.Application App
+  INNER JOIN rhd.`Application Status` AppStat
+    ON App.ApplicationStatusID = AppStat.ApplicationStatusID
+  WHERE AppStat.Status LIKE 'ongoing%' ;
+
+  -- create a temporary table to store the expected results
+  -- expect all applications at this stage
+  CREATE TEMPORARY TABLE utrans_t_expecteds (
+    ApplicationID int(10)
+  ) ;
+  INSERT INTO utrans_t_expecteds
+  VALUES (111), (211), (311), (411), (511), (611), (711), (811), (911), (1011),
+  (1111) ;
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_t_problems
+  SELECT problems.*
+  FROM
+  (
+      SELECT actuals.*
+      FROM utrans_t_actuals actuals
+      UNION ALL
+      SELECT expecteds.*
+      FROM utrans_t_expecteds expecteds
+  )  problems
+  GROUP BY problems.ApplicationID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.ApplicationID ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_t_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_t_expecteds ;
+  DROP TABLE utrans_t_actuals ;
+  DROP TABLE utrans_t_problems ;
+
+END $$
+
 
 DELIMITER ;
 
