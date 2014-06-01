@@ -701,7 +701,7 @@ BEGIN
     (SELECT * FROM rhd.`Application Status` AppStat
      WHERE AppStat.Status = 'complete.declined') AS Lookup
   SET App.applicationStatusID = Lookup.ApplicationStatusID
-    WHERE App.ApplicationID = 611 ;
+  WHERE App.ApplicationID = 611 ;
 
   -- run the query for this test and create a temporary table for results
   CREATE TEMPORARY TABLE utrans_o_actuals
@@ -751,9 +751,63 @@ BEGIN
     (SELECT * FROM rhd.`Application Status` AppStat
      WHERE AppStat.Status = 'ongoing') AS Lookup
   SET App.applicationStatusID = Lookup.ApplicationStatusID
-    WHERE App.ApplicationID = 611 ;
+  WHERE App.ApplicationID = 611 ;
 
 END $$
+
+-- -----------------------------------------------------------------------------
+-- p) Look up, add to, and delete from own current research areas
+CREATE PROCEDURE test_utrans_p1() 
+BEGIN
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_p1_actuals
+  SELECT USM.FORCode
+  FROM rhd.`University Staff Member_Research Area` USM
+  WHERE USM.StaffID = 1000 ;
+
+  -- create a temporary table to store the expected results
+  -- expect count == 4, 80399, 80499, 80699, 89999
+  CREATE TEMPORARY TABLE utrans_p1_expecteds (
+    FORCode int(10)
+  ) ;
+  INSERT INTO utrans_p1_expecteds
+  VALUES  (80399), (80499), (80699), (89999) ;
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_p1_problems
+  SELECT problems.*
+  FROM
+  (
+      SELECT actuals.*
+      FROM utrans_p1_actuals actuals
+      UNION ALL
+      SELECT expecteds.*
+      FROM utrans_p1_expecteds expecteds
+  )  problems
+  GROUP BY problems.FORCode
+  HAVING COUNT(*) = 1
+  ORDER BY problems.FORCode ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_p1_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_p1_expecteds ;
+  DROP TABLE utrans_p1_actuals ;
+  DROP TABLE utrans_p1_problems ;
+
+END $$
+
+-- insert tested in populate_apps script
+
+-- DELETE FROM `University Staff Member_Research Area`
+-- WHERE StaffID = 1000
+--  AND FORCode = 89999;
+-- rerun p), should get count==3 
 
 DELIMITER ;
 
