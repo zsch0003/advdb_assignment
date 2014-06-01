@@ -318,6 +318,14 @@ DocStatusID)
 VALUES ('/mnt/data/rhd/07/publication/0003.docx', 07, 20009, 
 'The classification framework for the representation of opinions', 30000);
 
+-- Denise de Vries flags interest in this application
+INSERT INTO `University Staff Member_Application` (StaffID, ApplicationID)
+VALUES (1000, 711);
+
+-- John Roddick flags interest in this application
+INSERT INTO `University Staff Member_Application` (StaffID, ApplicationID)
+VALUES (1002, 711);
+
 -- -----------------------------------------------------------------------------
 -- PhD Student.txt
 -- 8

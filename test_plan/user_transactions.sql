@@ -169,11 +169,13 @@ WHERE Application.DateAdded >= '2014-05-01'
 
 -- -----------------------------------------------------------------------------
 -- r) Flag interest in an application
-INSERT INTO `University Staff Member_Application` (StaffID, ApplicationID)
-VALUES (1000, 711);
+-- these INSERTs moved to populate_app.sql
+--INSERT INTO `University Staff Member_Application` (StaffID, ApplicationID)
+--VALUES (1000, 711);
 
-INSERT INTO `University Staff Member_Application` (StaffID, ApplicationID)
-VALUES (1002, 711);
+--INSERT INTO `University Staff Member_Application` (StaffID, ApplicationID)
+--VALUES (1002, 711);
+-- tested in populate_apps.sql
 
 -- -----------------------------------------------------------------------------
 -- s) Retrieve all staff who have flagged an application, or have edited an
