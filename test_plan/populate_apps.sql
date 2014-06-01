@@ -128,6 +128,10 @@ VALUES (1, 311, 1000);
 INSERT INTO `Supervise as` (PrimarySupervisor, ApplicationID, StaffID)
 VALUES (0, 311, 1001);
 
+-- John Roddick to supervise this (associate)
+INSERT INTO `Supervise as` (PrimarySupervisor, ApplicationID, StaffID)
+VALUES (0, 311, 1002);
+
 -- -----------------------------------------------------------------------------
 -- Fwd Flinders Application - PhD (Computer Science) Sem 2 2014 .txt
 -- 4
