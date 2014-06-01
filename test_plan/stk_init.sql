@@ -927,11 +927,11 @@ END $$
 -- application or applicant record most recently
 --
 -- s1) Retrieve the flagged applications
-CREATE PROCEDURE test_utrans_s() 
+CREATE PROCEDURE test_utrans_s1() 
 BEGIN
 
   -- run the query for this test and create a temporary table for results
-  CREATE TEMPORARY TABLE utrans_s_actuals
+  CREATE TEMPORARY TABLE utrans_s1_actuals
   SELECT USM.StaffID, USM.FName, USM.LName
   FROM rhd.`University Staff Member` USM
   INNER JOIN rhd.`University Staff Member_Application` Flags
@@ -940,25 +940,25 @@ BEGIN
 
   -- create a temporary table to store the expected results
   -- expect Denise de Vries and John Roddick
-  CREATE TEMPORARY TABLE utrans_s_expecteds (
+  CREATE TEMPORARY TABLE utrans_s1_expecteds (
     StaffID int(10),
     FName varchar(50),
     LName varchar(50)
   ) ;
-  INSERT INTO utrans_s_expecteds
+  INSERT INTO utrans_s1_expecteds
   VALUES  (1002, 'John', 'Roddick'), (1000, 'Denise', 'de Vries') ;
 
   -- create another temporary table that lists the differences between expected
   -- results and actuals
-  CREATE TEMPORARY TABLE utrans_s_problems
+  CREATE TEMPORARY TABLE utrans_s1_problems
   SELECT problems.*
   FROM
   (
       SELECT actuals.*
-      FROM utrans_s_actuals actuals
+      FROM utrans_s1_actuals actuals
       UNION ALL
       SELECT expecteds.*
-      FROM utrans_s_expecteds expecteds
+      FROM utrans_s1_expecteds expecteds
   )  problems
   GROUP BY problems.StaffID
   HAVING COUNT(*) = 1
@@ -967,21 +967,69 @@ BEGIN
   -- report an error if the 'problems' table isn't empty
   CALL stk_unit.assert_table_empty( 
     DATABASE(),
-    'utrans_s_problems', 
+    'utrans_s1_problems', 
     'Incorrect results') ; 
 
-  DROP TABLE utrans_s_expecteds ;
-  DROP TABLE utrans_s_actuals ;
-  DROP TABLE utrans_s_problems ;
+  DROP TABLE utrans_s1_expecteds ;
+  DROP TABLE utrans_s1_actuals ;
+  DROP TABLE utrans_s1_problems ;
 
 END $$
 
-
+-- s2) Last staff member to modify an application
 -- SELECT `University Staff Member`.FName, `University Staff Member`.LName
 -- FROM Application, `University Staff Member`
 -- WHERE Application.ApplicationID = 711 
 --  AND Application.LastModifiedByStaffID = `University Staff Member`.StaffID ;
 -- expect Jennie Brand
+CREATE PROCEDURE test_utrans_s2() 
+BEGIN
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_s2_actuals
+  SELECT USM.StaffID, USM.FName, USM.LName
+  FROM rhd.`University Staff Member` USM
+  INNER JOIN rhd.Application App
+    ON App.LastModifiedByStaffID = USM.StaffID
+  WHERE App.ApplicationID = 711 ;
+
+  -- create a temporary table to store the expected results
+  -- expect Denise de Vries and John Roddick
+  CREATE TEMPORARY TABLE utrans_s2_expecteds (
+    StaffID int(10),
+    FName varchar(50),
+    LName varchar(50)
+  ) ;
+  INSERT INTO utrans_s2_expecteds
+  VALUES  (1000, 'Denise', 'de Vries') ;
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_s2_problems
+  SELECT problems.*
+  FROM
+  (
+      SELECT actuals.*
+      FROM utrans_s2_actuals actuals
+      UNION ALL
+      SELECT expecteds.*
+      FROM utrans_s2_expecteds expecteds
+  )  problems
+  GROUP BY problems.StaffID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.StaffID ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_s2_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_s2_expecteds ;
+  DROP TABLE utrans_s2_actuals ;
+  DROP TABLE utrans_s2_problems ;
+
+END $$
 
 DELIMITER ;
 

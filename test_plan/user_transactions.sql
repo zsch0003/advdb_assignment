@@ -190,7 +190,7 @@ SELECT `University Staff Member`.FName, `University Staff Member`.LName
 FROM Application, `University Staff Member`
 WHERE Application.ApplicationID = 711 
   AND Application.LastModifiedByStaffID = `University Staff Member`.StaffID ;
--- expect Jennie Brand
+-- expect Denise de Vries
 
 -- -----------------------------------------------------------------------------
 -- t) Retrieve all ongoing applications
