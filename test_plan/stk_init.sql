@@ -690,5 +690,70 @@ BEGIN
 
 END $$
 
+-- -----------------------------------------------------------------------------
+-- o) Update the status of an application
+CREATE PROCEDURE test_utrans_o() 
+BEGIN
+
+  -- change the status of an application
+  UPDATE rhd.Application App
+  JOIN 
+    (SELECT * FROM rhd.`Application Status` AppStat
+     WHERE AppStat.Status = 'complete.declined') AS Lookup
+  SET App.applicationStatusID = Lookup.ApplicationStatusID
+    WHERE App.ApplicationID = 611 ;
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_o_actuals
+  SELECT AppStat.Status
+  FROM rhd.`Application Status` AppStat
+  INNER JOIN rhd.Application App
+    ON AppStat.ApplicationStatusID = App.ApplicationStatusID
+  WHERE App.ApplicationID = 611;
+
+  -- create a temporary table to store the expected results
+  -- one row, 'complete.declined'
+  CREATE TEMPORARY TABLE utrans_o_expecteds (
+    Status varchar(50)
+  ) ;
+  INSERT INTO utrans_o_expecteds
+  VALUES ('complete.declined');
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_o_problems
+  SELECT problems.*
+  FROM
+  (
+      SELECT actuals.*
+      FROM utrans_o_actuals actuals
+      UNION ALL
+      SELECT expecteds.*
+      FROM utrans_o_expecteds expecteds
+  )  problems
+  GROUP BY problems.Status
+  HAVING COUNT(*) = 1
+  ORDER BY problems.Status ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_o_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_o_expecteds ;
+  DROP TABLE utrans_o_actuals ;
+  DROP TABLE utrans_o_problems ;
+
+  -- reset the status of an application
+  UPDATE rhd.Application App
+  JOIN 
+    (SELECT * FROM rhd.`Application Status` AppStat
+     WHERE AppStat.Status = 'ongoing') AS Lookup
+  SET App.applicationStatusID = Lookup.ApplicationStatusID
+    WHERE App.ApplicationID = 611 ;
+
+END $$
+
 DELIMITER ;
 
