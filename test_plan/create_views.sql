@@ -15,8 +15,7 @@ FROM Application App
 INNER JOIN Applicant Appt
   ON Appt.ApplicantID = App.ApplicantID
 INNER JOIN `Application Status` AppStat 
-  ON AppStat.ApplicationStatusID = App.applicationStatusID
-; 
+  ON AppStat.ApplicationStatusID = App.applicationStatusID; 
 
 -- All the Applications that the current user is marked as supervising
 DROP VIEW IF EXISTS `MyRHDApps_SupervisedByMe_Expanded` ;
@@ -56,8 +55,35 @@ SELECT * FROM MyRHDApps_LastModifiedByMe_Expanded
 ;
 
 -- As above, but with irrelevent columns suppressed
+-- TODO : add checklist items to this view
 DROP VIEW IF EXISTS `MyRHDApps` ;
 CREATE VIEW `MyRHDApps` AS
 SELECT FName, LName, Email, Status FROM MyRHDApps_Expanded
 
+
+CREATE VIEW `Supervise as primary` AS
+SELECT * 
+FROM `Supervise as` AS Super
+WHERE Super.PrimarySupervisor = 1;
+
+CREATE VIEW `Supervise as associate` AS
+SELECT * 
+FROM `Supervise as` AS Super
+WHERE Super.PrimarySupervisor = 0;
+
+-- A view for RHD staff.
+-- All ongoing applications and contact staff
+DROP VIEW IF EXISTS Application_Staff_Overview ;
+CREATE VIEW Application_Staff_Overview AS
+SELECT 
+  AppExpand.FName, 
+  AppExpand.LName, 
+  AppExpand.Email, 
+  PrimaryUSM.FName AS PrimarySupervisorFName,
+  PrimaryUSM.LName AS PrimarySupervisorLName
+FROM Application_Expanded AS AppExpand
+LEFT JOIN (`Supervise as primary` AS PrimarySuper, 
+           `University Staff Member` AS PrimaryUSM)
+  ON (AppExpand.ApplicationID = PrimarySuper.ApplicationID
+      AND PrimarySuper.StaffID = PrimaryUSM.StaffID);
 
