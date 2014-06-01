@@ -1077,12 +1077,12 @@ BEGIN
 END $$
 
 -- -----------------------------------------------------------------------------
--- t) List all applications waiting for supervisor agreement
-CREATE PROCEDURE test_utrans_t() 
+-- u) List all applications waiting for supervisor agreement
+CREATE PROCEDURE test_utrans_u() 
 BEGIN
 
   -- run the query for this test and create a temporary table for results
-  CREATE TEMPORARY TABLE utrans_t_actuals
+  CREATE TEMPORARY TABLE utrans_u_actuals
   SELECT Agg.ApplicationID FROM
     (SELECT 
        App.ApplicationID, 
@@ -1097,53 +1097,25 @@ BEGIN
   WHERE Agg.PriSuperSum <> 1
     OR Agg.PriSuperSum IS NULL ;
 
-
-SELECT 
-  App.ApplicationID, 
-  Super.StaffID, 
-  Super.PrimarySupervisor, 
-  SUM(Super.PrimarySupervisor), 
-  Count(Super.PrimarySupervisor)
-     FROM rhd.Application App
-     LEFT OUTER JOIN rhd.`Supervise as` Super
-       ON Super.ApplicationID = App.ApplicationID 
-GROUP BY App.ApplicationID ;
-
-select ApplicationID
-from (
-SELECT 
-  App.ApplicationID, 
-  Super.StaffID, 
-  Super.PrimarySupervisor, 
-  SUM(Super.PrimarySupervisor) AS PriSuperSum, 
-  Count(Super.PrimarySupervisor)
-     FROM rhd.Application App
-     LEFT OUTER JOIN rhd.`Supervise as` Super
-       ON Super.ApplicationID = App.ApplicationID 
-GROUP BY App.ApplicationID) AS Agg
-Where Agg.PriSuperSum <> 1
-  OR Agg.PriSuperSum IS NULL ;
-
   -- create a temporary table to store the expected results
-  -- expect all applications at this stage
-  CREATE TEMPORARY TABLE utrans_t_expecteds (
+  -- expect all applications except 111 and 311
+  CREATE TEMPORARY TABLE utrans_u_expecteds (
     ApplicationID int(10)
   ) ;
-  INSERT INTO utrans_t_expecteds
-  VALUES (111), (211), (311), (411), (511), (611), (711), (811), (911), (1011),
-  (1111) ;
+  INSERT INTO utrans_u_expecteds
+  VALUES (211), (411), (511), (611), (711), (811), (911), (1011), (1111) ;
 
   -- create another temporary table that lists the differences between expected
   -- results and actuals
-  CREATE TEMPORARY TABLE utrans_t_problems
+  CREATE TEMPORARY TABLE utrans_u_problems
   SELECT problems.*
   FROM
   (
       SELECT actuals.*
-      FROM utrans_t_actuals actuals
+      FROM utrans_u_actuals actuals
       UNION ALL
       SELECT expecteds.*
-      FROM utrans_t_expecteds expecteds
+      FROM utrans_u_expecteds expecteds
   )  problems
   GROUP BY problems.ApplicationID
   HAVING COUNT(*) = 1
@@ -1152,12 +1124,12 @@ Where Agg.PriSuperSum <> 1
   -- report an error if the 'problems' table isn't empty
   CALL stk_unit.assert_table_empty( 
     DATABASE(),
-    'utrans_t_problems', 
+    'utrans_u_problems', 
     'Incorrect results') ; 
 
-  DROP TABLE utrans_t_expecteds ;
-  DROP TABLE utrans_t_actuals ;
-  DROP TABLE utrans_t_problems ;
+  DROP TABLE utrans_u_expecteds ;
+  DROP TABLE utrans_u_actuals ;
+  DROP TABLE utrans_u_problems ;
 
 END $$
 
