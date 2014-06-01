@@ -124,6 +124,10 @@ VALUES ('/mnt/data/rhd/03/Application/0001.pdf', 03, 311, 20000, 30000);
 INSERT INTO `Supervise as` (PrimarySupervisor, ApplicationID, StaffID)
 VALUES (1, 311, 1000);
 
+-- Paul Calder to supervise this (associate)
+INSERT INTO `Supervise as` (PrimarySupervisor, ApplicationID, StaffID)
+VALUES (0, 311, 1001);
+
 -- -----------------------------------------------------------------------------
 -- Fwd Flinders Application - PhD (Computer Science) Sem 2 2014 .txt
 -- 4
