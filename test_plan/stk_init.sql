@@ -757,6 +757,7 @@ END $$
 
 -- -----------------------------------------------------------------------------
 -- p) Look up, add to, and delete from own current research areas
+-- p1) look up current research areas
 CREATE PROCEDURE test_utrans_p1() 
 BEGIN
 
@@ -802,6 +803,73 @@ BEGIN
 
 END $$
 
+-- p2) Insert new research areas tested in populate script
+
+-- p3) Delete research areas
+CREATE PROCEDURE test_utrans_p3() 
+BEGIN
+
+  -- remove a research area
+  DELETE rhd.`University Staff Member_Research Area` USMRA
+  FROM rhd.`University Staff Member_Research Area` USMRA
+  JOIN
+    (SELECT RA.FORCode FROM rhd.`Research Area` RA
+     WHERE RA.Description LIKE 'information systems not elsewhere classified')
+    AS Lookup
+  WHERE StaffID = 1000 
+    AND USMRA.FORCode = Lookup.FORCode;
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_p3_actuals
+  SELECT USM.FORCode
+  FROM rhd.`University Staff Member_Research Area` USM
+  WHERE USM.StaffID = 1000 ;
+
+  -- create a temporary table to store the expected results
+  -- expect count == 4, 80399, 80499, 89999
+  CREATE TEMPORARY TABLE utrans_p3_expecteds (
+    FORCode int(10)
+  ) ;
+  INSERT INTO utrans_p3_expecteds
+  VALUES  (80399), (80499), (89999) ;
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_p3_problems
+  SELECT problems.*
+  FROM
+  (
+      SELECT actuals.*
+      FROM utrans_p3_actuals actuals
+      UNION ALL
+      SELECT expecteds.*
+      FROM utrans_p3_expecteds expecteds
+  )  problems
+  GROUP BY problems.FORCode
+  HAVING COUNT(*) = 1
+  ORDER BY problems.FORCode ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_p3_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_p3_expecteds ;
+  DROP TABLE utrans_p3_actuals ;
+  DROP TABLE utrans_p3_problems ;
+
+  -- Re-instate the temporarily removed research area
+  INSERT INTO rhd.`University Staff Member_Research Area` 
+   (StaffID, FORCode)
+  (SELECT USM.StaffID, Lookup.FORCode FROM rhd.`University Staff Member` USM
+   JOIN
+     (SELECT RA.FORCode FROM rhd.`Research Area` RA
+      WHERE RA.Description LIKE 'information systems not elsewhere classified')
+     AS Lookup
+   WHERE USM.StaffID = 1000 );
+
+END $$
 -- insert tested in populate_apps script
 
 -- DELETE FROM `University Staff Member_Research Area`
