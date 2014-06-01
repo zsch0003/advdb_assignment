@@ -870,12 +870,58 @@ BEGIN
    WHERE USM.StaffID = 1000 );
 
 END $$
--- insert tested in populate_apps script
 
--- DELETE FROM `University Staff Member_Research Area`
--- WHERE StaffID = 1000
---  AND FORCode = 89999;
--- rerun p), should get count==3 
+-- -----------------------------------------------------------------------------
+-- q) Search for all applications in certain research areas that have been added
+-- since a certain time
+CREATE PROCEDURE test_utrans_q() 
+BEGIN
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_q_actuals
+  SELECT App.ApplicationID
+  FROM rhd.Application App 
+  INNER JOIN rhd.`Application_Research Area` ARA
+    ON App.ApplicationID = ARA.ApplicationID
+  WHERE App.DateAdded >= '2014-05-01' 
+    AND ARA.FORCode = 100503 ;
+
+  -- create a temporary table to store the expected results
+  -- expect 1 row, id 611
+  CREATE TEMPORARY TABLE utrans_q_expecteds (
+    ApplicationID int(10)
+  ) ;
+  INSERT INTO utrans_q_expecteds
+  VALUES  (611) ;
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_q_problems
+  SELECT problems.*
+  FROM
+  (
+      SELECT actuals.*
+      FROM utrans_q_actuals actuals
+      UNION ALL
+      SELECT expecteds.*
+      FROM utrans_q_expecteds expecteds
+  )  problems
+  GROUP BY problems.ApplicationID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.ApplicationID ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_q_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_q_expecteds ;
+  DROP TABLE utrans_q_actuals ;
+  DROP TABLE utrans_q_problems ;
+
+END $$
 
 DELIMITER ;
+
 
