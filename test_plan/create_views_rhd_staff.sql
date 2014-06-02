@@ -1,5 +1,5 @@
 -- A view for RHD staff.
--- All ongoing applications and contact staff
+-- All ongoing applications and the contact staff
 DROP VIEW IF EXISTS Application_Staff_Overview ;
 CREATE VIEW Application_Staff_Overview AS
 SELECT 
