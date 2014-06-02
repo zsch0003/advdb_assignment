@@ -98,31 +98,31 @@ CREATE TABLE Application (
     comment 'Denormalised column to improve retrieval of applications via email address',
   ApplicantID int(10) NOT NULL 
     comment 'the ID of the applicant who proposed this application',
-  AddressConfirmed int(1) NOT NULL comment 'All contact details appear valid',
-  DegreeConfirmed int(1) NOT NULL 
+  AddressConfirmed tinyint(1) NOT NULL comment 'All contact details appear valid',
+  DegreeConfirmed tinyint(1) NOT NULL 
     comment 'The degree is a recognised degree of the institution',
-  VisaStatusConfirmed int(1) NOT NULL 
+  VisaStatusConfirmed tinyint(1) NOT NULL 
     comment 'The visa status is backed by an official document',
-  ProposalConfirmed int(1) NOT NULL 
+  ProposalConfirmed tinyint(1) NOT NULL 
     comment 'The proposal is contains appropriate detail',
-  HasResearchAreas int(1) NOT NULL 
+  HasResearchAreas tinyint(1) NOT NULL 
     comment 'Has nominated research areas relevant to the proposal',
-  HasPrimarySuper int(1) NOT NULL 
+  HasPrimarySuper tinyint(1) NOT NULL 
     comment 'Has the required number of supervisors',
-  PayMethConfirmed int(1) NOT NULL 
+  PayMethConfirmed tinyint(1) NOT NULL 
     comment 'The payment method is backed by an official document',
-  EngProfConfirmed int(1) NOT NULL 
+  EngProfConfirmed tinyint(1) NOT NULL 
     comment 'The applicant has some level of English literacy',
-  RefereesConfirmed int(1) NOT NULL 
+  RefereesConfirmed tinyint(1) NOT NULL 
     comment 'The referees details appear to be correct',
-  RequireMoreInfo int(1),
+  RequireMoreInfo tinyint(1),
   ProposedStartDate date 
     comment 'The date the applicant prefers to start the RHD (Entered as 1/1/## for S1 and 1/7/## for S2)',
   ProposalSummary varchar(2000) 
     comment 'What the proposal is about',
-  flindersCampus int(1) 
+  flindersCampus tinyint(1) 
     comment 'the applicant wants to complete the degree a main campus',
-  fullTime int(1) comment 'the applicant wants to undergo the degree full time',
+  fullTime tinyint(1) comment 'the applicant wants to undergo the degree full time',
   DateAdded date NOT NULL comment 'the date the application was added',
   DateLastChecked date NOT NULL 
     comment 'the date the application was last checked',
@@ -191,8 +191,8 @@ CREATE TABLE Referee (
   Email varchar(100) comment 'The referees email address',
   Profession varchar(255) comment 'The referees profession',
   AcademicLink varchar(255) comment 'The referees professional page (linked in or university)',
-  EnglishSpeaker int(1) comment 'If the Referee can speak English',
-  EnglishLiterate int(1) comment 'If the Referee can read and write in English',
+  EnglishSpeaker tinyint(1) comment 'If the Referee can speak English',
+  EnglishLiterate tinyint(1) comment 'If the Referee can read and write in English',
   PRIMARY KEY (RefID)
 )
 comment='A referee for a application'
@@ -226,7 +226,7 @@ CREATE TABLE Applicant (
   Mrs,
   Miss,
   Dr. *',
-  Sex int(1) comment 'The sex of the applicant',
+  Sex tinyint(1) comment 'The sex of the applicant',
   DOB date comment 'Date of birth',
   StreetAddress varchar(255) comment 'Residence number and street of residence',
   Suburb varchar(100) comment 'The suburb of residence',
@@ -236,8 +236,8 @@ CREATE TABLE Applicant (
   Mobile varchar(50) comment 'Mobile phone number',
   Phone varchar(50) comment 'Landline phone number',
   Email varchar(100) comment 'The email address of the applicant',
-  IsNZAUCitizen int(1) comment 'Is a new Zealand or Australian citizen – a check to see if visa information is required ***',
-  EnglishProficient int(1) comment 'English ability',
+  IsNZAUCitizen tinyint(1) comment 'Is a new Zealand or Australian citizen – a check to see if visa information is required ***',
+  EnglishProficient tinyint(1) comment 'English ability',
   StudentID int(10) comment 'The flinders university student id if they are or have been enrolled at flinders university',
   DateAdded date NOT NULL comment 'The date the applicant was added to the system',
   AddressCountryISOCode char(2),
@@ -298,10 +298,14 @@ CREATE TABLE Decision (
   ApplicationID int(10) NOT NULL comment 'the id of the application this decision is made with regards to',
   StaffID int(10) NOT NULL comment 'the staff ID of the staff member who made this decision/comment',
   DecisionTypeID int(10) NOT NULL,
+  Reportable tinyint(1) NOT NULL comment 'a boolean that is automatically ticked if the change is deemed reportable (status changes request filled etc.)',
+  Sent tinyint(1) comment 'a boolean to check if the related email has been sent',
   PRIMARY KEY (DecID),
   INDEX (ApplicationID),
   INDEX (StaffID),
-  INDEX (DecisionTypeID)
+  INDEX (DecisionTypeID),
+  INDEX (Reportable),
+  INDEX (Sent)
 )
 comment='The decision/comment made for an application by a RHD staff member'
 ENGINE=InnoDB;
@@ -322,7 +326,7 @@ CREATE TABLE `University Staff Member` (
   the primary key that uniquely identifies the staff member',
   FName varchar(50) NOT NULL comment 'The last name of the staff member',
   LName varchar(50) comment 'The first name of the staff member',
-  canSupervise int(1) NOT NULL comment 'if the staff member is able supervise a RHD applicant',
+  canSupervise tinyint(1) NOT NULL comment 'if the staff member is able supervise a RHD applicant',
   email varchar(100) NOT NULL,
   PRIMARY KEY (StaffID),
   INDEX (FName)
@@ -378,7 +382,7 @@ comment='a list of countries for reuse in nationality,
 ENGINE=InnoDB;
 
 CREATE TABLE `Supervise as` (
-  PrimarySupervisor int(1) NOT NULL comment 'if the supervisor is a primary',
+  PrimarySupervisor tinyint(1) NOT NULL comment 'if the supervisor is a primary',
   ApplicationID int(10) NOT NULL comment 'the application ID of the application the staff member will supervise',
   StaffID int(10) NOT NULL comment 'the staff ID of the staff member who will supervise the applicaiton',
   PRIMARY KEY (ApplicationID,
@@ -425,6 +429,7 @@ ENGINE=InnoDB;
 CREATE TABLE `University Staff Member_Application` (
   StaffID int(10) NOT NULL comment 'the staff ID of the staff member who flagged the application',
   ApplicationID int(10) NOT NULL comment 'the application the staff member has flagged',
+  ReceiveEmailUpdates tinyint(1) NOT NULL comment 'a boolean that a user can check if they want to be alerted About an update or simply keep a reference on their application page',
   PRIMARY KEY (StaffID,
   ApplicationID),
   INDEX (StaffID),
@@ -637,16 +642,3 @@ ADD INDEX `using` (CorrMethodID),
 ADD CONSTRAINT `using` FOREIGN KEY (CorrMethodID)
   REFERENCES `Correspondence Method` (CorrMethodID) 
   ON UPDATE Cascade ON DELETE Restrict;
-
--- a table to log & email changes
-DROP TABLE IF EXISTS `Reportable changes` ; 
-CREATE TABLE `Reportable changes` (
-  ChangeID int(10) NOT NULL AUTO_INCREMENT comment 'PK',
-  TimestampUTC char(19) NOT NULL,
-  ChangeType varchar(50) NOT NULL,
-  Message varchar(500) NOT NULL,
-  ChangeAgent varchar(50),
-  RecipientEmail varchar(100) ,
-  EmailSentTimestampUTC char(19),
-  PRIMARY KEY (ChangeID)
-);
