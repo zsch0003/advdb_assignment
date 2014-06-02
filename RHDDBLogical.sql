@@ -78,25 +78,25 @@ DROP TABLE IF EXISTS `University Staff Member_Application`;
 SELECT "Creating tables" ;
 
 CREATE TABLE `Decision Type` (
-  DecisionTypeID int(10) NOT NULL AUTO_INCREMENT, 
+  DecisionTypeID tinyint NOT NULL AUTO_INCREMENT, 
   type varchar(50) NOT NULL UNIQUE comment 'the type of decision/comment made', 
   PRIMARY KEY (DecisionTypeID)
 ) comment='the possible types of decisions/comments that can be made'
 ENGINE=InnoDB;
 
 CREATE TABLE `Payment Method` (
-  PayMethodID int(10) NOT NULL AUTO_INCREMENT, 
-  Method int(10) NOT NULL UNIQUE comment 'Method of payment, e.g. scholarship, letter of financial support etc.', 
+  PayMethodID tinyint(1) NOT NULL AUTO_INCREMENT, 
+  Method varchar(50) NOT NULL UNIQUE comment 'Method of payment, e.g. scholarship, letter of financial support etc.', 
   PRIMARY KEY (PayMethodID)
 )
 comment='the possible payment methods of a Research higher degree'
 ENGINE=InnoDB;
 
 CREATE TABLE Application (
-  ApplicationID int(10) NOT NULL AUTO_INCREMENT,
+  ApplicationID mediumint NOT NULL AUTO_INCREMENT,
   ApplicantEmail varchar (100) 
     comment 'Denormalised column to improve retrieval of applications via email address',
-  ApplicantID int(10) NOT NULL 
+  ApplicantID mediumint NOT NULL 
     comment 'the ID of the applicant who proposed this application',
   AddressConfirmed tinyint(1) NOT NULL comment 'All contact details appear valid',
   DegreeConfirmed tinyint(1) NOT NULL 
@@ -128,13 +128,13 @@ CREATE TABLE Application (
     comment 'the date the application was last checked',
   DateLastModified date NOT NULL 
     comment 'the date the application was last modified',
-  ManagedByStaffID int(10) 
+  ManagedByStaffID mediumint 
     comment 'The staff ID of the staff member who has been personally assigned to manage this application (since it may not be used it is nullable)',
-  LastModifiedByStaffID int(10) NOT NULL 
+  LastModifiedByStaffID mediumint NOT NULL 
     comment 'the staff member ID of the last person to modify the application (all modifications are recorded in the decision table)',
-  applicationStatusID int(10) NOT NULL,
-  awardID int(10),
-  PayMethodID int(10),
+  applicationStatusID tinyint NOT NULL,
+  awardID tinyint,
+  PayMethodID tinyint,
   PRIMARY KEY (ApplicationID),
   INDEX (ApplicantID),
   INDEX (applicationStatusID),
@@ -145,7 +145,7 @@ comment='Holds the application details including a checklist of recorded informa
 ENGINE=InnoDB;
 
 CREATE TABLE `Document Status` (
-  DocStatusID int(10) NOT NULL AUTO_INCREMENT,
+  DocStatusID tinyint NOT NULL AUTO_INCREMENT,
   Status varchar(50) NOT NULL UNIQUE comment 'Official and translation status of a document associated to an Applicant',
   Description varchar(2000) NOT NULL comment 'the details and implication of this status',
   PRIMARY KEY (DocStatusID)
@@ -154,12 +154,12 @@ comment='the possible statuses of a document'
 ENGINE=InnoDB;
 
 CREATE TABLE Publication (
-  PubID int(10) NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the publication',
-  ApplicantID int(10) NOT NULL comment 'the ID of the applicant who authored the publication',
+  PubID mediumint NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the publication',
+  ApplicantID mediumint NOT NULL comment 'the ID of the applicant who authored the publication',
   Title varchar(255) NOT NULL comment 'The title of the publication',
   Abstract varchar(2000) comment 'A abstract/description of the publication',
   Publication varchar(255) NOT NULL comment 'The journal/magazine publisher ',
-  IssueNo int(10) comment 'The issue/edition number of the publication',
+  IssueNo mediumint comment 'The issue/edition number of the publication',
   IssueDate date NOT NULL comment 'The date the publication was issued',
   OnlineLink varchar(255) comment 'An online link to the publication',
   OtherAuthorsNames varchar(255) comment 'Other authors of the publication',
@@ -168,12 +168,12 @@ CREATE TABLE Publication (
 ENGINE=InnoDB;
 
 CREATE TABLE Degree (
-  DegID int(10) NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the degree',
-  ApplicantID int(10) NOT NULL comment 'the ID of the applicant who holds this degree',
+  DegID mediumint NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the degree',
+  ApplicantID mediumint NOT NULL comment 'the ID of the applicant who holds this degree',
   Name varchar(100) NOT NULL comment 'The title of the degree',
   Type varchar(100) NOT NULL comment 'The type of the degree  -  Could add specific types',
   YearCompleted date comment 'The year the degree was completed or will be completed',
-  GPA int(10) comment 'The GPA of the degree',
+  GPA mediumint comment 'The GPA of the degree',
   InstitutionName varchar(100) comment 'The name of the institution',
   InstitutionCountryISOCode char(2) NOT NULL comment 'the country the institution is based in',
   PRIMARY KEY (DegID),
@@ -183,8 +183,8 @@ comment='Any Degrees already held by the applicant'
 ENGINE=InnoDB;
 
 CREATE TABLE Referee (
-  RefID int(10) NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the referee supporting an application',
-  ApplicationID int(10) NOT NULL,
+  RefID mediumint NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the referee supporting an application',
+  ApplicationID mediumint NOT NULL,
   Name varchar(100) NOT NULL comment 'The full name of the referee',
   Relation varchar(100) comment 'The referees relation to the applicant',
   Phone varchar(50) comment 'The referees phone number',
@@ -199,14 +199,14 @@ comment='A referee for a application'
 ENGINE=InnoDB;
 
 CREATE TABLE Document (
-  DocID int(10) NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the document',
+  DocID mediumint NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the document',
   Title varchar(254) NOT NULL comment 'The title of the document',
   Description varchar(2000) NOT NULL comment 'A specific summary related to the document i.e. valid till 2015 etc.',
   UploadLink varchar(254) NOT NULL comment 'An link to a version uploaded and stored on the university servers',
-  ApplicationID int(10),
-  ApplicantID int(10) NOT NULL comment 'the ID of the applicant who provided this document',
-  DocStatusID int(10) NOT NULL,
-  DocTypeID int(10) NOT NULL,
+  ApplicationID mediumint,
+  ApplicantID mediumint NOT NULL comment 'the ID of the applicant who provided this document',
+  DocStatusID tinyint NOT NULL,
+  DocTypeID tinyint NOT NULL,
   PRIMARY KEY (DocID),
   INDEX (ApplicationID),
   INDEX (ApplicantID),
@@ -218,7 +218,7 @@ comment='Links to any relevant documents along with descriptions,
 ENGINE=InnoDB;
 
 CREATE TABLE Applicant (
-  ApplicantID int(10) NOT NULL AUTO_INCREMENT 
+  ApplicantID mediumint NOT NULL AUTO_INCREMENT 
     comment 'The primary key that uniquely identifies the applicant',
   FName varchar(50) NOT NULL comment 'First name',
   LName varchar(50) comment 'Last name',
@@ -230,7 +230,7 @@ CREATE TABLE Applicant (
   DOB date comment 'Date of birth',
   StreetAddress varchar(255) comment 'Residence number and street of residence',
   Suburb varchar(100) comment 'The suburb of residence',
-  Postcode int(10) comment 'The postcode of residence',
+  Postcode mediumint comment 'The postcode of residence',
   City varchar(50) comment 'The city or town of residence',
   State varchar(50) comment 'The State of residence',
   Mobile varchar(50) comment 'Mobile phone number',
@@ -238,11 +238,11 @@ CREATE TABLE Applicant (
   Email varchar(100) comment 'The email address of the applicant',
   IsNZAUCitizen tinyint(1) comment 'Is a new Zealand or Australian citizen – a check to see if visa information is required ***',
   EnglishProficient tinyint(1) comment 'English ability',
-  StudentID int(10) comment 'The flinders university student id if they are or have been enrolled at flinders university',
+  StudentID mediumint comment 'The flinders university student id if they are or have been enrolled at flinders university',
   DateAdded date NOT NULL comment 'The date the applicant was added to the system',
   AddressCountryISOCode char(2),
   NationalityCountryISOCode char(2),
-  LastModifiedByStaffID int(10) NOT NULL comment 'the staff member ID of the last person to modify the applicant (all modifications are recorded in the decision table)',
+  LastModifiedByStaffID mediumint NOT NULL comment 'the staff member ID of the last person to modify the applicant (all modifications are recorded in the decision table)',
   PRIMARY KEY (ApplicantID),
   INDEX (FName),
   INDEX (LName),
@@ -252,14 +252,14 @@ comment='Holds the applicant specific details'
 ENGINE=InnoDB;
 
 CREATE TABLE Visa (
-  VisaID int(10) NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the visa',
+  VisaID mediumint NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the visa',
   OriginCountryISOCode char(2) NOT NULL comment 'the country the applicant states they are from',
   ValidFrom date comment 'When the visa is valid from',
   ValidTo date comment 'When the visa is valid to',
   CountryISOCode char(2) NOT NULL comment 'the applicant country,
   the visa is granted to',
-  ApplicantID int(10) NOT NULL comment 'the ID of the applicant who holds or may hold this visa',
-  VisaStatusID int(10) NOT NULL,
+  ApplicantID mediumint NOT NULL comment 'the ID of the applicant who holds or may hold this visa',
+  VisaStatusID tinyint NOT NULL,
   PRIMARY KEY (VisaID),
   INDEX (ApplicantID),
   INDEX (VisaStatusID)
@@ -268,7 +268,7 @@ comment='The applicants visa details'
 ENGINE=InnoDB;
 
 CREATE TABLE `Visa Status` (
-  VisaStatusID int(10) NOT NULL AUTO_INCREMENT,
+  VisaStatusID tinyint NOT NULL AUTO_INCREMENT,
   Status varchar(50) NOT NULL UNIQUE comment 'the status of the visa application',
   description varchar(1000) NOT NULL comment 'a description of the status of the visa',
   PRIMARY KEY (VisaStatusID)
@@ -277,13 +277,13 @@ comment='the possible statuses of the visa application'
 ENGINE=InnoDB;
 
 CREATE TABLE Correspondence (
-  CorrID int(10) NOT NULL AUTO_INCREMENT,
+  CorrID mediumint NOT NULL AUTO_INCREMENT,
   `Date` date NOT NULL comment 'The date the correspondence was made/received',
   Summary varchar(1000) NOT NULL comment 'A small summary of the Correspondence',
   Message varchar(2000) comment 'The actual message contained in the correspondence',
-  ApplicationID int(10) NOT NULL comment 'the application ID the correspondence is in relation to',
-  StaffID int(10) NOT NULL comment 'the staff ID of the staff member the correspondence is to/from',
-  CorrMethodID int(10) NOT NULL,
+  ApplicationID mediumint NOT NULL comment 'the application ID the correspondence is in relation to',
+  StaffID mediumint NOT NULL comment 'the staff ID of the staff member the correspondence is to/from',
+  CorrMethodID tinyint NOT NULL,
   PRIMARY KEY (CorrID),
   INDEX (ApplicationID),
   INDEX (StaffID)
@@ -292,12 +292,12 @@ comment='Correspondence between the Applicant and University Staff Member'
 ENGINE=InnoDB;
 
 CREATE TABLE Decision (
-  DecID int(10) NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the Decision/comment made',
+  DecID mediumint NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the Decision/comment made',
   `Date` date NOT NULL comment 'The date the decision was made on',
   Comment varchar(1000) comment 'Extra information about the decision',
-  ApplicationID int(10) NOT NULL comment 'the id of the application this decision is made with regards to',
-  StaffID int(10) NOT NULL comment 'the staff ID of the staff member who made this decision/comment',
-  DecisionTypeID int(10) NOT NULL,
+  ApplicationID mediumint NOT NULL comment 'the id of the application this decision is made with regards to',
+  StaffID mediumint NOT NULL comment 'the staff ID of the staff member who made this decision/comment',
+  DecisionTypeID tinyint NOT NULL,
   Reportable tinyint(1) NOT NULL comment 'a boolean that is automatically ticked if the change is deemed reportable (status changes request filled etc.)',
   Sent tinyint(1) comment 'a boolean to check if the related email has been sent',
   PRIMARY KEY (DecID),
@@ -311,7 +311,7 @@ comment='The decision/comment made for an application by a RHD staff member'
 ENGINE=InnoDB;
 
 CREATE TABLE `Research Area` (
-  FORCode int(10) NOT NULL AUTO_INCREMENT comment 'The Australian Field Of Research (FOR) code,
+  FORCode mediumint(6) NOT NULL AUTO_INCREMENT comment 'The Australian Field Of Research (FOR) code,
   primary key,
   that uniquely identifies the Research area',
   Description varchar(2000) NOT NULL comment 'A small text description of the FOR i.e. 2201',
@@ -322,7 +322,7 @@ CREATE TABLE `Research Area` (
 ENGINE=InnoDB;
 
 CREATE TABLE `University Staff Member` (
-  StaffID int(10) NOT NULL AUTO_INCREMENT comment 'The flinders uni staff ID number,
+  StaffID mediumint NOT NULL AUTO_INCREMENT comment 'The flinders uni staff ID number,
   the primary key that uniquely identifies the staff member',
   FName varchar(50) NOT NULL comment 'The last name of the staff member',
   LName varchar(50) comment 'The first name of the staff member',
@@ -335,13 +335,13 @@ comment='a university staff member who may be able to supervise a application'
 ENGINE=InnoDB;
 
 CREATE TABLE `Correspondence Method` (
-  CorrMethodID int(10) NOT NULL AUTO_INCREMENT,
+  CorrMethodID tinyint NOT NULL AUTO_INCREMENT,
   Method varchar(50) NOT NULL UNIQUE comment 'the method of correspondence',
   PRIMARY KEY (CorrMethodID))
 ENGINE=InnoDB;
 
 CREATE TABLE `Application Status` (
-  ApplicationStatusID int(10) NOT NULL AUTO_INCREMENT,
+  ApplicationStatusID tinyint NOT NULL AUTO_INCREMENT,
   Status varchar(50) NOT NULL UNIQUE comment 'the name of the status',
   Description varchar(1000) NOT NULL comment 'a full description of the status',
   PRIMARY KEY (ApplicationStatusID),
@@ -351,7 +351,7 @@ comment='the possible application statuses of an application'
 ENGINE=InnoDB;
 
 CREATE TABLE `Document Type` (
-  DocTypeID int(10) NOT NULL AUTO_INCREMENT,
+  DocTypeID tinyint NOT NULL AUTO_INCREMENT,
   Type varchar(50) NOT NULL UNIQUE comment 'the type of document eg. Publication,
   visa etc.',
   Description varchar(1000) NOT NULL comment 'a full description of the type of the document',
@@ -361,7 +361,7 @@ comment='the possible types of a document'
 ENGINE=InnoDB;
 
 CREATE TABLE `Award Type` (
-  AwardID int(10) NOT NULL AUTO_INCREMENT,
+  AwardID tinyint NOT NULL AUTO_INCREMENT,
   Type varchar(50) NOT NULL UNIQUE comment 'the type of award sought by the applicant',
   Description varchar(1000) NOT NULL comment 'a full description of the award type',
   PRIMARY KEY (AwardID)
@@ -383,8 +383,8 @@ ENGINE=InnoDB;
 
 CREATE TABLE `Supervise as` (
   PrimarySupervisor tinyint(1) NOT NULL comment 'if the supervisor is a primary',
-  ApplicationID int(10) NOT NULL comment 'the application ID of the application the staff member will supervise',
-  StaffID int(10) NOT NULL comment 'the staff ID of the staff member who will supervise the applicaiton',
+  ApplicationID mediumint NOT NULL comment 'the application ID of the application the staff member will supervise',
+  StaffID mediumint NOT NULL comment 'the staff ID of the staff member who will supervise the applicaiton',
   PRIMARY KEY (ApplicationID,
   StaffID),
   INDEX (ApplicationID),
@@ -394,10 +394,9 @@ comment='the staff members who have agreed to supervise an application'
 ENGINE=InnoDB;
 
 CREATE TABLE `Application_Research Area` (
-  ApplicationID int(10) NOT NULL comment 'the ID of the application',
-  FORCode int(10) NOT NULL comment 'the FORCode research area the applicant states they want to study in',
-  PRIMARY KEY (ApplicationID,
-  FORCode),
+  ApplicationID mediumint NOT NULL comment 'the ID of the application',
+  FORCode mediumint(6) NOT NULL comment 'the FORCode research area the applicant states they want to study in',
+  PRIMARY KEY (ApplicationID, FORCode),
   INDEX (ApplicationID),
   INDEX (FORCode)
 )
@@ -405,10 +404,9 @@ comment='The application and the research area they are looking to study in'
 ENGINE=InnoDB;
 
 CREATE TABLE `University Staff Member_Research Area` (
-  StaffID int(10) NOT NULL comment 'the staff ID of the staff member who works in the research area',
-  FORCode int(10) NOT NULL comment 'the field of research that the staff member works in',
-  PRIMARY KEY (StaffID,
-  FORCode),
+  StaffID mediumint NOT NULL comment 'the staff ID of the staff member who works in the research area',
+  FORCode mediumint(6) NOT NULL comment 'the field of research that the staff member works in',
+  PRIMARY KEY (StaffID, FORCode),
   INDEX (StaffID),
   INDEX (FORCode)
 )
@@ -416,10 +414,9 @@ comment='the research area the staff member states they work in'
 ENGINE=InnoDB;
 
 CREATE TABLE `University Staff Member_Research Area2` (
-  StaffID int(10) NOT NULL comment 'the staff ID of the staff member who oversees the research area',
-  FORCode int(10) NOT NULL comment 'the FORCode of the research area that the staff member oversees',
-  PRIMARY KEY (StaffID,
-  FORCode),
+  StaffID mediumint NOT NULL comment 'the staff ID of the staff member who oversees the research area',
+  FORCode mediumint(6) NOT NULL comment 'the FORCode of the research area that the staff member oversees',
+  PRIMARY KEY (StaffID, FORCode),
   INDEX (StaffID),
   INDEX (FORCode)
 )
@@ -427,8 +424,8 @@ comment='the research areas that a staff member oversees (can be more than one s
 ENGINE=InnoDB;
 
 CREATE TABLE `University Staff Member_Application` (
-  StaffID int(10) NOT NULL comment 'the staff ID of the staff member who flagged the application',
-  ApplicationID int(10) NOT NULL comment 'the application the staff member has flagged',
+  StaffID mediumint NOT NULL comment 'the staff ID of the staff member who flagged the application',
+  ApplicationID mediumint NOT NULL comment 'the application the staff member has flagged',
   ReceiveEmailUpdates tinyint(1) NOT NULL comment 'a boolean that a user can check if they want to be alerted About an update or simply keep a reference on their application page',
   PRIMARY KEY (StaffID,
   ApplicationID),
