@@ -78,14 +78,14 @@ DROP TABLE IF EXISTS `University Staff Member_Application`;
 SELECT "Creating tables" ;
 
 CREATE TABLE `Decision Type` (
-  DecisionTypeID tinyint NOT NULL AUTO_INCREMENT, 
+  DecisionTypeID mediumint NOT NULL AUTO_INCREMENT, 
   type varchar(50) NOT NULL UNIQUE comment 'the type of decision/comment made', 
   PRIMARY KEY (DecisionTypeID)
 ) comment='the possible types of decisions/comments that can be made'
 ENGINE=InnoDB;
 
 CREATE TABLE `Payment Method` (
-  PayMethodID tinyint(1) NOT NULL AUTO_INCREMENT, 
+  PayMethodID mediumint NOT NULL AUTO_INCREMENT, 
   Method varchar(50) NOT NULL UNIQUE comment 'Method of payment, e.g. scholarship, letter of financial support etc.', 
   PRIMARY KEY (PayMethodID)
 )
@@ -132,9 +132,9 @@ CREATE TABLE Application (
     comment 'The staff ID of the staff member who has been personally assigned to manage this application (since it may not be used it is nullable)',
   LastModifiedByStaffID mediumint NOT NULL 
     comment 'the staff member ID of the last person to modify the application (all modifications are recorded in the decision table)',
-  applicationStatusID tinyint NOT NULL,
-  awardID tinyint,
-  PayMethodID tinyint,
+  applicationStatusID mediumint NOT NULL,
+  awardID mediumint,
+  PayMethodID mediumint,
   PRIMARY KEY (ApplicationID),
   INDEX (ApplicantID),
   INDEX (applicationStatusID),
@@ -145,7 +145,7 @@ comment='Holds the application details including a checklist of recorded informa
 ENGINE=InnoDB;
 
 CREATE TABLE `Document Status` (
-  DocStatusID tinyint NOT NULL AUTO_INCREMENT,
+  DocStatusID mediumint NOT NULL AUTO_INCREMENT,
   Status varchar(50) NOT NULL UNIQUE comment 'Official and translation status of a document associated to an Applicant',
   Description varchar(2000) NOT NULL comment 'the details and implication of this status',
   PRIMARY KEY (DocStatusID)
@@ -205,8 +205,8 @@ CREATE TABLE Document (
   UploadLink varchar(254) NOT NULL comment 'An link to a version uploaded and stored on the university servers',
   ApplicationID mediumint,
   ApplicantID mediumint NOT NULL comment 'the ID of the applicant who provided this document',
-  DocStatusID tinyint NOT NULL,
-  DocTypeID tinyint NOT NULL,
+  DocStatusID mediumint NOT NULL,
+  DocTypeID mediumint NOT NULL,
   PRIMARY KEY (DocID),
   INDEX (ApplicationID),
   INDEX (ApplicantID),
@@ -259,7 +259,7 @@ CREATE TABLE Visa (
   CountryISOCode char(2) NOT NULL comment 'the applicant country,
   the visa is granted to',
   ApplicantID mediumint NOT NULL comment 'the ID of the applicant who holds or may hold this visa',
-  VisaStatusID tinyint NOT NULL,
+  VisaStatusID mediumint NOT NULL,
   PRIMARY KEY (VisaID),
   INDEX (ApplicantID),
   INDEX (VisaStatusID)
@@ -268,7 +268,7 @@ comment='The applicants visa details'
 ENGINE=InnoDB;
 
 CREATE TABLE `Visa Status` (
-  VisaStatusID tinyint NOT NULL AUTO_INCREMENT,
+  VisaStatusID mediumint NOT NULL AUTO_INCREMENT,
   Status varchar(50) NOT NULL UNIQUE comment 'the status of the visa application',
   description varchar(1000) NOT NULL comment 'a description of the status of the visa',
   PRIMARY KEY (VisaStatusID)
@@ -283,7 +283,7 @@ CREATE TABLE Correspondence (
   Message varchar(2000) comment 'The actual message contained in the correspondence',
   ApplicationID mediumint NOT NULL comment 'the application ID the correspondence is in relation to',
   StaffID mediumint NOT NULL comment 'the staff ID of the staff member the correspondence is to/from',
-  CorrMethodID tinyint NOT NULL,
+  CorrMethodID mediumint NOT NULL,
   PRIMARY KEY (CorrID),
   INDEX (ApplicationID),
   INDEX (StaffID)
@@ -297,7 +297,7 @@ CREATE TABLE Decision (
   Comment varchar(1000) comment 'Extra information about the decision',
   ApplicationID mediumint NOT NULL comment 'the id of the application this decision is made with regards to',
   StaffID mediumint NOT NULL comment 'the staff ID of the staff member who made this decision/comment',
-  DecisionTypeID tinyint NOT NULL,
+  DecisionTypeID mediumint NOT NULL,
   Reportable tinyint(1) NOT NULL comment 'a boolean that is automatically ticked if the change is deemed reportable (status changes request filled etc.)',
   Sent tinyint(1) comment 'a boolean to check if the related email has been sent',
   PRIMARY KEY (DecID),
@@ -335,13 +335,13 @@ comment='a university staff member who may be able to supervise a application'
 ENGINE=InnoDB;
 
 CREATE TABLE `Correspondence Method` (
-  CorrMethodID tinyint NOT NULL AUTO_INCREMENT,
+  CorrMethodID mediumint NOT NULL AUTO_INCREMENT,
   Method varchar(50) NOT NULL UNIQUE comment 'the method of correspondence',
   PRIMARY KEY (CorrMethodID))
 ENGINE=InnoDB;
 
 CREATE TABLE `Application Status` (
-  ApplicationStatusID tinyint NOT NULL AUTO_INCREMENT,
+  ApplicationStatusID mediumint NOT NULL AUTO_INCREMENT,
   Status varchar(50) NOT NULL UNIQUE comment 'the name of the status',
   Description varchar(1000) NOT NULL comment 'a full description of the status',
   PRIMARY KEY (ApplicationStatusID),
@@ -351,7 +351,7 @@ comment='the possible application statuses of an application'
 ENGINE=InnoDB;
 
 CREATE TABLE `Document Type` (
-  DocTypeID tinyint NOT NULL AUTO_INCREMENT,
+  DocTypeID mediumint NOT NULL AUTO_INCREMENT,
   Type varchar(50) NOT NULL UNIQUE comment 'the type of document eg. Publication,
   visa etc.',
   Description varchar(1000) NOT NULL comment 'a full description of the type of the document',
@@ -361,7 +361,7 @@ comment='the possible types of a document'
 ENGINE=InnoDB;
 
 CREATE TABLE `Award Type` (
-  AwardID tinyint NOT NULL AUTO_INCREMENT,
+  AwardID mediumint NOT NULL AUTO_INCREMENT,
   Type varchar(50) NOT NULL UNIQUE comment 'the type of award sought by the applicant',
   Description varchar(1000) NOT NULL comment 'a full description of the award type',
   PRIMARY KEY (AwardID)
