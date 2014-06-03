@@ -24,6 +24,14 @@ VALUES (1000, 080699);
 INSERT INTO `University Staff Member_Research Area` (StaffID, FORCode)
 VALUES (1000, 089999);
 
+-- Denise oversees data format
+INSERT INTO `University Staff Member_Research Area2` (StaffID, FORCode)
+VALUES (1000, 080499);
+
+-- Denise oversees info systems
+INSERT INTO `University Staff Member_Research Area2` (StaffID, FORCode)
+VALUES (1000, 89999);
+
 
 -- -----------------------------------------------------------------------------
 -- Paul Calder
@@ -39,6 +47,17 @@ VALUES (1001, 080199);
 INSERT INTO `University Staff Member_Research Area` (StaffID, FORCode)
 VALUES (1001, 080399);
 
+-- FOR 'computer communication networks'
+INSERT INTO `University Staff Member_Research Area` (StaffID, FORCode)
+VALUES (1001, 100503);
+
+-- Paul oversees computer software
+INSERT INTO `University Staff Member_Research Area2` (StaffID, FORCode)
+VALUES (1001, 080399);
+
+-- Paul oversees 'computer communication networks'
+INSERT INTO `University Staff Member_Research Area2` (StaffID, FORCode)
+VALUES (1001, 100503);
 
 -- -----------------------------------------------------------------------------
 -- John Roddick
@@ -53,6 +72,10 @@ VALUES (1002, 080199);
 -- FOR 'information systems not elsewhere classified'
 INSERT INTO `University Staff Member_Research Area` (StaffID, FORCode)
 VALUES (1002, 080699);
+
+-- John Roddick oversees AI
+INSERT INTO `University Staff Member_Research Area2` (StaffID, FORCode)
+VALUES (1001, 80199);
 
 
 -- -----------------------------------------------------------------------------

@@ -353,6 +353,14 @@ INSERT INTO Application (ApplicationID, ApplicantID, awardID, DateAdded,
 DateLastChecked, DateLastModified, LastModifiedByStaffID, applicationStatusID)
 VALUES (811, 08, 40000, '2014-05-08', '2014-05-08', '2014-05-08', 1003, 10000);
 
+-- some research areas
+INSERT INTO `Application_Research Area` (ApplicationID, FORCode)
+VALUES (811, 100503) ;
+
+INSERT INTO `Application_Research Area` (ApplicationID, FORCode)
+VALUES (811, 89999) ;
+
+
 -- -----------------------------------------------------------------------------
 -- PhD Student1.txt
 -- 9
