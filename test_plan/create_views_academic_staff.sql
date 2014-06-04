@@ -46,11 +46,11 @@ DELIMITER ;
 DROP VIEW IF EXISTS Recent_Applications_In_My_Research_Area;
 CREATE VIEW Recent_Applications_In_My_Research_Area AS
 SELECT 
+  App.DateAdded,
   App.ApplicationID,
   Appt.FName,
   Appt.LName,    
   Appt.Email,
-  App.DateAdded,
   RA.Description AS `Research Area Description`,
   USM.FName AS StaffInResearchAreaFName,
   USM.LName AS StaffInResearchAreaLName
@@ -66,4 +66,5 @@ INNER JOIN `University Staff Member_Research Area` USM_RA
 INNER JOIN `University Staff Member` USM
   ON USM_RA.StaffID = USM.StaffID
 WHERE USM_RA.StaffID = CURRENT_RHD_USER()
-  AND DATEDIFF(CURRENT_RHD_DATE(), App.DateAdded) >= 7;
+  AND DATEDIFF(CURRENT_RHD_DATE(), App.DateAdded) >= 7
+ORDER BY App.DateAdded;
