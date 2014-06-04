@@ -1,3 +1,4 @@
 source create_views_utility.sql
 source create_views_professional_staff.sql
+source create_views_academic_staff.sql
 source create_views_rhd_staff.sql

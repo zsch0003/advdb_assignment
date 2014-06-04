@@ -1,5 +1,6 @@
 -- -----------------------------------------------------------------------------
 -- Views for RHD staff.
+SELECT 'Creating views for RHD staff';
 
 -- All ongoing applications and the contact staff
 DROP VIEW IF EXISTS Application_Staff_Overview ;

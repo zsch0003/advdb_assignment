@@ -6,6 +6,7 @@
 -- have permission in the CSEM MySQL server to create database users. In a real
 -- system, we would replace the hard-coded values with the function USER() to
 -- get the current database user ID.
+SELECT 'Creating views for professional/all staff';
 
 -- All the Applications that the current user is marked as supervising
 DROP VIEW IF EXISTS `MyRHDApps_SupervisedByMe_Expanded` ;

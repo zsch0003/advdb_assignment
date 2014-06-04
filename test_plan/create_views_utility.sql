@@ -1,3 +1,5 @@
+SELECT 'Creating utility views';
+
 -- A utility view with lookup values cached out
 DROP VIEW IF EXISTS Application_Expanded ;
 CREATE VIEW Application_Expanded AS
