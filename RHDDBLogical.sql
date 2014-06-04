@@ -295,7 +295,7 @@ CREATE TABLE Decision (
   DecID mediumint NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the Decision/comment made',
   `Date` date NOT NULL comment 'The date the decision was made on',
   Comment varchar(1000) comment 'Extra information about the decision',
-  ApplicationID mediumint NOT NULL comment 'the id of the application this decision is made with regards to',
+  ApplicationID mediumint comment 'the id of the application this decision is made with regards to, if this is a decision associated with an application',
   StaffID mediumint NOT NULL comment 'the staff ID of the staff member who made this decision/comment',
   DecisionTypeID mediumint NOT NULL,
   Reportable tinyint(1) NOT NULL comment 'a boolean that is automatically ticked if the change is deemed reportable (status changes request filled etc.)',
@@ -370,7 +370,6 @@ comment='the possible award types (degrees) sought by an application'
 ENGINE=InnoDB;
 
 CREATE TABLE Country (
-  
   CountryISOCode char(2) NOT NULL
     comment 'the country corresponding ISO 3166-1 alpha-2 code',
   Name varchar(50) NOT NULL UNIQUE comment 'the full name of the country',
@@ -535,26 +534,22 @@ ADD CONSTRAINT Oversees2 FOREIGN KEY (FORCode)
 
 ALTER TABLE Decision
 ADD INDEX Decides (ApplicationID),
- 
 ADD CONSTRAINT Decides FOREIGN KEY (ApplicationID)
   REFERENCES Application (ApplicationID) ON UPDATE Cascade ON DELETE Cascade;
 
 ALTER TABLE Decision
 ADD INDEX Decides2 (StaffID),
- 
 ADD CONSTRAINT Decides2 FOREIGN KEY (StaffID)
   REFERENCES `University Staff Member` (StaffID) 
   ON UPDATE Cascade ON DELETE Restrict;
 
 ALTER TABLE Visa
 ADD INDEX `categorised by` (VisaStatusID),
- 
 ADD CONSTRAINT `categorised by` FOREIGN KEY (VisaStatusID)
   REFERENCES `Visa Status` (VisaStatusID) ON UPDATE Cascade ON DELETE Restrict;
 
 ALTER TABLE Application
 ADD INDEX `defined by` (applicationStatusID),
- 
 ADD CONSTRAINT `defined by` FOREIGN KEY (applicationStatusID)
   REFERENCES `Application Status` (ApplicationStatusID) 
   ON UPDATE Cascade ON DELETE Restrict;

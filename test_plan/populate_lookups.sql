@@ -129,6 +129,18 @@ VALUES (50002, 'Hand over');
 INSERT INTO `Decision Type` (DecisionTypeID, type)
 VALUES (50003, 'RFI');
 
+INSERT INTO `Decision Type` (DecisionTypeID, type)
+VALUES (50500, 'change.research_area.addition');
+
+INSERT INTO `Decision Type` (DecisionTypeID, type)
+VALUES (50501, 'change.research_area.deletion');
+
+INSERT INTO `Decision Type` (DecisionTypeID, type)
+VALUES (50502, 'change.research_area_oversees.addititon');
+
+INSERT INTO `Decision Type` (DecisionTypeID, type)
+VALUES (50503, 'change.research_area_oversees.deletion');
+
 -- -----------------------------------------------------------------------------
 -- CorrespondenceMethod
 INSERT INTO `Correspondence Method` (CorrMethodID, Method)

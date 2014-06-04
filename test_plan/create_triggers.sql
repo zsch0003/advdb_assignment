@@ -1,40 +1,58 @@
 
-DROP TABLE IF EXISTS usm_researcharea_changes ; 
-CREATE TABLE usm_researcharea_changes (
-  usm_researcharea_change_id int(10) NOT NULL AUTO_INCREMENT comment 'PK',
-  date date NOT NULL,
-  time time NOT NULL,
-  description varchar(50) NOT NULL,
-  FORCode int(10) NOT NULL,
-  StaffID int(10) NOT NULL,
-  emailAddress varchar(70) ,
-  emailSentDate date,
-  emailSentTime time,
-  PRIMARY KEY (usm_researcharea_change_id)
-);
+-- DROP TABLE IF EXISTS usm_researcharea_changes ; 
+-- CREATE TABLE usm_researcharea_changes (
+--   usm_researcharea_change_id int(10) NOT NULL AUTO_INCREMENT comment 'PK',
+--   date date NOT NULL,
+--   time time NOT NULL,
+--   description varchar(50) NOT NULL,
+--   FORCode int(10) NOT NULL,
+--   StaffID int(10) NOT NULL,
+--   emailAddress varchar(70) ,
+--   emailSentDate date,
+--   emailSentTime time,
+--   PRIMARY KEY (usm_researcharea_change_id)
+-- );
 
 DELIMITER $$
 
 -- -----------------------------------------------------------------------------
 -- Record changes to Research Areas to email these to the change subject later
-DROP TRIGGER IF EXISTS usm_researcharea_ai $$
-CREATE TRIGGER usm_researcharea_ai AFTER INSERT ON 
+DROP TRIGGER IF EXISTS USM_RESEARCHAREA_AI $$
+CREATE TRIGGER USM_RESEARCHAREA_AI AFTER INSERT ON 
 `University Staff Member_Research Area`
 FOR EACH ROW
 BEGIN
-  DECLARE emailAddressValue varchar(100) ; 
+  DECLARE v_forCodeDescription varchar(2000) ; 
+  DECLARE v_comment varchar(1000) ; 
+  DECLARE v_agentFName varchar(50) ;
+  DECLARE v_agentLName varchar(50) ;
+  DECLARE v_decisionTypeID mediumint(9) ;
 
-  SELECT email
-  FROM `University Staff Member` usm
-  WHERE usm.StaffID = NEW.StaffID
-  INTO emailAddressValue ;
+  SELECT Description
+  FROM `Research Area` RA
+  WHERE RA.FORCode = NEW.FORCode
+  INTO v_forCodeDescription ;
 
-  INSERT INTO usm_researcharea_changes(date, time, description, FORCode,
-  StaffID, emailAddress)
-  VALUES (CURRENT_DATE(), CURRENT_TIME(), 'added', NEW.FORCode, NEW.StaffID,
-  emailAddressValue ) ;
+  SELECT FName, LName
+  FROM `University Staff Member` AS USM
+  WHERE USM.StaffID = CURRENT_RHD_USER()
+  INTO v_agentFName, v_agentLName;
+
+  SELECT DecisionTypeID 
+  FROM `Decision Type` AS DT
+  WHERE DT.type = 'change.research_area.addition'
+  INTO v_decisionTypeID;
+
+  SET v_comment = CONCAT('A new Field Of Research Code ', NEW.FORCode,
+  ' - ''', SUBSTRING(v_forCodeDescription, 1, 800), 
+  ''' has been associated to your RHD account by ', v_agentFName, ' ', 
+  v_agentLName);
+
+  INSERT INTO Decision(Date, Comment, StaffID, DecisionTypeID, Reportable, Sent)
+  VALUES (CURRENT_DATE(), v_comment, NEW.StaffID, v_decisionTypeID, 1, 0);
 END $$
 
+DELIMITER ;
 
 -- -----------------------------------------------------------------------------
 -- Create a trigger on the staff table to set up correct permissions
