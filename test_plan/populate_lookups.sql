@@ -136,7 +136,7 @@ INSERT INTO `Decision Type` (DecisionTypeID, type)
 VALUES (50501, 'change.research_area.deletion');
 
 INSERT INTO `Decision Type` (DecisionTypeID, type)
-VALUES (50502, 'change.research_area_oversees.addititon');
+VALUES (50502, 'change.research_area_oversees.addition');
 
 INSERT INTO `Decision Type` (DecisionTypeID, type)
 VALUES (50503, 'change.research_area_oversees.deletion');
