@@ -5,18 +5,18 @@ SELECT 'Creating views for RHD staff';
 -- All ongoing applications and the contact staff
 DROP VIEW IF EXISTS Application_Staff_Overview ;
 CREATE VIEW Application_Staff_Overview AS
-SELECT 
+SELECT
   AppExpand.ApplicationID,
-  AppExpand.FName, 
-  AppExpand.LName, 
-  AppExpand.Email, 
+  AppExpand.FName,
+  AppExpand.LName,
+  AppExpand.Email,
   PrimaryUSM.FName AS PrimarySupervisorFName,
   PrimaryUSM.LName AS PrimarySupervisorLName,
   COUNT(AssociateSuper.StaffID) AS `Associate supervisor count`,
   LastModifiedByUSM.FName AS LastModifiedByFName,
   LastModifiedByUSM.LName AS LastModifiedByLName
 FROM Application_Ongoing_Expanded AS AppExpand
-LEFT JOIN (`Supervise as primary` AS PrimarySuper, 
+LEFT JOIN (`Supervise as primary` AS PrimarySuper,
            `University Staff Member` AS PrimaryUSM)
   ON (AppExpand.ApplicationID = PrimarySuper.ApplicationID
       AND PrimarySuper.StaffID = PrimaryUSM.StaffID)
@@ -27,27 +27,26 @@ LEFT JOIN (`University Staff Member` AS LastModifiedByUSM)
 GROUP BY AppExpand.ApplicationID
 ORDER BY LName;
 
-
 -- a utility view for the view below
 DROP VIEW IF EXISTS Application_Primary_Supervisor ;
 CREATE VIEW Application_Primary_Supervisor AS
-SELECT 
+SELECT
   App.*,
-  Super.StaffID, 
-  Super.PrimarySupervisor, 
+  Super.StaffID,
+  Super.PrimarySupervisor,
   SUM(Super.PrimarySupervisor) AS PriSuperSum
 FROM Application_Ongoing_Expanded App
 LEFT OUTER JOIN `Supervise as` Super
-  ON Super.ApplicationID = App.ApplicationID 
+  ON Super.ApplicationID = App.ApplicationID
 GROUP BY App.ApplicationID;
 
 -- List only those ongoing applications that don't yet have a primary supervisor
 DROP VIEW IF EXISTS Application_Without_Supervisor_Inner ;
 CREATE VIEW Application_Without_Supervisor_Inner AS
-SELECT 
+SELECT
   AppPri.ApplicationID,
-  AppPri.FName, 
-  AppPri.LName, 
+  AppPri.FName,
+  AppPri.LName,
   AppPri.Email,
   AppPri.DateAdded,
   COUNT(AssociateSuper.StaffID) AS `Associate supervisor count`
@@ -64,9 +63,9 @@ ORDER BY DateAdded ;
 -- member oversees that research area.
 DROP VIEW IF EXISTS Application_Without_Supervisor ;
 CREATE VIEW Application_Without_Supervisor AS
-SELECT 
-  AppWoSuper.*, 
-  AppRA.FORCode, 
+SELECT
+  AppWoSuper.*,
+  AppRA.FORCode,
   USM.FName as StaffOverseeingAreaFName,
   USM.LName as StaffOverseeingAreaLName
 FROM Application_Without_Supervisor_Inner AppWoSuper

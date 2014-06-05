@@ -13,11 +13,11 @@ DROP VIEW IF EXISTS `MyRHDApps_SupervisedPrimaryByMe_Expanded` ;
 CREATE VIEW `MyRHDApps_SupervisedPrimaryByMe_Expanded` AS
 SELECT 'a) primary supervisor' AS `My role`, App.*
 FROM Application_Ongoing_Expanded App
-INNER JOIN `Supervise as primary` Super 
+INNER JOIN `Supervise as primary` Super
   ON Super.ApplicationID = App.ApplicationID
 WHERE Super.StaffID = CURRENT_RHD_USER() ;
 
--- An associate supervisor
+-- ... as associate supervisor
 DROP VIEW IF EXISTS `MyRHDApps_SupervisedAssociateByMe_Expanded` ;
 CREATE VIEW `MyRHDApps_SupervisedAssociateByMe_Expanded` AS
 SELECT 'b) associate supervisor' AS `My role`, App.*
@@ -30,17 +30,19 @@ WHERE Super.StaffID = CURRENT_RHD_USER() ;
 DROP VIEW IF EXISTS `MyRHDApps_FlaggedByMe_Expanded` ;
 CREATE VIEW `MyRHDApps_FlaggedByMe_Expanded` AS
 SELECT 'c) flagged by me' AS `My role`, App.*
-FROM Application_Ongoing_Expanded App 
-INNER JOIN `University Staff Member_Application` Flag 
+FROM Application_Ongoing_Expanded App
+INNER JOIN `University Staff Member_Application` Flag
   ON Flag.ApplicationID = App.ApplicationID
-WHERE Flag.StaffID = CURRENT_RHD_USER() ;
+WHERE Flag.StaffID = CURRENT_RHD_USER()
+ORDER BY App.ApplicationID DESC;
 
 -- All the Applications that the current user has most recently modified
 DROP VIEW IF EXISTS MyRHDApps_LastModifiedByMe_Expanded ;
 CREATE VIEW MyRHDApps_LastModifiedByMe_Expanded AS
 SELECT 'd) modified by me' AS `My role`, App.*
 FROM Application_Ongoing_Expanded App
-WHERE App.LastModifiedByStaffID = CURRENT_RHD_USER() ;
+WHERE App.LastModifiedByStaffID = CURRENT_RHD_USER()
+ORDER BY App.DateLastModified;
 
 -- Composite view of the above
 DROP VIEW IF EXISTS `MyRHDApps_Expanded` ;
@@ -57,11 +59,11 @@ SELECT * FROM MyRHDApps_LastModifiedByMe_Expanded;
 -- As above, but with irrelevent columns suppressed
 DROP VIEW IF EXISTS `MyRHDApps` ;
 CREATE VIEW `MyRHDApps` AS
-SELECT 
-  `My role`, 
-  FName, 
-  LName, 
-  Email, 
+SELECT
+  `My role`,
+  FName,
+  LName,
+  Email,
   Status,
   AddressConfirmed,
   DegreeConfirmed,
