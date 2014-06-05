@@ -1,5 +1,5 @@
 
--- DROP TABLE IF EXISTS usm_researcharea_changes ; 
+-- DROP TABLE IF EXISTS usm_researcharea_changes ;
 -- CREATE TABLE usm_researcharea_changes (
 --   usm_researcharea_change_id int(10) NOT NULL AUTO_INCREMENT comment 'PK',
 --   date date NOT NULL,
@@ -18,12 +18,12 @@ DELIMITER $$
 -- -----------------------------------------------------------------------------
 -- Record changes to Research Areas to email these to the change subject later
 DROP TRIGGER IF EXISTS USM_RESEARCHAREA_AI $$
-CREATE TRIGGER USM_RESEARCHAREA_AI AFTER INSERT ON 
+CREATE TRIGGER USM_RESEARCHAREA_AI AFTER INSERT ON
 `University Staff Member_Research Area`
 FOR EACH ROW
 BEGIN
-  DECLARE v_forCodeDescription varchar(2000) ; 
-  DECLARE v_comment varchar(1000) ; 
+  DECLARE v_forCodeDescription varchar(2000) ;
+  DECLARE v_comment varchar(1000) ;
   DECLARE v_agentFName varchar(50) ;
   DECLARE v_agentLName varchar(50) ;
   DECLARE v_decisionTypeID mediumint(9) ;
@@ -38,14 +38,14 @@ BEGIN
   WHERE USM.StaffID = CURRENT_RHD_USER()
   INTO v_agentFName, v_agentLName;
 
-  SELECT DecisionTypeID 
+  SELECT DecisionTypeID
   FROM `Decision Type` AS DT
   WHERE DT.type = 'change.research_area.addition'
   INTO v_decisionTypeID;
 
   SET v_comment = CONCAT('A new Field Of Research Code ', NEW.FORCode,
-  ' - ''', SUBSTRING(v_forCodeDescription, 1, 800), 
-  ''' has been associated to your RHD account by ', v_agentFName, ' ', 
+  ' - ''', SUBSTRING(v_forCodeDescription, 1, 800),
+  ''' has been associated to your RHD account by ', v_agentFName, ' ',
   v_agentLName);
 
   INSERT INTO Decision(Date, Comment, StaffID, DecisionTypeID, Reportable, Sent)
@@ -55,12 +55,12 @@ DELIMITER ;
 
 DELIMITER $$
 DROP TRIGGER IF EXISTS USM_RESEARCHAREA_AD $$
-CREATE TRIGGER USM_RESEARCHAREA_AD AFTER DELETE ON 
+CREATE TRIGGER USM_RESEARCHAREA_AD AFTER DELETE ON
 `University Staff Member_Research Area`
 FOR EACH ROW
 BEGIN
-  DECLARE v_forCodeDescription varchar(2000) ; 
-  DECLARE v_comment varchar(1000) ; 
+  DECLARE v_forCodeDescription varchar(2000) ;
+  DECLARE v_comment varchar(1000) ;
   DECLARE v_agentFName varchar(50) ;
   DECLARE v_agentLName varchar(50) ;
   DECLARE v_decisionTypeID mediumint(9) ;
@@ -75,14 +75,14 @@ BEGIN
   WHERE USM.StaffID = CURRENT_RHD_USER()
   INTO v_agentFName, v_agentLName;
 
-  SELECT DecisionTypeID 
+  SELECT DecisionTypeID
   FROM `Decision Type` AS DT
   WHERE DT.type = 'change.research_area.deletion'
   INTO v_decisionTypeID;
 
   SET v_comment = CONCAT('An existing Field Of Research Code ', OLD.FORCode,
-  ' - ''', SUBSTRING(v_forCodeDescription, 1, 800), 
-  ''' has been removed from association with your RHD account by ', 
+  ' - ''', SUBSTRING(v_forCodeDescription, 1, 800),
+  ''' has been removed from association with your RHD account by ',
   v_agentFName, ' ', v_agentLName);
 
   INSERT INTO Decision(Date, Comment, StaffID, DecisionTypeID, Reportable, Sent)
@@ -94,12 +94,12 @@ DELIMITER $$
 -- -----------------------------------------------------------------------------
 -- Record changes to Research Areas to email these to the change subject later
 DROP TRIGGER IF EXISTS USM_RESEARCHAREA2_AI $$
-CREATE TRIGGER USM_RESEARCHAREA2_AI AFTER INSERT ON 
+CREATE TRIGGER USM_RESEARCHAREA2_AI AFTER INSERT ON
 `University Staff Member_Research Area2`
 FOR EACH ROW
 BEGIN
-  DECLARE v_forCodeDescription varchar(2000) ; 
-  DECLARE v_comment varchar(1000) ; 
+  DECLARE v_forCodeDescription varchar(2000) ;
+  DECLARE v_comment varchar(1000) ;
   DECLARE v_agentFName varchar(50) ;
   DECLARE v_agentLName varchar(50) ;
   DECLARE v_decisionTypeID mediumint(9) ;
@@ -114,15 +114,15 @@ BEGIN
   WHERE USM.StaffID = CURRENT_RHD_USER()
   INTO v_agentFName, v_agentLName;
 
-  SELECT DecisionTypeID 
+  SELECT DecisionTypeID
   FROM `Decision Type` AS DT
   WHERE DT.type LIKE 'change.research_area_oversees.addition'
   INTO v_decisionTypeID;
 
   SET v_comment = CONCAT(
   'You have been registered as overseeing Field Of Research area ', NEW.FORCode,
-  ' - ''', SUBSTRING(v_forCodeDescription, 1, 800), 
-  ''', this change made by ', v_agentFName, ' ', 
+  ' - ''', SUBSTRING(v_forCodeDescription, 1, 800),
+  ''', this change made by ', v_agentFName, ' ',
   v_agentLName);
 
   INSERT INTO Decision(Date, Comment, StaffID, DecisionTypeID, Reportable, Sent)
@@ -132,12 +132,12 @@ DELIMITER ;
 
 DELIMITER $$
 DROP TRIGGER IF EXISTS USM_RESEARCHAREA2_AD $$
-CREATE TRIGGER USM_RESEARCHAREA2_AD AFTER DELETE ON 
+CREATE TRIGGER USM_RESEARCHAREA2_AD AFTER DELETE ON
 `University Staff Member_Research Area2`
 FOR EACH ROW
 BEGIN
-  DECLARE v_forCodeDescription varchar(2000) ; 
-  DECLARE v_comment varchar(1000) ; 
+  DECLARE v_forCodeDescription varchar(2000) ;
+  DECLARE v_comment varchar(1000) ;
   DECLARE v_agentFName varchar(50) ;
   DECLARE v_agentLName varchar(50) ;
   DECLARE v_decisionTypeID mediumint(9) ;
@@ -152,14 +152,14 @@ BEGIN
   WHERE USM.StaffID = CURRENT_RHD_USER()
   INTO v_agentFName, v_agentLName;
 
-  SELECT DecisionTypeID 
+  SELECT DecisionTypeID
   FROM `Decision Type` AS DT
   WHERE DT.type = 'change.research_area_oversees.deletion'
   INTO v_decisionTypeID;
 
   SET v_comment = CONCAT(
-  'You have been deregistered as overseeing Field Of Research area ', 
-  OLD.FORCode, ' - ''', SUBSTRING(v_forCodeDescription, 1, 800), 
+  'You have been deregistered as overseeing Field Of Research area ',
+  OLD.FORCode, ' - ''', SUBSTRING(v_forCodeDescription, 1, 800),
   ''', this change made by ', v_agentFName, ' ', v_agentLName);
 
   INSERT INTO Decision(Date, Comment, StaffID, DecisionTypeID, Reportable, Sent)
@@ -172,7 +172,7 @@ DELIMITER ;
 -- Add a triggers to record changes to supervisors
 DELIMITER $$
 DROP TRIGGER IF EXISTS SUPERVISE_AS_AI $$
-CREATE TRIGGER SUPERVISE_AS_AI AFTER INSERT ON 
+CREATE TRIGGER SUPERVISE_AS_AI AFTER INSERT ON
 `Supervise as`
 FOR EACH ROW
 BEGIN
@@ -183,7 +183,7 @@ BEGIN
   DECLARE v_agentLName varchar(50) ;
   DECLARE v_decisionTypeID mediumint(9) ;
   DECLARE v_supervisionRole varchar(20) DEFAULT 'an associate';
-  DECLARE v_comment varchar(1000) ; 
+  DECLARE v_comment varchar(1000) ;
 
   SELECT Appt.FName, Appt.LName, Appt.Email
   FROM Application App
@@ -203,7 +203,7 @@ BEGIN
   WHERE USM.StaffID = CURRENT_RHD_USER()
   INTO v_agentFName, v_agentLName;
 
-  SELECT DecisionTypeID 
+  SELECT DecisionTypeID
   FROM `Decision Type` AS DT
   WHERE DT.type LIKE 'change.supervisor.addition'
   INTO v_decisionTypeID;
@@ -213,9 +213,9 @@ BEGIN
   END IF;
 
   SET v_comment = CONCAT(
-  'You have been registered as ', v_supervisionRole, 
+  'You have been registered as ', v_supervisionRole,
   ' supervisor for an RHD application from ', v_apptFName, ' ', v_apptLName,
-  ' (application ID ', NEW.ApplicationID, '). This change made by ', 
+  ' (application ID ', NEW.ApplicationID, '). This change made by ',
   v_agentFName, ' ', v_agentLName, '.');
 
   INSERT INTO Decision(Date, Comment, StaffID, DecisionTypeID, Reportable, Sent)
@@ -225,7 +225,7 @@ DELIMITER ;
 
 DELIMITER $$
 DROP TRIGGER IF EXISTS SUPERVISE_AS_AD $$
-CREATE TRIGGER SUPERVISE_AS_AD AFTER DELETE ON 
+CREATE TRIGGER SUPERVISE_AS_AD AFTER DELETE ON
 `Supervise as`
 FOR EACH ROW
 BEGIN
@@ -236,7 +236,7 @@ BEGIN
   DECLARE v_agentLName varchar(50) ;
   DECLARE v_decisionTypeID mediumint(9) ;
   DECLARE v_supervisionRole varchar(20) DEFAULT 'an associate';
-  DECLARE v_comment varchar(1000) ; 
+  DECLARE v_comment varchar(1000) ;
 
   SELECT Appt.FName, Appt.LName, Appt.Email
   FROM Application App
@@ -256,7 +256,7 @@ BEGIN
   WHERE USM.StaffID = CURRENT_RHD_USER()
   INTO v_agentFName, v_agentLName;
 
-  SELECT DecisionTypeID 
+  SELECT DecisionTypeID
   FROM `Decision Type` AS DT
   WHERE DT.type LIKE 'change.supervisor.addition'
   INTO v_decisionTypeID;
@@ -266,9 +266,9 @@ BEGIN
   END IF;
 
   SET v_comment = CONCAT(
-  'You have been deregistered as ', v_supervisionRole, 
+  'You have been deregistered as ', v_supervisionRole,
   ' supervisor for an RHD application from ', v_apptFName, ' ', v_apptLName,
-  ' (application ID ', OLD.ApplicationID, '). This change made by ', 
+  ' (application ID ', OLD.ApplicationID, '). This change made by ',
   v_agentFName, ' ', v_agentLName, '.');
 
   INSERT INTO Decision(Date, Comment, StaffID, DecisionTypeID, Reportable, Sent)
@@ -282,7 +282,7 @@ DELIMITER ;
 -- Adding a flag
 DELIMITER $$
 DROP TRIGGER IF EXISTS USM_APPLICATION_AI $$
-CREATE TRIGGER USM_APPLICATION_AI AFTER INSERT ON 
+CREATE TRIGGER USM_APPLICATION_AI AFTER INSERT ON
 `University Staff Member_Application`
 FOR EACH ROW
 BEGIN
@@ -293,7 +293,7 @@ BEGIN
   DECLARE v_agentLName varchar(50) ;
   DECLARE v_decisionTypeID mediumint(9) ;
   DECLARE v_emailUpdates varchar(100) DEFAULT ' not';
-  DECLARE v_comment varchar(1000) ; 
+  DECLARE v_comment varchar(1000) ;
 
   SELECT Appt.FName, Appt.LName, Appt.Email
   FROM Application App
@@ -313,7 +313,7 @@ BEGIN
   WHERE USM.StaffID = CURRENT_RHD_USER()
   INTO v_agentFName, v_agentLName;
 
-  SELECT DecisionTypeID 
+  SELECT DecisionTypeID
   FROM `Decision Type` AS DT
   WHERE DT.type LIKE 'change.flag.addition'
   INTO v_decisionTypeID;
@@ -323,10 +323,10 @@ BEGIN
   END IF;
 
   SET v_comment = CONCAT(
-  'An flag for you on an RHD application from ', 
+  'An flag for you on an RHD application from ',
   v_apptFName, ' ', v_apptLName,
   ' (application ID ', NEW.ApplicationID, ') has been added. ',
-  'You are', v_emailUpdates, 
+  'You are', v_emailUpdates,
   ' registered for email updates to this application. ',
   'This change made by ', v_agentFName, ' ', v_agentLName, '.');
 
@@ -340,7 +340,7 @@ DELIMITER ;
 -- Removing a flag.
 DELIMITER $$
 DROP TRIGGER IF EXISTS USM_APPLICATION_AD $$
-CREATE TRIGGER USM_APPLICATION_AD AFTER DELETE ON 
+CREATE TRIGGER USM_APPLICATION_AD AFTER DELETE ON
 `University Staff Member_Application`
 FOR EACH ROW
 BEGIN
@@ -350,7 +350,7 @@ BEGIN
   DECLARE v_agentFName varchar(50) ;
   DECLARE v_agentLName varchar(50) DEFAULT ' (no lastname registered)';
   DECLARE v_decisionTypeID mediumint(9) ;
-  DECLARE v_comment varchar(1000) ; 
+  DECLARE v_comment varchar(1000) ;
 
   SELECT Appt.FName, Appt.LName, Appt.Email
   FROM Application App
@@ -370,13 +370,13 @@ BEGIN
   WHERE USM.StaffID = CURRENT_RHD_USER()
   INTO v_agentFName, v_agentLName;
 
-  SELECT DecisionTypeID 
+  SELECT DecisionTypeID
   FROM `Decision Type` AS DT
   WHERE DT.type LIKE 'change.flag.addition'
   INTO v_decisionTypeID;
 
   SET v_comment = CONCAT(
-  'Your flagged interest in an RHD application from ', 
+  'Your flagged interest in an RHD application from ',
   v_apptFName, ' ', v_apptLName,
   ' (application ID ', OLD.ApplicationID, ') has been removed. ',
   'This change made by ', v_agentFName, ' ', v_agentLName, '.');
@@ -386,3 +386,24 @@ BEGIN
 END $$
 DELIMITER ;
 
+-- -----------------------------------------------------------------------------
+--  Applicant emails are automatically inserted into new Applications
+DELIMITER $$
+DROP TRIGGER IF EXISTS APPLICATION_EMAIL_INSERT $$
+CREATE TRIGGER APPLICATION_EMAIL_INSERT BEFORE INSERT ON `Application`
+FOR EACH ROW
+BEGIN
+SET NEW.ApplicantEmail=(SELECT Email FROM Applicant WHERE ApplicantID=New.ApplicantID);
+END $$
+DELIMITER ;
+
+-- -----------------------------------------------------------------------------
+--  UPDATE of Applicant emails are automatically updated for all Applications
+DELIMITER $$
+DROP TRIGGER IF EXISTS APPLICANT_EMAIL_UPDATE $$
+CREATE TRIGGER APPLICANT_EMAIL_UPDATE AFTER UPDATE ON `Applicant`
+FOR EACH ROW
+BEGIN
+UPDATE `Application` SET ApplicantEmail=NEW.Email WHERE Application.ApplicantID=NEW.ApplicantID ;
+END $$
+DELIMITER ;
