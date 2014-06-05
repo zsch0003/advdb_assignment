@@ -141,6 +141,18 @@ VALUES (50502, 'change.research_area_oversees.addition');
 INSERT INTO `Decision Type` (DecisionTypeID, type)
 VALUES (50503, 'change.research_area_oversees.deletion');
 
+INSERT INTO `Decision Type` (DecisionTypeID, type)
+VALUES (50504, 'change.supervisor.addition');
+
+INSERT INTO `Decision Type` (DecisionTypeID, type)
+VALUES (50505, 'change.supervisor.deletion');
+
+INSERT INTO `Decision Type` (DecisionTypeID, type)
+VALUES (50506, 'change.flag.addition');
+
+INSERT INTO `Decision Type` (DecisionTypeID, type)
+VALUES (50507, 'change.flag.deletion');
+
 -- -----------------------------------------------------------------------------
 -- CorrespondenceMethod
 INSERT INTO `Correspondence Method` (CorrMethodID, Method)
