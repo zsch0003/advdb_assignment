@@ -120,6 +120,11 @@ WHERE Application.ApplicationID = 611 ;
 -- expect success
 -- rerun k), expect AddressConfirmed == 1/true
 
+-- reinstate the above
+UPDATE Application 
+SET AddressConfirmed = 0
+WHERE Application.ApplicationID = 611 ;
+
 -- -----------------------------------------------------------------------------
 -- m) Retrieve all on-going applications for which the user has made the most
 -- recent correspondence
@@ -156,6 +161,10 @@ WHERE StaffID = 1000
   AND FORCode = 89999;
 -- rerun p), should get count==3 
 
+-- reinstate the above
+INSERT INTO `University Staff Member_Research Area` 
+VALUES(1000, 89999);
+
 -- -----------------------------------------------------------------------------
 -- q) Search for all applications in certain research areas that have been added
 -- since a certain time
@@ -164,17 +173,16 @@ FROM Application, `Application_Research Area`
 WHERE Application.DateAdded >= '2014-05-01' 
   AND Application.ApplicationID = `Application_Research Area`.ApplicationID
   AND `Application_Research Area`.FORCode = 100503 ;
--- expect 1 row, id 611
--- TODO test dates more thoroughly
+-- expect 2 rows, id 611 and 811
 
 -- -----------------------------------------------------------------------------
 -- r) Flag interest in an application
 -- these INSERTs moved to populate_app.sql
---INSERT INTO `University Staff Member_Application` (StaffID, ApplicationID)
---VALUES (1000, 711);
+-- INSERT INTO `University Staff Member_Application` (StaffID, ApplicationID)
+-- VALUES (1000, 711);
 
---INSERT INTO `University Staff Member_Application` (StaffID, ApplicationID)
---VALUES (1002, 711);
+-- INSERT INTO `University Staff Member_Application` (StaffID, ApplicationID)
+-- VALUES (1002, 711);
 -- tested in populate_apps.sql
 
 -- -----------------------------------------------------------------------------
@@ -198,3 +206,21 @@ SELECT *
 FROM Application
 WHERE Application.applicationStatusID = 10000;
 -- 10 rows by this stage
+
+
+
+-- -----------------------------------------------------------------------------
+-- u) List all applications waiting for supervisor agreement
+SELECT Agg.ApplicationID FROM
+  (SELECT 
+     App.ApplicationID, 
+     Super.StaffID, 
+     Super.PrimarySupervisor, 
+     SUM(Super.PrimarySupervisor) AS PriSuperSum
+   FROM Application App
+   LEFT OUTER JOIN `Supervise as` Super
+     ON Super.ApplicationID = App.ApplicationID 
+   GROUP BY App.ApplicationID) 
+  AS Agg
+WHERE Agg.PriSuperSum <> 1
+  OR Agg.PriSuperSum IS NULL ;
