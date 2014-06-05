@@ -173,7 +173,8 @@ VALUES (69999, 'other');
 -- -----------------------------------------------------------------------------
 -- Payment Method
 INSERT INTO `Payment Method` (PayMethodID, Method)
-VALUES (70000, 'Savings'), (70000, 'scholarship'), (70000, 'HECS-HELP'), (70000, 'Research Training Scheme (RTS)');
+VALUES (70000, 'Savings'), (70001, 'scholarship'), (70002, 'HECS-HELP'), 
+(70003, 'Research Training Scheme (RTS)');
 
 
 -- -----------------------------------------------------------------------------

@@ -162,7 +162,7 @@ WHERE StaffID = 1000
 -- rerun p), should get count==3 
 
 -- reinstate the above
-INSERT INTO `University Staff Member_Research Area` 
+INSERT INTO `University Staff Member_Research Area` (StaffID, FORCode)
 VALUES(1000, 89999);
 
 -- -----------------------------------------------------------------------------

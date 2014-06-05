@@ -16,6 +16,27 @@ SELECT *
 FROM Application_Expanded App
 WHERE App.Status LIKE 'ongoing%'; 
 
+-- Friendly view of application status
+DROP VIEW IF EXISTS `Application_Quickview` ;
+CREATE VIEW `Application_Quickview` AS
+SELECT 
+  FName, 
+  LName, 
+  Email, 
+  Status,
+  AddressConfirmed,
+  DegreeConfirmed,
+  VisaStatusConfirmed,
+  ProposalConfirmed,
+  HasResearchAreas,
+  HasPrimarySuper,
+  PayMethConfirmed,
+  EngProfConfirmed,
+  RefereesConfirmed
+FROM Application_Expanded
+GROUP BY ApplicationID
+ORDER BY LName;
+
 -- Create views to separate primary supervisors from associate
 DROP VIEW IF EXISTS `Supervise as primary` ;
 CREATE VIEW `Supervise as primary` AS

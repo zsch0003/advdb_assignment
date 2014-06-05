@@ -634,3 +634,10 @@ ADD INDEX `using` (CorrMethodID),
 ADD CONSTRAINT `using` FOREIGN KEY (CorrMethodID)
   REFERENCES `Correspondence Method` (CorrMethodID) 
   ON UPDATE Cascade ON DELETE Restrict;
+
+
+-- Load up other parts
+source create_views.sql
+source security.sql
+source create_triggers.sql
+
