@@ -38,7 +38,7 @@ DELIMITER $$
 -- |   1002 | John   | Roddick  |            1 | john.roddick@flinders.edu.au  |
 -- |   1003 | Jennie | Brand    |            0 | jennie.brand@flinders.edu.au  |
 -- +--------+--------+----------+--------------+-------------------------------+
-DROP FUNCTION IF EXISTS CURRENT_RHD_USER;
+DROP FUNCTION IF EXISTS CURRENT_RHD_USER $$
 CREATE FUNCTION CURRENT_RHD_USER() 
 RETURNS mediumint
 DETERMINISTIC
@@ -47,7 +47,7 @@ BEGIN
 --  RETURN 1001;
 END $$
 
-DROP FUNCTION IF EXISTS CURRENT_RHD_TIMESTAMP;
+DROP FUNCTION IF EXISTS CURRENT_RHD_TIMESTAMP $$
 CREATE FUNCTION CURRENT_RHD_TIMESTAMP() 
 RETURNS char(19)
 DETERMINISTIC
@@ -56,7 +56,7 @@ BEGIN
 --  RETURN current_timestamp();
 END $$
 
-DROP FUNCTION IF EXISTS CURRENT_RHD_DATE;
+DROP FUNCTION IF EXISTS CURRENT_RHD_DATE $$
 CREATE FUNCTION CURRENT_RHD_DATE()
 RETURNS char(10)
 DETERMINISTIC
