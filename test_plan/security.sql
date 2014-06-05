@@ -56,15 +56,16 @@ BEGIN
   GRANT SELECT,UPDATE,INSERT ON TABLE `Publication` TO p_staffID;
   GRANT SELECT,UPDATE,INSERT ON TABLE `Referee` TO p_staffID;
   GRANT SELECT,UPDATE,INSERT ON TABLE `Research Area` TO p_staffID;
-  GRANT SELECT,UPDATE,INSERT ON TABLE `Supervise as` TO p_staffID;
-  GRANT SELECT,UPDATE,INSERT ON TABLE `University Staff Member_Application` 
-    TO p_staffID;
-  GRANT SELECT,UPDATE,INSERT ON TABLE `University Staff Member_Research Area` 
-    TO p_staffID;
-  GRANT SELECT,UPDATE,INSERT ON TABLE `University Staff Member_Research Area2` 
-    TO p_staffID;
   GRANT SELECT,UPDATE,INSERT ON TABLE `Visa` TO p_staffID;
   GRANT SELECT,UPDATE,INSERT ON TABLE `Visa Status` TO p_staffID;
+
+  GRANT SELECT,INSERT,DELETE ON TABLE `Supervise as` TO p_staffID;
+  GRANT SELECT,INSERT,DELETE ON TABLE `University Staff Member_Application` 
+    TO p_staffID;
+  GRANT SELECT,INSERT,DELETE ON TABLE `University Staff Member_Research Area` 
+    TO p_staffID;
+  GRANT SELECT,INSERT,DELETE ON TABLE `University Staff Member_Research Area2` 
+    TO p_staffID;
 
   -- TODO: log account creation to send them an email
 
