@@ -55,7 +55,6 @@ SELECT * FROM MyRHDApps_LastModifiedByMe_Expanded;
 
 
 -- As above, but with irrelevent columns suppressed
--- TODO : add checklist items to this view
 DROP VIEW IF EXISTS `MyRHDApps` ;
 CREATE VIEW `MyRHDApps` AS
 SELECT 
