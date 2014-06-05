@@ -386,8 +386,14 @@ BEGIN
 END $$
 DELIMITER ;
 
--- -----------------------------------------------------------------------------
--- Make sure there's only ever one primary supervisor for each application
+--- -----------------------------------------------------------------------------
+--- Make sure there's only ever one primary supervisor for each application
+
+DELIMITER $$
+DROP TRIGGER IF EXISTS checkPrimSuper $$ 
+CREATE TRIGGER checkPrimSuper BEFORE INSERT ON `Supervise as`
+FOR EACH ROW
+BEGIN
 DELIMITER $$
 DROP TRIGGER IF EXISTS checkPrimSuper $$ 
 CREATE TRIGGER checkPrimSuper BEFORE INSERT ON `Supervise as`
@@ -399,4 +405,10 @@ BEGIN
   FROM `Supervise as`
   WHERE PrimarySupervisor>0 
   AND ApplicationID=NEW.ApplicationID
-  INTO exis
+  INTO existingCount;
+
+  IF existingCount > 0 THEN
+     SET NEW.PrimarySupervisor = 0;
+  END IF;
+END $$
+DELIMITER ;
