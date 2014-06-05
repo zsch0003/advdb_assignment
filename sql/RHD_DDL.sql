@@ -7,7 +7,7 @@
 -- -----------------------------------------------------------------------------
 -- Delete existing tables
 
-SELECT "Dropping existing FK constraints" ; 
+SELECT "Dropping existing FK constraints" ;
 ALTER TABLE Document DROP FOREIGN KEY associated;
 ALTER TABLE Document DROP FOREIGN KEY provides;
 ALTER TABLE Decision DROP FOREIGN KEY `specified by`;
@@ -22,7 +22,7 @@ ALTER TABLE `Supervise as` DROP FOREIGN KEY `will supervise`;
 ALTER TABLE `Application_Research Area` DROP FOREIGN KEY `in`;
 ALTER TABLE `Application_Research Area` DROP FOREIGN KEY in2;
 ALTER TABLE `University Staff Member_Research Area` DROP FOREIGN KEY `works in`;
-ALTER TABLE `University Staff Member_Research Area` DROP FOREIGN KEY 
+ALTER TABLE `University Staff Member_Research Area` DROP FOREIGN KEY
             `works in2`;
 ALTER TABLE `University Staff Member_Research Area2` DROP FOREIGN KEY Oversees;
 ALTER TABLE `University Staff Member_Research Area2` DROP FOREIGN KEY Oversees2;
@@ -78,15 +78,15 @@ DROP TABLE IF EXISTS `University Staff Member_Application`;
 SELECT "Creating tables" ;
 
 CREATE TABLE `Decision Type` (
-  DecisionTypeID mediumint NOT NULL AUTO_INCREMENT, 
-  type varchar(50) NOT NULL UNIQUE comment 'the type of decision/comment made', 
+  DecisionTypeID mediumint NOT NULL AUTO_INCREMENT,
+  type varchar(50) NOT NULL UNIQUE comment 'the type of decision/comment made',
   PRIMARY KEY (DecisionTypeID)
 ) comment='the possible types of decisions/comments that can be made'
 ENGINE=InnoDB;
 
 CREATE TABLE `Payment Method` (
-  PayMethodID mediumint NOT NULL AUTO_INCREMENT, 
-  Method varchar(50) NOT NULL UNIQUE comment 'Method of payment, e.g. scholarship, letter of financial support etc.', 
+  PayMethodID mediumint NOT NULL AUTO_INCREMENT,
+  Method varchar(50) NOT NULL UNIQUE comment 'Method of payment, e.g. scholarship, letter of financial support etc.',
   PRIMARY KEY (PayMethodID)
 )
 comment='the possible payment methods of a Research higher degree'
@@ -94,43 +94,43 @@ ENGINE=InnoDB;
 
 CREATE TABLE Application (
   ApplicationID mediumint NOT NULL AUTO_INCREMENT,
-  ApplicantEmail varchar (100) 
+  ApplicantEmail varchar (100)
     comment 'Denormalised column to improve retrieval of applications via email address',
-  ApplicantID mediumint NOT NULL 
+  ApplicantID mediumint NOT NULL
     comment 'the ID of the applicant who proposed this application',
   AddressConfirmed tinyint(1) NOT NULL comment 'All contact details appear valid',
-  DegreeConfirmed tinyint(1) NOT NULL 
+  DegreeConfirmed tinyint(1) NOT NULL
     comment 'The degree is a recognised degree of the institution',
-  VisaStatusConfirmed tinyint(1) NOT NULL 
+  VisaStatusConfirmed tinyint(1) NOT NULL
     comment 'The visa status is backed by an official document',
-  ProposalConfirmed tinyint(1) NOT NULL 
+  ProposalConfirmed tinyint(1) NOT NULL
     comment 'The proposal is contains appropriate detail',
-  HasResearchAreas tinyint(1) NOT NULL 
+  HasResearchAreas tinyint(1) NOT NULL
     comment 'Has nominated research areas relevant to the proposal',
-  HasPrimarySuper tinyint(1) NOT NULL 
+  HasPrimarySuper tinyint(1) NOT NULL
     comment 'Has the required number of supervisors',
-  PayMethConfirmed tinyint(1) NOT NULL 
+  PayMethConfirmed tinyint(1) NOT NULL
     comment 'The payment method is backed by an official document',
-  EngProfConfirmed tinyint(1) NOT NULL 
+  EngProfConfirmed tinyint(1) NOT NULL
     comment 'The applicant has some level of English literacy',
-  RefereesConfirmed tinyint(1) NOT NULL 
+  RefereesConfirmed tinyint(1) NOT NULL
     comment 'The referees details appear to be correct',
   RequireMoreInfo tinyint(1),
-  ProposedStartDate date 
+  ProposedStartDate date
     comment 'The date the applicant prefers to start the RHD (Entered as 1/1/## for S1 and 1/7/## for S2)',
-  ProposalSummary varchar(2000) 
+  ProposalSummary varchar(2000)
     comment 'What the proposal is about',
-  flindersCampus tinyint(1) 
+  flindersCampus tinyint(1)
     comment 'the applicant wants to complete the degree a main campus',
   fullTime tinyint(1) comment 'the applicant wants to undergo the degree full time',
   DateAdded date NOT NULL comment 'the date the application was added',
-  DateLastChecked date NOT NULL 
+  DateLastChecked date NOT NULL
     comment 'the date the application was last checked',
-  DateLastModified date NOT NULL 
+  DateLastModified date NOT NULL
     comment 'the date the application was last modified',
-  ManagedByStaffID mediumint 
+  ManagedByStaffID mediumint
     comment 'The staff ID of the staff member who has been personally assigned to manage this application (since it may not be used it is nullable)',
-  LastModifiedByStaffID mediumint NOT NULL 
+  LastModifiedByStaffID mediumint NOT NULL
     comment 'the staff member ID of the last person to modify the application (all modifications are recorded in the decision table)',
   applicationStatusID mediumint NOT NULL,
   awardID mediumint,
@@ -218,7 +218,7 @@ comment='Links to any relevant documents along with descriptions,
 ENGINE=InnoDB;
 
 CREATE TABLE Applicant (
-  ApplicantID mediumint NOT NULL AUTO_INCREMENT 
+  ApplicantID mediumint NOT NULL AUTO_INCREMENT
     comment 'The primary key that uniquely identifies the applicant',
   FName varchar(50) NOT NULL comment 'First name',
   LName varchar(50) comment 'Last name',
@@ -236,7 +236,7 @@ CREATE TABLE Applicant (
   Mobile varchar(50) comment 'Mobile phone number',
   Phone varchar(50) comment 'Landline phone number',
   Email varchar(100) comment 'The email address of the applicant',
-  IsNZAUCitizen tinyint(1) comment 'Is a new Zealand or Australian citizen – a check to see if visa information is required ***',
+  IsNZAUCitizen tinyint(1) comment 'Is a new Zealand or Australian citizen, a check to see if visa information is required ***',
   EnglishProficient tinyint(1) comment 'English ability',
   StudentID mediumint comment 'The flinders university student id if they are or have been enrolled at flinders university',
   DateAdded date NOT NULL comment 'The date the applicant was added to the system',
@@ -253,11 +253,9 @@ ENGINE=InnoDB;
 
 CREATE TABLE Visa (
   VisaID mediumint NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the visa',
-  OriginCountryISOCode char(2) NOT NULL comment 'the country the applicant states they are from',
   ValidFrom date comment 'When the visa is valid from',
   ValidTo date comment 'When the visa is valid to',
-  CountryISOCode char(2) NOT NULL comment 'the applicant country,
-  the visa is granted to',
+  CountryISOCode char(2) NOT NULL comment 'the applicant country, the visa is granted to',
   ApplicantID mediumint NOT NULL comment 'the ID of the applicant who holds or may hold this visa',
   VisaStatusID mediumint NOT NULL,
   PRIMARY KEY (VisaID),
@@ -439,34 +437,34 @@ ENGINE=InnoDB;
 -- Add constraints and indexes
 SELECT "Adding indexes and FK constraints" ;
 
-ALTER TABLE Document 
+ALTER TABLE Document
 ADD INDEX associated (ApplicationID),
-ADD CONSTRAINT associated FOREIGN KEY (ApplicationID) 
+ADD CONSTRAINT associated FOREIGN KEY (ApplicationID)
   REFERENCES Application (ApplicationID) ON UPDATE Cascade ON DELETE Restrict;
 
-ALTER TABLE Document 
+ALTER TABLE Document
 ADD INDEX provides (ApplicantID),
-ADD CONSTRAINT provides FOREIGN KEY (ApplicantID) 
+ADD CONSTRAINT provides FOREIGN KEY (ApplicantID)
   REFERENCES Applicant (ApplicantID) ON UPDATE Cascade ON DELETE Cascade;
 
 ALTER TABLE Decision
 ADD INDEX `specified by` (DecisionTypeID),
-ADD CONSTRAINT `specified by` FOREIGN KEY (DecisionTypeID) 
-  REFERENCES `Decision Type` (DecisionTypeID);
+ADD CONSTRAINT `specified by` FOREIGN KEY (DecisionTypeID)
+  REFERENCES `Decision Type` (DecisionTypeID) ON UPDATE Cascade ON DELETE Restrict;
 
 ALTER TABLE Visa
 ADD INDEX `originates in` (CountryISOCode),
-ADD CONSTRAINT `originates in` FOREIGN KEY (CountryISOCode) 
+ADD CONSTRAINT `originates in` FOREIGN KEY (CountryISOCode)
   REFERENCES Country (CountryISOCode) ON UPDATE Cascade ON DELETE Restrict;
 
 ALTER TABLE Degree
 ADD INDEX `studied in` (InstitutionCountryISOCode),
-ADD CONSTRAINT `studied in` FOREIGN KEY (InstitutionCountryISOCode) 
+ADD CONSTRAINT `studied in` FOREIGN KEY (InstitutionCountryISOCode)
   REFERENCES Country (CountryISOCode) ON UPDATE Cascade ON DELETE Restrict;
 
 ALTER TABLE Applicant
 ADD INDEX `lives in` (AddressCountryISOCode),
-ADD CONSTRAINT `lives in` FOREIGN KEY (AddressCountryISOCode) 
+ADD CONSTRAINT `lives in` FOREIGN KEY (AddressCountryISOCode)
   REFERENCES Country (CountryISOCode) ON UPDATE Cascade ON DELETE Restrict;
 
 ALTER TABLE Applicant
@@ -477,7 +475,7 @@ ADD CONSTRAINT `nationality of` FOREIGN KEY (NationalityCountryISOCode)
 ALTER TABLE Application
 ADD INDEX `will pay using` (PayMethodID),
 ADD CONSTRAINT `will pay using` FOREIGN KEY (PayMethodID)
-  REFERENCES `Payment Method` (PayMethodID) 
+  REFERENCES `Payment Method` (PayMethodID)
   ON UPDATE Cascade ON DELETE Restrict;
 
 ALTER TABLE Application
@@ -493,44 +491,44 @@ ADD CONSTRAINT `will supervise2` FOREIGN KEY (ApplicationID)
 ALTER TABLE `Supervise as`
 ADD INDEX `will supervise` (StaffID),
 ADD CONSTRAINT `will supervise` FOREIGN KEY (StaffID)
-  REFERENCES `University Staff Member` (StaffID) 
+  REFERENCES `University Staff Member` (StaffID)
   ON UPDATE Cascade ON DELETE Cascade;
 
 ALTER TABLE `Application_Research Area`
 ADD INDEX `in` (ApplicationID),
- 
+
 ADD CONSTRAINT `in` FOREIGN KEY (ApplicationID)
   REFERENCES Application (ApplicationID) ON UPDATE Cascade ON DELETE Cascade;
 
 ALTER TABLE `Application_Research Area`
 ADD INDEX in2 (FORCode),
- 
+
 ADD CONSTRAINT in2 FOREIGN KEY (FORCode)
   REFERENCES `Research Area` (FORCode) ON UPDATE Cascade ON DELETE Restrict;
 
 ALTER TABLE `University Staff Member_Research Area`
 ADD INDEX `works in` (StaffID),
- 
+
 ADD CONSTRAINT `works in` FOREIGN KEY (StaffID)
-  REFERENCES `University Staff Member` (StaffID);
+  REFERENCES `University Staff Member` (StaffID) ON UPDATE Cascade ON DELETE Cascade;
 
 ALTER TABLE `University Staff Member_Research Area`
 ADD INDEX `works in2` (FORCode),
- 
+
 ADD CONSTRAINT `works in2` FOREIGN KEY (FORCode)
   REFERENCES `Research Area` (FORCode) ON UPDATE Cascade ON DELETE Restrict;
 
 ALTER TABLE `University Staff Member_Research Area2`
 ADD INDEX Oversees (StaffID),
- 
+
 ADD CONSTRAINT Oversees FOREIGN KEY (StaffID)
-  REFERENCES `University Staff Member` (StaffID);
+  REFERENCES `University Staff Member` (StaffID) ON UPDATE Cascade ON DELETE Restrict;
 
 ALTER TABLE `University Staff Member_Research Area2`
 ADD INDEX Oversees2 (FORCode),
- 
+
 ADD CONSTRAINT Oversees2 FOREIGN KEY (FORCode)
-  REFERENCES `Research Area` (FORCode) ON UPDATE Cascade ON DELETE Restrict;
+  REFERENCES `Research Area` (FORCode) ON UPDATE Cascade ON DELETE Cascade;
 
 ALTER TABLE Decision
 ADD INDEX Decides (ApplicationID),
@@ -540,7 +538,7 @@ ADD CONSTRAINT Decides FOREIGN KEY (ApplicationID)
 ALTER TABLE Decision
 ADD INDEX Decides2 (StaffID),
 ADD CONSTRAINT Decides2 FOREIGN KEY (StaffID)
-  REFERENCES `University Staff Member` (StaffID) 
+  REFERENCES `University Staff Member` (StaffID)
   ON UPDATE Cascade ON DELETE Restrict;
 
 ALTER TABLE Visa
@@ -551,19 +549,19 @@ ADD CONSTRAINT `categorised by` FOREIGN KEY (VisaStatusID)
 ALTER TABLE Application
 ADD INDEX `defined by` (applicationStatusID),
 ADD CONSTRAINT `defined by` FOREIGN KEY (applicationStatusID)
-  REFERENCES `Application Status` (ApplicationStatusID) 
+  REFERENCES `Application Status` (ApplicationStatusID)
   ON UPDATE Cascade ON DELETE Restrict;
 
 ALTER TABLE Document
 ADD INDEX `has a` (DocStatusID),
 ADD CONSTRAINT `has a` FOREIGN KEY (DocStatusID)
-  REFERENCES `Document Status` (DocStatusID) 
+  REFERENCES `Document Status` (DocStatusID)
   ON UPDATE Cascade ON DELETE Restrict;
 
 ALTER TABLE `University Staff Member_Application`
 ADD INDEX flags (StaffID),
 ADD CONSTRAINT flags FOREIGN KEY (StaffID)
-  REFERENCES `University Staff Member` (StaffID) 
+  REFERENCES `University Staff Member` (StaffID)
   ON UPDATE Cascade ON DELETE Cascade;
 
 ALTER TABLE `University Staff Member_Application`
@@ -584,7 +582,7 @@ ADD CONSTRAINT `corresponds with` FOREIGN KEY (ApplicationID)
 ALTER TABLE Correspondence
 ADD INDEX `corresponds with2` (StaffID),
 ADD CONSTRAINT `corresponds with2` FOREIGN KEY (StaffID)
-  REFERENCES `University Staff Member` (StaffID) 
+  REFERENCES `University Staff Member` (StaffID)
   ON UPDATE Cascade ON DELETE Restrict;
 
 ALTER TABLE Document
@@ -595,7 +593,7 @@ ADD CONSTRAINT `of` FOREIGN KEY (DocTypeID)
 ALTER TABLE Application
 ADD INDEX Manages (ManagedByStaffID),
 ADD CONSTRAINT Manages FOREIGN KEY (ManagedByStaffID)
-  REFERENCES `University Staff Member` (StaffID) 
+  REFERENCES `University Staff Member` (StaffID)
   ON UPDATE Cascade ON DELETE Set null;
 
 ALTER TABLE Degree
@@ -621,18 +619,19 @@ ADD CONSTRAINT seeks FOREIGN KEY (awardID)
 ALTER TABLE Application
 ADD INDEX `last to update` (LastModifiedByStaffID),
 ADD CONSTRAINT `last to update` FOREIGN KEY (LastModifiedByStaffID)
-  REFERENCES `University Staff Member` (StaffID) 
+  REFERENCES `University Staff Member` (StaffID)
   ON UPDATE Cascade ON DELETE Restrict;
 
 ALTER TABLE Applicant
 ADD INDEX `last to modify` (LastModifiedByStaffID),
 ADD CONSTRAINT `last to modify` FOREIGN KEY (LastModifiedByStaffID)
-  REFERENCES `University Staff Member` (StaffID);
+  REFERENCES `University Staff Member` (StaffID)
+  ON UPDATE Cascade ON DELETE Restrict;
 
 ALTER TABLE Correspondence
 ADD INDEX `using` (CorrMethodID),
 ADD CONSTRAINT `using` FOREIGN KEY (CorrMethodID)
-  REFERENCES `Correspondence Method` (CorrMethodID) 
+  REFERENCES `Correspondence Method` (CorrMethodID)
   ON UPDATE Cascade ON DELETE Restrict;
 
 
