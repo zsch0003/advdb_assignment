@@ -88,7 +88,7 @@ BEGIN
   INSERT INTO Decision(Date, Comment, StaffID, DecisionTypeID, Reportable, Sent)
   VALUES (CURRENT_DATE(), v_comment, OLD.StaffID, v_decisionTypeID, 1, 0);
 END $$
-DELIMITER $$
+DELIMITER ;
 
 DELIMITER $$
 -- -----------------------------------------------------------------------------
@@ -191,14 +191,14 @@ BEGIN
   WHERE App.ApplicationID = NEW.ApplicationID
   INTO v_apptFName, v_apptLName, v_apptEmail ;
 
-  SELECT FName, LName
-    IF v_apptLName IS NULL THEN
+  IF v_apptLName IS NULL THEN
     SET v_apptLName = ' (no lastname registered)';
   END IF;
   IF v_apptEmail IS NULL THEN
     SET v_apptEmail = ' (no email registered)';
   END IF;
 
+  SELECT FName, LName
   FROM `University Staff Member` AS USM
   WHERE USM.StaffID = CURRENT_RHD_USER()
   INTO v_agentFName, v_agentLName;
@@ -386,37 +386,3 @@ BEGIN
 END $$
 DELIMITER ;
 
-
--- -----------------------------------------------------------------------------
--- Create a trigger on the staff table to set up correct permissions
-DROP TRIGGER IF EXISTS create_staff_permissions $$
-CREATE
-DEFINER = root
-TRIGGER create_staff_permissions AFTER INSERT ON `University Staff Member`
-FOR EACH ROW
-BEGIN
-  -- StaffID is assumed to be the same as database user login
-  DECLARE userID int(10);
-  SET userID = NEW.StaffID;
-
-  -- We can't use the standard GRANT nor REVOKE syntax here as they cause
-  -- implicit COMMITs, which isn't allowed in a trigger.
-
-  -- A work-around is to manipulate mysql.db.user directly. Obviously, this
-  -- has draw-backs
-
-  -- GRANT SELECT,INSERT,UPDATE ON rhd.* TO userID@'localhost';
-  INSERT INTO db (Host, Db, User, Select_priv, Insert_priv, Update_priv)
-  VALUES ('localhost', 'rhd', New.StaffID, 'Y', 'Y', 'Y');
-
-  
-  
-  -- if this user can't supervise, then let's say that they can't change the
-  -- 'Supervise as' relation
---  IF NEW.canSupervise == 0 THEN
---     REVOKE INSERT,UPDATE on rhd.`Supervise as` FROM userID@'localhost';
---  END IF ;
-  
-END $$
-
-DELIMITER ;

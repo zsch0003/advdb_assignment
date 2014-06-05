@@ -59,6 +59,8 @@ BEGIN
   GRANT SELECT,UPDATE,INSERT ON TABLE `Visa` TO p_staffID;
   GRANT SELECT,UPDATE,INSERT ON TABLE `Visa Status` TO p_staffID;
 
+  -- These tables consist (almost) entirely of FKs, so update isn't really needed, and
+  -- this makes monitoring changes to these with triggers more straightforward.
   GRANT SELECT,INSERT,DELETE ON TABLE `Supervise as` TO p_staffID;
   GRANT SELECT,INSERT,DELETE ON TABLE `University Staff Member_Application` 
     TO p_staffID;
@@ -67,44 +69,7 @@ BEGIN
   GRANT SELECT,INSERT,DELETE ON TABLE `University Staff Member_Research Area2` 
     TO p_staffID;
 
-  -- TODO: log account creation to send them an email
-
 END $$
 
 DELIMITER ;
 
-
-DELIMITER $$
-
--- -----------------------------------------------------------------------------
--- Record changes to Research Areas to email these to the change subject later
-DROP TRIGGER IF EXISTS usm_researcharea_ai $$
-CREATE TRIGGER usm_researcharea_ai AFTER INSERT ON 
-`University Staff Member_Research Area`
-FOR EACH ROW
-BEGIN
-  DECLARE emailAddressValue varchar(100) ; 
-  DECLARE changeMessage varchar(500);
-  DECLARE forDesc varchar(255);
-
-  SELECT email
-  FROM `University Staff Member` usm
-  WHERE usm.StaffID = NEW.StaffID
-  INTO emailAddressValue ;
-
-  SELECT Description FROM `Research Area` ra
-  WHERE ra.FORCode = NEW.FORCode
-  INTO forDesc;
-  
-  SET changeMessage = CONCAT (
-  'Your account has been associated with a new Field Of Research code ', 
-  NEW.FORCode, ' (', forDesc, ')');
-
-  INSERT INTO `Reportable changes` (TimestampUTC, ChangeType, Message,
-  ChangeAgent, RecipientEmail)
-  VALUES (UTC_TIMESTAMP(), 'Research Area - insert', changeMessage, USER(),
-  emailAddressValue) ;
-
-END $$
-
-DELIMITER ;
