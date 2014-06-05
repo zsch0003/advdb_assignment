@@ -5,15 +5,15 @@ SELECT "Loading populate_lookups.sql" ;
 -- [10000..10499] reserved for all kinds of ongoing statuses
 -- [10500..10999] reserved for all kinds of completed statuses
 INSERT INTO `Application Status` (ApplicationStatusID, Status, Description)
-VALUES (10000, 'ongoing', 
+VALUES (10000, 'ongoing',
 'Application/information gathering is currently ongoing' ) ;
 
 INSERT INTO `Application Status` (ApplicationStatusID, Status, Description)
-VALUES (10500, 'complete.accepted', 
+VALUES (10500, 'complete.accepted',
 'Application accepted. Elevated to RHD office.' ) ;
 
 INSERT INTO `Application Status` (ApplicationStatusID, Status, Description)
-VALUES (10501, 'complete.declined', 
+VALUES (10501, 'complete.declined',
 'Application declined. School chooses not to pursue.' ) ;
 
 INSERT INTO `Application Status` (ApplicationStatusID, Status, Description)
@@ -50,15 +50,15 @@ INSERT INTO `Document Type` (DocTypeID, Type, Description)
 VALUES (20007, 'proposal', 'An application proposal.') ;
 
 INSERT INTO `Document Type` (DocTypeID, Type, Description)
-VALUES (20008, 'reference', 
+VALUES (20008, 'reference',
 'A character/academic reference of the applicant.') ;
 
 INSERT INTO `Document Type` (DocTypeID, Type, Description)
-VALUES (20009, 'publication', 
+VALUES (20009, 'publication',
 'A scientific publication authored by the applicant.') ;
 
 INSERT INTO `Document Type` (DocTypeID, Type, Description)
-VALUES (20010, 'financial', 
+VALUES (20010, 'financial',
 'A document relating to how the RHD place is to be funded.') ;
 
 INSERT INTO `Document Type` (DocTypeID, Type, Description)
@@ -78,6 +78,7 @@ VALUES (30002, 'translation', 'Official translation into English of original doc
 
 INSERT INTO `Document Status` (DocStatusID, Status, Description)
 VALUES (30003, 'summary', 'Not an original source document.');
+
 
 -- -----------------------------------------------------------------------------
 -- AwardType
@@ -153,6 +154,7 @@ VALUES (50506, 'change.flag.addition');
 INSERT INTO `Decision Type` (DecisionTypeID, type)
 VALUES (50507, 'change.flag.deletion');
 
+
 -- -----------------------------------------------------------------------------
 -- CorrespondenceMethod
 INSERT INTO `Correspondence Method` (CorrMethodID, Method)
@@ -166,3 +168,20 @@ VALUES (60002, 'carrier pigeon');
 
 INSERT INTO `Correspondence Method` (CorrMethodID, Method)
 VALUES (69999, 'other');
+
+
+-- -----------------------------------------------------------------------------
+-- Payment Method
+INSERT INTO `Payment Method` (PayMethodID, Method)
+VALUES (70000, 'Savings'), (70000, 'scholarship'), (70000, 'HECS-HELP'), (70000, 'Research Training Scheme (RTS)');
+
+
+-- -----------------------------------------------------------------------------
+-- Visa Status
+INSERT INTO `Visa Status` (VisaStatusID, Status, description)
+VALUES (80000,'not required', 'the applicant is an australian/NZ resident and does not require a visa'),
+(80001,'unknown', 'the students visa status is not currently known'),
+(80002, 'approved-nodoc', 'Stated the visa has been approved but has not supplied a document to that effect'),
+(80003, 'approved-doc', 'The visa has been approved and has supplied a document that proves it'),
+(80004, 'submitted', 'an application has been submitted and is currently being processed');
+
