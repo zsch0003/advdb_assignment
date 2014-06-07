@@ -1,4 +1,4 @@
-source delete.sql
+-- source delete.sql
 source populate_country.sql
 source populate_lookups.sql
 source populate_staff.sql
