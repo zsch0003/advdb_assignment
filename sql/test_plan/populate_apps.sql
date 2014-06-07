@@ -414,5 +414,5 @@ VALUES (1111,111,"james brown","teacher","012456546","James@brown.com","singer",
 
 -- -----------------------------------------------------------------------------
 -- Visa (apps)
-INSERT INTO `Visa` (VisaID, OriginCountryISOCode, ValidFrom, ValidTo, CountryISOCode, ApplicantID, VisaStatusID)
-VALUES (3001,'DE','01/01/2013', '30/12/2015', 'DE', 01,80002);
+INSERT INTO `Visa` (VisaID, CountryISOCode, ValidFrom, ValidTo, ApplicantID, VisaStatusID)
+VALUES (3001,'DE','01/01/2013', '30/12/2015', 01,80002);

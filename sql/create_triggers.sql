@@ -1,17 +1,31 @@
+-- ------------------------------------------------------------------------------
+-- Create triggers for logging and constraint checking
 
--- DROP TABLE IF EXISTS usm_researcharea_changes ;
--- CREATE TABLE usm_researcharea_changes (
---   usm_researcharea_change_id int(10) NOT NULL AUTO_INCREMENT comment 'PK',
---   date date NOT NULL,
---   time time NOT NULL,
---   description varchar(50) NOT NULL,
---   FORCode int(10) NOT NULL,
---   StaffID int(10) NOT NULL,
---   emailAddress varchar(70) ,
---   emailSentDate date,
---   emailSentTime time,
---   PRIMARY KEY (usm_researcharea_change_id)
--- );
+-- ------------------------------------------------------------------------------
+-- Make sure there's only ever one primary supervisor for each application
+
+DELIMITER $$
+
+DROP TRIGGER IF EXISTS checkPrimSuper $$ 
+CREATE TRIGGER checkPrimSuper BEFORE INSERT ON `Supervise as`
+FOR EACH ROW
+BEGIN
+  DECLARE existingCount int default 0;
+  
+  SELECT count(*)
+  FROM `Supervise as`
+  WHERE PrimarySupervisor>0 
+  AND ApplicationID=NEW.ApplicationID
+  INTO existingCount;
+
+  IF existingCount IS NOT NULL THEN
+    IF existingCount > 0 THEN
+      SET NEW.PrimarySupervisor = 0;
+    END IF;
+  END IF;
+END $$
+
+DELIMITER ;
 
 DELIMITER $$
 
