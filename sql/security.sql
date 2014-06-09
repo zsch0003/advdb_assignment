@@ -59,8 +59,9 @@ BEGIN
   GRANT SELECT,UPDATE,INSERT ON TABLE `Visa` TO p_staffID;
   GRANT SELECT,UPDATE,INSERT ON TABLE `Visa Status` TO p_staffID;
 
-  -- These tables consist (almost) entirely of FKs, so update isn't really needed, and
-  -- this makes monitoring changes to these with triggers more straightforward.
+  -- These tables consist (almost) entirely of FKs, so update isn't really
+  -- needed, and this makes monitoring changes to these with triggers more
+  -- straightforward.
   GRANT SELECT,INSERT,DELETE ON TABLE `Supervise as` TO p_staffID;
   GRANT SELECT,INSERT,DELETE ON TABLE `University Staff Member_Application` 
     TO p_staffID;
