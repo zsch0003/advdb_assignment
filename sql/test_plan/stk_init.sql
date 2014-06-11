@@ -297,7 +297,7 @@ END $$
 
 
 -- -----------------------------------------------------------------------------
--- b) Look up applicant’s applications by applicant name
+-- b) Look up applicant's applications by applicant name
 
 CREATE PROCEDURE test_utrans_b() 
 BEGIN
@@ -348,7 +348,7 @@ BEGIN
 END $$
 
 -- -----------------------------------------------------------------------------
--- c) Look up applicant’s applications by applicant email
+-- c) Look up applicant's applications by applicant email
 CREATE PROCEDURE test_utrans_c() 
 BEGIN
 
