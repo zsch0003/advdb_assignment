@@ -49,7 +49,8 @@ BEGIN
         LEAVE test_count ; 
       END IF ;
 
-      SET @s = CONCAT('SELECT COUNT(*) FROM rhd.`', tableName, '` into @OUTVAR') ; 
+      SET @s = CONCAT('SELECT COUNT(*) FROM rhd.`', tableName, 
+                      '` into @OUTVAR') ; 
       PREPARE rowCountStmt FROM @s ; 
       EXECUTE rowCountStmt;
       SELECT @OUTVAR INTO rowCount;
@@ -66,49 +67,91 @@ END $$
 
 CREATE PROCEDURE test_utrans_a1()
 BEGIN
-  DECLARE appID INT(10);
-  DECLARE v_count INT;
-
-  SELECT ApplicantID, COUNT(*) 
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_a1_actuals
+  SELECT ApplicantID
   FROM rhd.Applicant 
   WHERE Applicant.FName = 'Shirin' 
-    AND Applicant.LName = 'Ebadi' 
-  INTO appID, v_count ;
+    AND Applicant.LName = 'Ebadi'  ;
 
-  CALL stk_unit.assert_true(
-    v_count = 1, 
-    'Expected exactly one applicant of given name') ;
+  -- create a temporary table to store the expected results
+  CREATE TEMPORARY TABLE utrans_a1_expecteds (
+    ApplicantID int(10) NOT NULL,
+    PRIMARY KEY (ApplicantID)
+  ) ;
+  INSERT INTO utrans_a1_expecteds (ApplicantID)
+  VALUES (1);
 
-  CALL stk_unit.assert_true(
-    appID = 1, 
-    'Expected exactly one applicant of given name') ;
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_a1_problems
+  SELECT problems.ApplicantID
+  FROM
+  (
+      SELECT actuals.ApplicantID
+      FROM utrans_a1_actuals actuals
+      UNION ALL
+      SELECT expecteds.ApplicantID
+      FROM utrans_a1_expecteds expecteds
+  )  problems
+  GROUP BY problems.ApplicantID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.ApplicantID ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_a1_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_a1_expecteds ;
+  DROP TABLE utrans_a1_actuals ;
+  DROP TABLE utrans_a1_problems ;
 END $$
 
--- CREATE PROCEDURE test_utrans_a2()
--- BEGIN
---   DECLARE pubID INT(10);
---   DECLARE v_count INT;
+CREATE PROCEDURE test_utrans_a2()
+BEGIN
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_a2_actuals
+  SELECT p.PubID FROM rhd.Publication p, rhd.Applicant a
+  WHERE p.ApplicantID = a.ApplicantID 
+    AND a.FName = 'Abdul-Allah'
+    AND a.LName = 'Al-Sadhan' ;
 
---   SELECT p.PubID, COUNT(*) FROM rhd.Publication p, rhd.Applicant a
---   WHERE p.ApplicantID = a.ApplicantID 
---     AND a.FName = 'Shirin'
---     AND a.LName = 'Ebadi'
---   INTO pubID, 
+  -- create a temporary table to store the expected results
+  CREATE TEMPORARY TABLE utrans_a2_expecteds (
+    PubID int(10) NOT NULL,
+    PRIMARY KEY (PubID)
+  ) ;
+  INSERT INTO utrans_a2_expecteds (PubID)
+  VALUES (2000);
 
---   SELECT ApplicantID, COUNT(*) 
---   FROM rhd.Applicant 
---   WHERE Applicant.FName = 'Shirin' 
---     AND Applicant.LName = 'Ebadi' 
---   INTO appID, v_count ;
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_a2_problems
+  SELECT problems.PubID
+  FROM
+  (
+      SELECT actuals.PubID
+      FROM utrans_a2_actuals actuals
+      UNION ALL
+      SELECT expecteds.PubID
+      FROM utrans_a2_expecteds expecteds
+  )  problems
+  GROUP BY problems.PubID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.PubID ;
 
---   CALL stk_unit.assert_true(
---     v_count = 1, 
---     'Expected exactly one applicant of given name') ;
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_a2_problems', 
+    'Incorrect results') ; 
 
---   CALL stk_unit.assert_true(
---     appID = 1, 
---     'Expected exactly one applicant of given name') ;
--- END $$
+  DROP TABLE utrans_a2_expecteds ;
+  DROP TABLE utrans_a2_actuals ;
+  DROP TABLE utrans_a2_problems ;
+END $$
 
 CREATE PROCEDURE test_utrans_a3() 
 BEGIN
@@ -156,7 +199,51 @@ BEGIN
 END $$
 
 
--- a4 TODO: need to add visa info
+-- a4
+CREATE PROCEDURE test_utrans_a4() 
+BEGIN
+
+  -- run the query for this test and create a temporary table for results
+  CREATE TEMPORARY TABLE utrans_a4_actuals
+  SELECT V.VisaID
+  FROM rhd.Visa V
+  INNER JOIN rhd.Applicant A ON V.ApplicantID = A.ApplicantID 
+  WHERE A.FName = 'Shirin' AND A.LName = 'Ebadi' ;
+
+  -- create a temporary table to store the expected results
+  CREATE TEMPORARY TABLE utrans_a4_expecteds (
+    VisaID int(10) NOT NULL,
+    PRIMARY KEY (VisaID)
+  ) ;
+  INSERT INTO utrans_a4_expecteds (VisaID)
+  VALUES (3001);
+
+  -- create another temporary table that lists the differences between expected
+  -- results and actuals
+  CREATE TEMPORARY TABLE utrans_a4_problems
+  SELECT problems.VisaID
+  FROM
+  (
+      SELECT actuals.VisaID
+      FROM utrans_a4_actuals actuals
+      UNION ALL
+      SELECT expecteds.VisaID
+      FROM utrans_a4_expecteds expecteds
+  )  problems
+  GROUP BY problems.VisaID
+  HAVING COUNT(*) = 1
+  ORDER BY problems.VisaID ;
+
+  -- report an error if the 'problems' table isn't empty
+  CALL stk_unit.assert_table_empty( 
+    DATABASE(),
+    'utrans_a4_problems', 
+    'Incorrect results') ; 
+
+  DROP TABLE utrans_a4_expecteds ;
+  DROP TABLE utrans_a4_actuals ;
+  DROP TABLE utrans_a4_problems ;
+END $$
 
 -- -----------------------------------------------------------------------------
 -- a5
@@ -210,7 +297,7 @@ END $$
 
 
 -- -----------------------------------------------------------------------------
--- b) Look up applicant’s applications by applicant name
+-- b) Look up applicant's applications by applicant name
 
 CREATE PROCEDURE test_utrans_b() 
 BEGIN
@@ -261,7 +348,7 @@ BEGIN
 END $$
 
 -- -----------------------------------------------------------------------------
--- c) Look up applicant’s applications by applicant email
+-- c) Look up applicant's applications by applicant email
 CREATE PROCEDURE test_utrans_c() 
 BEGIN
 
