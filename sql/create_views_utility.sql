@@ -20,6 +20,7 @@ WHERE App.Status LIKE 'ongoing%';
 DROP VIEW IF EXISTS `Application_Quickview` ;
 CREATE VIEW `Application_Quickview` AS
 SELECT 
+  ApplicationID,
   FName, 
   LName, 
   Email, 

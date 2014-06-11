@@ -892,7 +892,7 @@ BEGIN
     ApplicationID int(10)
   ) ;
   INSERT INTO utrans_q_expecteds
-  VALUES  (611) ;
+  VALUES  (611), (811) ;
 
   -- create another temporary table that lists the differences between expected
   -- results and actuals
