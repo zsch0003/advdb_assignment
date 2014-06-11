@@ -2,3 +2,6 @@
 *.vpp~*
 .~lock.*#
 ~$*
+/sql/**.html
+/sql//*.html
+/sql/**/*.html
