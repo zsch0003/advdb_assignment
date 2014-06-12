@@ -1,0 +1,587 @@
+-- -----------------------------------------------------------------------------
+--
+-- RHD database description in extended DBDL
+--
+-- -----------------------------------------------------------------------------
+
+  Domain IdInteger        unsigned integer, in the range 0-10,000,000
+  Domain TypeLabelShort   variable length character string, max length 50
+  Domain DescMedium       variable length character string, max length 1000
+  Domain DescLong         variable length character string, max length 2000
+  Domain Email            variable length character string, max length 100
+  Domain Boolean          unsigned integer, in the range 0-1
+  Domain Date             composite type, representing year, month and day 
+                          as integers
+  Domain ProposalSummary  variable length character string, max length 2000
+  Domain DocumentTitle    variable length character string, max length 255
+  Domain URL              variable length character string, max length 255
+  Domain AuthorList       variable length character string, max length 255
+  Domain Language         variable length character string, max length 50
+  Domain DegreeName       variable length character string, max length 100
+  Domain DegreeType       variable length character string, max length 100
+  Domain GPA              unsigned integer, in the range 0-7
+  Domain InstitutionName  variable length character string, max length 100
+  Domain CountryISOCode   fixed length character string, of width 2
+  Domain PersonNameWhole  variable length character string, max length 100
+  Domain RelationName     variable length character string, max length 100
+  Domain PhoneNumber      variable length character string, max length 50
+  Domain Profession       variable length character string, max length 255
+  Domain MediaFilePath    variable length character string, max length 255
+  Domain PersonNamePart   variable length character string, max length 50
+  Domain PersonTitle      variable length character string, max length 10
+  Domain Binary           unsigned integer, in the range 0-1
+  Domain StreetAddress    variable length character string, max length 255
+  Domain SuburbName       variable length character string, max length 100
+  Domain Postcode         unsigned integer, in the range 0-10,000,000
+  Domain CityName         variable length character string, max length 50
+  Domain StateName        variable length character string, max length 50
+  Domain ResearchArea     variable length character string, max length 50
+  Domain FORCode          unsigned integer, in the range 0-999,999
+
+Decision Type (
+  DecisionTypeID IdInteger NOT NULL AUTO_INCREMENT,
+  type TypeLabelShort NOT NULL UNIQUE 
+                      comment 'the type of decision/comment made',
+  PRIMARY KEY (DecisionTypeID)
+) comment='the possible types of decisions/comments that can be made'
+
+
+Payment Method (
+  PayMethodID IdInteger NOT NULL AUTO_INCREMENT,
+  Method TypeLabelShort NOT NULL UNIQUE 
+    comment 'Method of payment, e.g. scholarship, letter of financial support etc.'),
+  PRIMARY KEY (PayMethodID)
+)
+comment='the possible payment methods of a Research higher degree'
+
+Application (
+  ApplicationID IdInteger NOT NULL AUTO_INCREMENT,
+  ApplicantEmail Email
+    comment 'Denormalised column to improve retrieval of applications via email address',
+  ApplicantID IdInteger NOT NULL
+    comment 'the ID of the applicant who proposed this application',
+  AddressConfirmed tinyint(1) NOT NULL comment 'All contact details appear valid',
+  DegreeConfirmed Boolean NOT NULL
+    comment 'The degree is a recognised degree of the institution',
+  VisaStatusConfirmed Boolean NOT NULL
+    comment 'The visa status is backed by an official document',
+  ProposalConfirmed Boolean NOT NULL
+    comment 'The proposal is contains appropriate detail',
+  HasResearchAreas Boolean NOT NULL
+    comment 'Has nominated research areas relevant to the proposal',
+  HasPrimarySuper Boolean NOT NULL
+    comment 'Has the required number of supervisors',
+  PayMethConfirmed Boolean NOT NULL
+    comment 'The payment method is backed by an official document',
+  EngProfConfirmed Boolean NOT NULL
+    comment 'The applicant has some level of English literacy',
+  RefereesConfirmed Boolean NOT NULL
+    comment 'The referees details appear to be correct',
+  RequireMoreInfo Boolean,
+  ProposedStartDate Date
+    comment 'The date the applicant prefers to start the RHD (Entered as 1/1/## for S1 and 1/7/## for S2)',
+  ProposalSummary ProposalSummary comment 'What the proposal is about',
+  flindersCampus Boolean
+    comment 'the applicant wants to complete the degree a main campus',
+  fullTime Boolean comment 'the applicant wants to undergo the degree full time',
+  DateAdded Date NOT NULL comment 'the date the application was added',
+  DateLastChecked Date NOT NULL
+    comment 'the date the application was last checked',
+  DateLastModified Date NOT NULL
+    comment 'the date the application was last modified',
+  ManagedByStaffID IdInteger
+    comment 'The staff ID of the staff member who has been personally assigned to manage this application (since it may not be used it is nullable)',
+  LastModifiedByStaffID IdInteger NOT NULL
+    comment 'the staff member ID of the last person to modify the application (all modifications are recorded in the decision table)',
+  applicationStatusID IdInteger NOT NULL,
+  awardID IdInteger,
+  PayMethodID IdInteger,
+  PRIMARY KEY (ApplicationID),
+  FOREIGN KEY (PayMethodID) REFERENCES `Payment Method` (PayMethodID)
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (ApplicantID) REFERENCES Applicant (ApplicantID) 
+    ON UPDATE Cascade ON DELETE Cascade,
+  FOREIGN KEY (applicationStatusID) 
+    REFERENCES `Application Status` (ApplicationStatusID)
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (ManagedByStaffID) REFERENCES `University Staff Member` (StaffID)
+    ON UPDATE Cascade ON DELETE Set null,
+  FOREIGN KEY (awardID) REFERENCES `Award Type` (AwardID) 
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (LastModifiedByStaffID) 
+    REFERENCES `University Staff Member` (StaffID)
+    ON UPDATE Cascade ON DELETE Restrict
+)
+comment='Holds the application details including a checklist of recorded information and applicaiton stage'
+
+Document Status (
+  DocStatusID IdInteger NOT NULL AUTO_INCREMENT,
+  Status TypeLabelShort NOT NULL UNIQUE 
+    comment 'Official and translation status of a document associated to an Applicant',
+  Description DescLong NOT NULL
+    comment 'the details and implication of this status',
+  PRIMARY KEY (DocStatusID)
+)
+comment='the possible statuses of a document'
+
+Publication (
+  PubID IdInteger NOT NULL AUTO_INCREMENT 
+    comment 'The primary key that uniquely identifies the publication',
+  ApplicantID IdInteger NOT NULL 
+    comment 'the ID of the applicant who authored the publication',
+  Title DocumentTitle NOT NULL comment 'The title of the publication',
+  Abstract DescLong comment 'A abstract/description of the publication',
+  Publication DocumentTitle NOT NULL comment 'The journal/magazine publisher ',
+  IssueNo IdInteger comment 'The issue/edition number of the publication',
+  IssueDate Date NOT NULL comment 'The date the publication was issued',
+  OnlineLink URL comment 'An online link to the publication',
+  OtherAuthorsNames AuthorList comment 'Other authors of the publication',
+  Language Language comment 'language of the publication',
+  PRIMARY KEY (PubID),
+  FOREIGN KEY (ApplicantID) REFERENCES Applicant (ApplicantID) 
+    ON UPDATE Cascade ON DELETE Cascade
+)
+
+
+Degree (
+  DegID IdInteger NOT NULL AUTO_INCREMENT 
+    comment 'The primary key that uniquely identifies the degree',
+  ApplicantID IdInteger NOT NULL
+    comment 'the ID of the applicant who holds this degree',
+  Name DegreeName NOT NULL comment 'The title of the degree',
+  Type DegreeType NOT NULL 
+    comment 'The type of the degree  -  Could add specific types',
+  YearCompleted Date
+    comment 'The year the degree was completed or will be completed',
+  GPA GPA comment 'The GPA of the degree',
+  InstitutionName InstitutionName comment 'The name of the institution',
+  InstitutionCountryISOCode CountryISOCode NOT NULL
+    comment 'the country the institution is based in',
+  PRIMARY KEY (DegID),
+  FOREIGN KEY (InstitutionCountryISOCode) REFERENCES Country (CountryISOCode) 
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (ApplicantID) REFERENCES Applicant (ApplicantID) 
+    ON UPDATE Cascade ON DELETE Cascade
+)
+comment='Any Degrees already held by the applicant'
+
+Referee (
+  RefID IdInteger NOT NULL AUTO_INCREMENT 
+    comment 'The primary key that uniquely identifies the referee supporting an application',
+  ApplicationID IdInteger NOT NULL,
+  Name PersonNameWhole NOT NULL comment 'The full name of the referee',
+  Relation RelationName comment 'The referees relation to the applicant',
+  Phone PhoneNumber comment 'The referees phone number',
+  Email Email comment 'The referees email address',
+  Profession Profession comment 'The referees profession',
+  AcademicLink URL comment 'The referees professional page (linked in or university)',
+  EnglishSpeaker Boolean comment 'If the Referee can speak English',
+  EnglishLiterate Boolean comment 'If the Referee can read and write in English',
+  PRIMARY KEY (RefID),
+  FOREIGN KEY (ApplicationID) REFERENCES Application (ApplicationID) 
+    ON UPDATE Cascade ON DELETE Cascade
+)
+comment='A referee for a application'
+
+Document (
+  DocID IdInteger NOT NULL AUTO_INCREMENT 
+    comment 'The primary key that uniquely identifies the document',
+  Title DocumentTitle NOT NULL comment 'The title of the document',
+  Description DescLong NOT NULL
+    comment 'A specific summary related to the document i.e. valid till 2015 etc.',
+  UploadLink MediaFilePath NOT NULL
+    comment 'An link to a version uploaded and stored on the university servers',
+  ApplicationID IdInteger,
+  ApplicantID IdInteger NOT NULL comment 'the ID of the applicant who provided this document',
+  DocStatusID IdInteger NOT NULL,
+  DocTypeID IdInteger NOT NULL,
+  PRIMARY KEY (DocID), 
+  FOREIGN KEY (ApplicationID)  REFERENCES Application (ApplicationID) 
+    ON UPDATE Cascade ON DELETE Restrict
+  FOREIGN KEY (ApplicantID) REFERENCES Applicant (ApplicantID) 
+    ON UPDATE Cascade ON DELETE Cascade,
+  FOREIGN KEY (DocStatusID) REFERENCES `Document Status` (DocStatusID)
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (DocTypeID) REFERENCES `Document Type` (DocTypeID) 
+    ON UPDATE Cascade ON DELETE Restrict
+)
+comment='Links to any relevant documents along with descriptions,
+  types and statuses.'
+
+Applicant (
+  ApplicantID IdInteger NOT NULL AUTO_INCREMENT
+    comment 'The primary key that uniquely identifies the applicant',
+  FName PersonNamePart NOT NULL comment 'First name',
+  LName PersonNamePart comment 'Last name',
+  PrefTitle PersonTitle comment 'Title Mr,  Mrs,  Miss,  Dr. *',
+  Sex Binary comment 'The sex of the applicant',
+  DOB Date comment 'Date of birth',
+  StreetAddress StreetAddress
+    comment 'Residence number and street of residence',
+  Suburb SuburbName comment 'The suburb of residence',
+  Postcode Postcode comment 'The postcode of residence',
+  City CityName comment 'The city or town of residence',
+  State StateName comment 'The State of residence',
+  Mobile PhoneNumber comment 'Mobile phone number',
+  Phone PhoneNumber comment 'Landline phone number',
+  Email Email comment 'The email address of the applicant',
+  IsNZAUCitizen Boolean
+    comment 'Is a new Zealand or Australian citizen, a check to see if visa information is required ***',
+  EnglishProficient Boolean comment 'English ability',
+  StudentID IdInteger comment 'The flinders university student id if they are or have been enrolled at flinders university',
+  DateAdded Date NOT NULL comment 'The date the applicant was added to the system',
+  AddressCountryISOCode CountryISOCode,
+  NationalityCountryISOCode CountryISOCode,
+  LastModifiedByStaffID IdInteger NOT NULL 
+    comment 'the staff member ID of the last person to modify the applicant (all modifications are recorded in the decision table)',
+  PRIMARY KEY (ApplicantID),
+  FOREIGN KEY (AddressCountryISOCode) REFERENCES Country (CountryISOCode) 
+    ON UPDATE Cascade ON DELETE Restrict
+  FOREIGN KEY (NationalityCountryISOCode)
+    REFERENCES Country (CountryISOCode) ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (LastModifiedByStaffID) 
+    REFERENCES `University Staff Member` (StaffID)
+    ON UPDATE Cascade ON DELETE Restrict
+)
+comment='Holds the applicant specific details'
+
+Visa (
+  VisaID IdInteger NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the visa',
+  ValidFrom Date comment 'When the visa is valid from',
+  ValidTo Date comment 'When the visa is valid to',
+  CountryISOCode CountryISOCode NOT NULL comment 'the applicant country, the visa is granted to',
+  ApplicantID IdInteger NOT NULL comment 'the ID of the applicant who holds or may hold this visa',
+  VisaStatusID IdInteger NOT NULL,
+  PRIMARY KEY (VisaID),
+  FOREIGN KEY (CountryISOCode) REFERENCES Country (CountryISOCode) 
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (VisaStatusID) REFERENCES `Visa Status` (VisaStatusID)
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (ApplicantID) REFERENCES Applicant (ApplicantID) 
+    ON UPDATE Cascade ON DELETE Cascade
+)
+comment='The applicants visa details'
+
+`Visa Status` (
+  VisaStatusID IdInteger NOT NULL AUTO_INCREMENT,
+  Status TypeLabelShort NOT NULL UNIQUE comment 'the status of the visa application',
+  description DescMedium NOT NULL comment 'a description of the status of the visa',
+  PRIMARY KEY (VisaStatusID)
+)
+comment='the possible statuses of the visa application'
+
+Correspondence (
+  CorrID IdInteger NOT NULL AUTO_INCREMENT,
+  `Date` Date NOT NULL comment 'The date the correspondence was made/received',
+  Summary DescMedium NOT NULL comment 'A small summary of the Correspondence',
+  Message DescLong comment 'The actual message contained in the correspondence',
+  ApplicationID IdInteger NOT NULL comment 'the application ID the correspondence is in relation to',
+  StaffID IdInteger NOT NULL comment 'the staff ID of the staff member the correspondence is to/from',
+  CorrMethodID IdInteger NOT NULL,
+  PRIMARY KEY (CorrID),
+  FOREIGN KEY (ApplicationID) REFERENCES Application (ApplicationID) 
+    ON UPDATE Cascade ON DELETE Cascade,
+  FOREIGN KEY (CorrMethodID) REFERENCES `Correspondence Method` (CorrMethodID)
+    ON UPDATE Cascade ON DELETE Restrict
+)
+comment='Correspondence between the Applicant and University Staff Member'
+
+Decision (
+  DecID IdInteger NOT NULL AUTO_INCREMENT comment 'The primary key that uniquely identifies the Decision/comment made',
+  `Date` Date NOT NULL comment 'The date the decision was made on',
+  Comment DescMedium comment 'Extra information about the decision',
+  ApplicationID IdInteger comment 'the id of the application this decision is made with regards to, if this is a decision associated with an application',
+  StaffID IdInteger NOT NULL comment 'the staff ID of the staff member who made this decision/comment',
+  DecisionTypeID IdInteger NOT NULL,
+  Reportable Boolean NOT NULL comment 'a boolean that is automatically ticked if the change is deemed reportable (status changes request filled etc.)',
+  Sent Boolean comment 'a boolean to check if the related email has been sent',
+  PRIMARY KEY (DecID),
+  FOREIGN KEY (DecisionTypeID) REFERENCES `Decision Type` (DecisionTypeID) 
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (ApplicationID) REFERENCES Application (ApplicationID) 
+    ON UPDATE Cascade ON DELETE Cascade,
+  FOREIGN KEY (StaffID) REFERENCES `University Staff Member` (StaffID)
+    ON UPDATE Cascade ON DELETE Restrict
+)
+comment='The decision/comment made for an application by a RHD staff member'
+
+Research Area (
+  FORCode IdInteger NOT NULL AUTO_INCREMENT comment 'The Australian Field Of Research (FOR) code,  primary key,  that uniquely identifies the Research area',
+  Description DescLong NOT NULL comment 'A small text description of the FOR i.e. 2201',
+  ResearchArea ResearchArea NOT NULL comment 'The FOR title; i.e. Applied Ethics',
+  GeneralArea ResearchArea NOT NULL comment 'The general area of the FOR',
+  PRIMARY KEY (FORCode)
+)
+
+University Staff Member (
+  StaffID IdInteger NOT NULL AUTO_INCREMENT comment 'The flinders uni staff ID number,
+  the primary key that uniquely identifies the staff member',
+  FName PersonNamePart NOT NULL comment 'The last name of the staff member',
+  LName PersonNamePart comment 'The first name of the staff member',
+  canSupervise Boolean NOT NULL comment 'if the staff member is able supervise a RHD applicant',
+  email Email NOT NULL,
+  PRIMARY KEY (StaffID)
+)
+comment='a university staff member who may be able to supervise a application'
+
+Correspondence Method (
+  CorrMethodID IdInteger NOT NULL AUTO_INCREMENT,
+  Method TypeLabelShort NOT NULL UNIQUE comment 'the method of correspondence',
+  PRIMARY KEY (CorrMethodID)
+)
+
+Application Status (
+  ApplicationStatusID IdInteger NOT NULL AUTO_INCREMENT,
+  Status TypeLabelShort NOT NULL UNIQUE comment 'the name of the status',
+  Description DescMedium NOT NULL comment 'a full description of the status',
+  PRIMARY KEY (ApplicationStatusID),
+)
+comment='the possible application statuses of an application'
+
+Document Type (
+  DocTypeID IdInteger NOT NULL AUTO_INCREMENT,
+  Type TypeLabelShort NOT NULL UNIQUE comment 'the type of document eg. Publication, visa etc.',
+  Description DescMedium NOT NULL comment 'a full description of the type of the document',
+  PRIMARY KEY (DocTypeID)
+)
+
+Award Type (
+  AwardID IdInteger NOT NULL AUTO_INCREMENT,
+  Type TypeLabelShort NOT NULL UNIQUE comment 'the type of award sought by the applicant',
+  Description DescMedium NOT NULL comment 'a full description of the award type',
+  PRIMARY KEY (AwardID)
+)
+comment='the possible award types (degrees) sought by an application'
+
+Country (
+  CountryISOCode CountryISOCode NOT NULL
+    comment 'the country corresponding ISO 3166-1 alpha-2 code',
+  Name TypeLabelShort NOT NULL UNIQUE comment 'the full name of the country',
+  PRIMARY KEY (CountryISOCode)
+)
+comment='a list of countries for reuse in nationality,
+  institution country,  address and visa country'
+
+Supervise as (
+  PrimarySupervisor Boolean NOT NULL comment 'if the supervisor is a primary',
+  ApplicationID IdInteger NOT NULL comment 'the application ID of the application the staff member will supervise',
+  StaffID IdInteger NOT NULL comment 'the staff ID of the staff member who will supervise the applicaiton',
+  PRIMARY KEY (ApplicationID,  StaffID),
+  FOREIGN KEY (ApplicationID) REFERENCES Application (ApplicationID) 
+    ON UPDATE Cascade ON DELETE Cascade,
+  FOREIGN KEY (StaffID) REFERENCES `University Staff Member` (StaffID)
+    ON UPDATE Cascade ON DELETE Cascade
+)
+comment='the staff members who have agreed to supervise an application'
+
+Application_Research Area (
+  ApplicationID IdInteger NOT NULL comment 'the ID of the application',
+  FORCode FORCode NOT NULL comment 'the FORCode research area the applicant states they want to study in',
+  PRIMARY KEY (ApplicationID, FORCode),
+  FOREIGN KEY (ApplicationID) REFERENCES Application (ApplicationID) 
+    ON UPDATE Cascade ON DELETE Cascade,
+  FOREIGN KEY (FORCode) REFERENCES `Research Area` (FORCode) 
+    ON UPDATE Cascade ON DELETE Restrict
+)
+comment='The application and the research area they are looking to study in'
+
+University Staff Member_Research Area (
+  StaffID IdInteger NOT NULL
+    comment 'the staff ID of the staff member who works in the research area',
+  FORCode FORCode NOT NULL
+    comment 'the field of research that the staff member works in',
+  PRIMARY KEY (StaffID, FORCode),
+  FOREIGN KEY (StaffID) REFERENCES `University Staff Member` (StaffID) 
+    ON UPDATE Cascade ON DELETE Cascade,
+  FOREIGN KEY (FORCode) REFERENCES `Research Area` (FORCode) 
+    ON UPDATE Cascade ON DELETE Restrict
+)
+comment='the research area the staff member states they work in'
+
+University Staff Member_Research Area2 (
+  StaffID IdInteger NOT NULL
+    comment 'the staff ID of the staff member who oversees the research area',
+  FORCode FORCode NOT NULL
+    comment 'the FORCode of the research area that the staff member oversees',
+  PRIMARY KEY (StaffID, FORCode),
+  FOREIGN KEY (StaffID) REFERENCES `University Staff Member` (StaffID) 
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (FORCode) REFERENCES `Research Area` (FORCode) 
+    ON UPDATE Cascade ON DELETE Cascade
+)
+comment='the research areas that a staff member oversees (can be more than one staff member per area)'
+
+University Staff Member_Application (
+  StaffID IdInteger NOT NULL comment 'the staff ID of the staff member who flagged the application',
+  ApplicationID IdInteger NOT NULL comment 'the application the staff member has flagged',
+  ReceiveEmailUpdates Boolean NOT NULL comment 'a boolean that a user can check if they want to be alerted About an update or simply keep a reference on their application page',
+  PRIMARY KEY (StaffID,  ApplicationID),
+  FOREIGN KEY (StaffID) REFERENCES `University Staff Member` (StaffID)
+    ON UPDATE Cascade ON DELETE Cascade,
+  FOREIGN KEY (ApplicationID) REFERENCES Application (ApplicationID) 
+    ON UPDATE Cascade ON DELETE Cascade
+)
+comment='the staff members who have flagged an application to come back and check later'
+
+-- -----------------------------------------------------------------------------
+-- Add constraints and indexes
+SELECT "Adding indexes and FK constraints" ;
+
+ALTER TABLE Document
+ADD INDEX associated (ApplicationID),
+ADD CONSTRAINT associated 
+
+ALTER TABLE Document
+ADD INDEX provides (ApplicantID),
+ADD CONSTRAINT provides 
+
+ALTER TABLE Decision
+ADD INDEX `specified by` (DecisionTypeID),
+ADD CONSTRAINT `specified by` ;
+
+ALTER TABLE Visa
+ADD INDEX `originates in` (CountryISOCode),
+ADD CONSTRAINT `originates in` ;
+
+ALTER TABLE Degree
+ADD INDEX `studied in` (InstitutionCountryISOCode),
+ADD CONSTRAINT `studied in` ;
+
+ALTER TABLE Applicant
+ADD INDEX `lives in` (AddressCountryISOCode),
+ADD CONSTRAINT `lives in` ;
+
+ALTER TABLE Applicant
+ADD INDEX `nationality of` (NationalityCountryISOCode),
+ADD CONSTRAINT `nationality of` ;
+
+ALTER TABLE Application
+ADD INDEX `will pay using` (PayMethodID),
+ADD CONSTRAINT `will pay using` ;
+
+ALTER TABLE Application
+ADD INDEX submits (ApplicantID),
+ADD CONSTRAINT submits ;
+
+ALTER TABLE `Supervise as`
+ADD INDEX `will supervise2` (ApplicationID),
+ADD CONSTRAINT `will supervise2` ;
+
+ALTER TABLE `Supervise as`
+ADD INDEX `will supervise` (StaffID),
+ADD CONSTRAINT `will supervise` ;
+
+ALTER TABLE `Application_Research Area`
+ADD INDEX `in` (ApplicationID),
+
+ADD CONSTRAINT `in` ;
+
+ALTER TABLE `Application_Research Area`
+ADD INDEX in2 (FORCode),
+
+ADD CONSTRAINT in2 ;
+
+ALTER TABLE `University Staff Member_Research Area`
+ADD INDEX `works in` (StaffID),
+
+ADD CONSTRAINT `works in` ;
+
+ALTER TABLE `University Staff Member_Research Area`
+ADD INDEX `works in2` (FORCode),
+
+ADD CONSTRAINT `works in2` ;
+
+ALTER TABLE `University Staff Member_Research Area2`
+ADD INDEX Oversees (StaffID),
+
+ADD CONSTRAINT Oversees ;
+
+ALTER TABLE `University Staff Member_Research Area2`
+ADD INDEX Oversees2 (FORCode),
+
+ADD CONSTRAINT Oversees2 ;
+
+ALTER TABLE Decision
+ADD INDEX Decides (ApplicationID),
+ADD CONSTRAINT Decides ;
+
+ALTER TABLE Decision
+ADD INDEX Decides2 (StaffID),
+ADD CONSTRAINT Decides2 ;
+
+ALTER TABLE Visa
+ADD INDEX `categorised by` (VisaStatusID),
+ADD CONSTRAINT `categorised by` ;
+
+ALTER TABLE Application
+ADD INDEX `defined by` (applicationStatusID),
+ADD CONSTRAINT `defined by` ;
+
+ALTER TABLE Document
+ADD INDEX `has a` (DocStatusID),
+ADD CONSTRAINT `has a` ;
+
+ALTER TABLE `University Staff Member_Application`
+ADD INDEX flags (StaffID),
+ADD CONSTRAINT flags ;
+
+ALTER TABLE `University Staff Member_Application`
+ADD INDEX flags2 (ApplicationID),
+ADD CONSTRAINT flags2 ;
+
+ALTER TABLE Referee
+ADD INDEX `supported by` (ApplicationID),
+ADD CONSTRAINT `supported by` ;
+
+ALTER TABLE Correspondence
+ADD INDEX `corresponds with` (ApplicationID),
+ADD CONSTRAINT `corresponds with` ;
+
+ALTER TABLE Correspondence
+ADD INDEX `corresponds with2` (StaffID),
+ADD CONSTRAINT `corresponds with2` FOREIGN KEY (StaffID)
+  REFERENCES `University Staff Member` (StaffID)
+  ON UPDATE Cascade ON DELETE Restrict;
+
+ALTER TABLE Document
+ADD INDEX `of` (DocTypeID),
+ADD CONSTRAINT `of` ;
+
+ALTER TABLE Application
+ADD INDEX Manages (ManagedByStaffID),
+ADD CONSTRAINT Manages ;
+
+ALTER TABLE Degree
+ADD INDEX holds (ApplicantID),
+ADD CONSTRAINT holds ;
+
+ALTER TABLE Publication
+ADD INDEX authored (ApplicantID),
+ADD CONSTRAINT authored ;
+
+ALTER TABLE Visa
+ADD INDEX `may have` (ApplicantID),
+ADD CONSTRAINT `may have` ;
+
+ALTER TABLE Application
+ADD INDEX seeks (awardID),
+ADD CONSTRAINT seeks ;
+
+ALTER TABLE Application
+ADD INDEX `last to update` (LastModifiedByStaffID),
+ADD CONSTRAINT `last to update` ;
+
+ALTER TABLE Applicant
+ADD INDEX `last to modify` (LastModifiedByStaffID),
+ADD CONSTRAINT `last to modify` ;
+
+ALTER TABLE Correspondence
+ADD INDEX `using` (CorrMethodID),
+ADD CONSTRAINT `using` ;
+
+
+-- Load up other parts
+source create_views.sql
+source security.sql
+source create_triggers.sql
+
