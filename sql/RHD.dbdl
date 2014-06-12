@@ -57,7 +57,7 @@ comment='the possible payment methods of a Research higher degree'
 Application (
   ApplicationID IdInteger NOT NULL AUTO_INCREMENT,
   ApplicantEmail Email
-    comment 'Denormalised column to improve retrieval of applications via email address'),
+    comment 'Denormalised column to improve retrieval of applications via email address',
   ApplicantID IdInteger NOT NULL
     comment 'the ID of the applicant who proposed this application',
   AddressConfirmed tinyint(1) NOT NULL comment 'All contact details appear valid',
@@ -97,10 +97,20 @@ Application (
   awardID IdInteger,
   PayMethodID IdInteger,
   PRIMARY KEY (ApplicationID),
-  INDEX (ApplicantID),
-  INDEX (applicationStatusID),
-  INDEX (awardID),
-  INDEX (ApplicantEmail)
+  FOREIGN KEY (PayMethodID) REFERENCES `Payment Method` (PayMethodID)
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (ApplicantID) REFERENCES Applicant (ApplicantID) 
+    ON UPDATE Cascade ON DELETE Cascade,
+  FOREIGN KEY (applicationStatusID) 
+    REFERENCES `Application Status` (ApplicationStatusID)
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (ManagedByStaffID) REFERENCES `University Staff Member` (StaffID)
+    ON UPDATE Cascade ON DELETE Set null,
+  FOREIGN KEY (awardID) REFERENCES `Award Type` (AwardID) 
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (LastModifiedByStaffID) 
+    REFERENCES `University Staff Member` (StaffID)
+    ON UPDATE Cascade ON DELETE Restrict
 )
 comment='Holds the application details including a checklist of recorded information and applicaiton stage'
 
@@ -127,7 +137,9 @@ Publication (
   OnlineLink URL comment 'An online link to the publication',
   OtherAuthorsNames AuthorList comment 'Other authors of the publication',
   Language Language comment 'language of the publication',
-  PRIMARY KEY (PubID)
+  PRIMARY KEY (PubID),
+  FOREIGN KEY (ApplicantID) REFERENCES Applicant (ApplicantID) 
+    ON UPDATE Cascade ON DELETE Cascade
 )
 
 
@@ -145,7 +157,11 @@ Degree (
   InstitutionName InstitutionName comment 'The name of the institution',
   InstitutionCountryISOCode CountryISOCode NOT NULL
     comment 'the country the institution is based in',
-  PRIMARY KEY (DegID)
+  PRIMARY KEY (DegID),
+  FOREIGN KEY (InstitutionCountryISOCode) REFERENCES Country (CountryISOCode) 
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (ApplicantID) REFERENCES Applicant (ApplicantID) 
+    ON UPDATE Cascade ON DELETE Cascade
 )
 comment='Any Degrees already held by the applicant'
 
@@ -161,7 +177,9 @@ Referee (
   AcademicLink URL comment 'The referees professional page (linked in or university)',
   EnglishSpeaker Boolean comment 'If the Referee can speak English',
   EnglishLiterate Boolean comment 'If the Referee can read and write in English',
-  PRIMARY KEY (RefID)
+  PRIMARY KEY (RefID),
+  FOREIGN KEY (ApplicationID) REFERENCES Application (ApplicationID) 
+    ON UPDATE Cascade ON DELETE Cascade
 )
 comment='A referee for a application'
 
@@ -177,7 +195,15 @@ Document (
   ApplicantID IdInteger NOT NULL comment 'the ID of the applicant who provided this document',
   DocStatusID IdInteger NOT NULL,
   DocTypeID IdInteger NOT NULL,
-  PRIMARY KEY (DocID)
+  PRIMARY KEY (DocID), 
+  FOREIGN KEY (ApplicationID)  REFERENCES Application (ApplicationID) 
+    ON UPDATE Cascade ON DELETE Restrict
+  FOREIGN KEY (ApplicantID) REFERENCES Applicant (ApplicantID) 
+    ON UPDATE Cascade ON DELETE Cascade,
+  FOREIGN KEY (DocStatusID) REFERENCES `Document Status` (DocStatusID)
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (DocTypeID) REFERENCES `Document Type` (DocTypeID) 
+    ON UPDATE Cascade ON DELETE Restrict
 )
 comment='Links to any relevant documents along with descriptions,
   types and statuses.'
@@ -208,7 +234,14 @@ Applicant (
   NationalityCountryISOCode CountryISOCode,
   LastModifiedByStaffID IdInteger NOT NULL 
     comment 'the staff member ID of the last person to modify the applicant (all modifications are recorded in the decision table)',
-  PRIMARY KEY (ApplicantID)
+  PRIMARY KEY (ApplicantID),
+  FOREIGN KEY (AddressCountryISOCode) REFERENCES Country (CountryISOCode) 
+    ON UPDATE Cascade ON DELETE Restrict
+  FOREIGN KEY (NationalityCountryISOCode)
+    REFERENCES Country (CountryISOCode) ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (LastModifiedByStaffID) 
+    REFERENCES `University Staff Member` (StaffID)
+    ON UPDATE Cascade ON DELETE Restrict
 )
 comment='Holds the applicant specific details'
 
@@ -219,7 +252,13 @@ Visa (
   CountryISOCode CountryISOCode NOT NULL comment 'the applicant country, the visa is granted to',
   ApplicantID IdInteger NOT NULL comment 'the ID of the applicant who holds or may hold this visa',
   VisaStatusID IdInteger NOT NULL,
-  PRIMARY KEY (VisaID)
+  PRIMARY KEY (VisaID),
+  FOREIGN KEY (CountryISOCode) REFERENCES Country (CountryISOCode) 
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (VisaStatusID) REFERENCES `Visa Status` (VisaStatusID)
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (ApplicantID) REFERENCES Applicant (ApplicantID) 
+    ON UPDATE Cascade ON DELETE Cascade
 )
 comment='The applicants visa details'
 
@@ -239,7 +278,11 @@ Correspondence (
   ApplicationID IdInteger NOT NULL comment 'the application ID the correspondence is in relation to',
   StaffID IdInteger NOT NULL comment 'the staff ID of the staff member the correspondence is to/from',
   CorrMethodID IdInteger NOT NULL,
-  PRIMARY KEY (CorrID)
+  PRIMARY KEY (CorrID),
+  FOREIGN KEY (ApplicationID) REFERENCES Application (ApplicationID) 
+    ON UPDATE Cascade ON DELETE Cascade,
+  FOREIGN KEY (CorrMethodID) REFERENCES `Correspondence Method` (CorrMethodID)
+    ON UPDATE Cascade ON DELETE Restrict
 )
 comment='Correspondence between the Applicant and University Staff Member'
 
@@ -252,7 +295,13 @@ Decision (
   DecisionTypeID IdInteger NOT NULL,
   Reportable Boolean NOT NULL comment 'a boolean that is automatically ticked if the change is deemed reportable (status changes request filled etc.)',
   Sent Boolean comment 'a boolean to check if the related email has been sent',
-  PRIMARY KEY (DecID)
+  PRIMARY KEY (DecID),
+  FOREIGN KEY (DecisionTypeID) REFERENCES `Decision Type` (DecisionTypeID) 
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (ApplicationID) REFERENCES Application (ApplicationID) 
+    ON UPDATE Cascade ON DELETE Cascade,
+  FOREIGN KEY (StaffID) REFERENCES `University Staff Member` (StaffID)
+    ON UPDATE Cascade ON DELETE Restrict
 )
 comment='The decision/comment made for an application by a RHD staff member'
 
@@ -317,14 +366,22 @@ Supervise as (
   PrimarySupervisor Boolean NOT NULL comment 'if the supervisor is a primary',
   ApplicationID IdInteger NOT NULL comment 'the application ID of the application the staff member will supervise',
   StaffID IdInteger NOT NULL comment 'the staff ID of the staff member who will supervise the applicaiton',
-  PRIMARY KEY (ApplicationID,  StaffID)
+  PRIMARY KEY (ApplicationID,  StaffID),
+  FOREIGN KEY (ApplicationID) REFERENCES Application (ApplicationID) 
+    ON UPDATE Cascade ON DELETE Cascade,
+  FOREIGN KEY (StaffID) REFERENCES `University Staff Member` (StaffID)
+    ON UPDATE Cascade ON DELETE Cascade
 )
 comment='the staff members who have agreed to supervise an application'
 
 Application_Research Area (
   ApplicationID IdInteger NOT NULL comment 'the ID of the application',
   FORCode FORCode NOT NULL comment 'the FORCode research area the applicant states they want to study in',
-  PRIMARY KEY (ApplicationID, FORCode)
+  PRIMARY KEY (ApplicationID, FORCode),
+  FOREIGN KEY (ApplicationID) REFERENCES Application (ApplicationID) 
+    ON UPDATE Cascade ON DELETE Cascade,
+  FOREIGN KEY (FORCode) REFERENCES `Research Area` (FORCode) 
+    ON UPDATE Cascade ON DELETE Restrict
 )
 comment='The application and the research area they are looking to study in'
 
@@ -333,7 +390,11 @@ University Staff Member_Research Area (
     comment 'the staff ID of the staff member who works in the research area',
   FORCode FORCode NOT NULL
     comment 'the field of research that the staff member works in',
-  PRIMARY KEY (StaffID, FORCode)
+  PRIMARY KEY (StaffID, FORCode),
+  FOREIGN KEY (StaffID) REFERENCES `University Staff Member` (StaffID) 
+    ON UPDATE Cascade ON DELETE Cascade,
+  FOREIGN KEY (FORCode) REFERENCES `Research Area` (FORCode) 
+    ON UPDATE Cascade ON DELETE Restrict
 )
 comment='the research area the staff member states they work in'
 
@@ -342,7 +403,11 @@ University Staff Member_Research Area2 (
     comment 'the staff ID of the staff member who oversees the research area',
   FORCode FORCode NOT NULL
     comment 'the FORCode of the research area that the staff member oversees',
-  PRIMARY KEY (StaffID, FORCode)
+  PRIMARY KEY (StaffID, FORCode),
+  FOREIGN KEY (StaffID) REFERENCES `University Staff Member` (StaffID) 
+    ON UPDATE Cascade ON DELETE Restrict,
+  FOREIGN KEY (FORCode) REFERENCES `Research Area` (FORCode) 
+    ON UPDATE Cascade ON DELETE Cascade
 )
 comment='the research areas that a staff member oversees (can be more than one staff member per area)'
 
@@ -350,7 +415,11 @@ University Staff Member_Application (
   StaffID IdInteger NOT NULL comment 'the staff ID of the staff member who flagged the application',
   ApplicationID IdInteger NOT NULL comment 'the application the staff member has flagged',
   ReceiveEmailUpdates Boolean NOT NULL comment 'a boolean that a user can check if they want to be alerted About an update or simply keep a reference on their application page',
-  PRIMARY KEY (StaffID,  ApplicationID)
+  PRIMARY KEY (StaffID,  ApplicationID),
+  FOREIGN KEY (StaffID) REFERENCES `University Staff Member` (StaffID)
+    ON UPDATE Cascade ON DELETE Cascade,
+  FOREIGN KEY (ApplicationID) REFERENCES Application (ApplicationID) 
+    ON UPDATE Cascade ON DELETE Cascade
 )
 comment='the staff members who have flagged an application to come back and check later'
 
@@ -360,145 +429,113 @@ SELECT "Adding indexes and FK constraints" ;
 
 ALTER TABLE Document
 ADD INDEX associated (ApplicationID),
-ADD CONSTRAINT associated FOREIGN KEY (ApplicationID)
-  REFERENCES Application (ApplicationID) ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT associated 
 
 ALTER TABLE Document
 ADD INDEX provides (ApplicantID),
-ADD CONSTRAINT provides FOREIGN KEY (ApplicantID)
-  REFERENCES Applicant (ApplicantID) ON UPDATE Cascade ON DELETE Cascade;
+ADD CONSTRAINT provides 
 
 ALTER TABLE Decision
 ADD INDEX `specified by` (DecisionTypeID),
-ADD CONSTRAINT `specified by` FOREIGN KEY (DecisionTypeID)
-  REFERENCES `Decision Type` (DecisionTypeID) ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT `specified by` ;
 
 ALTER TABLE Visa
 ADD INDEX `originates in` (CountryISOCode),
-ADD CONSTRAINT `originates in` FOREIGN KEY (CountryISOCode)
-  REFERENCES Country (CountryISOCode) ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT `originates in` ;
 
 ALTER TABLE Degree
 ADD INDEX `studied in` (InstitutionCountryISOCode),
-ADD CONSTRAINT `studied in` FOREIGN KEY (InstitutionCountryISOCode)
-  REFERENCES Country (CountryISOCode) ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT `studied in` ;
 
 ALTER TABLE Applicant
 ADD INDEX `lives in` (AddressCountryISOCode),
-ADD CONSTRAINT `lives in` FOREIGN KEY (AddressCountryISOCode)
-  REFERENCES Country (CountryISOCode) ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT `lives in` ;
 
 ALTER TABLE Applicant
 ADD INDEX `nationality of` (NationalityCountryISOCode),
-ADD CONSTRAINT `nationality of` FOREIGN KEY (NationalityCountryISOCode)
-  REFERENCES Country (CountryISOCode) ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT `nationality of` ;
 
 ALTER TABLE Application
 ADD INDEX `will pay using` (PayMethodID),
-ADD CONSTRAINT `will pay using` FOREIGN KEY (PayMethodID)
-  REFERENCES `Payment Method` (PayMethodID)
-  ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT `will pay using` ;
 
 ALTER TABLE Application
 ADD INDEX submits (ApplicantID),
-ADD CONSTRAINT submits FOREIGN KEY (ApplicantID)
-  REFERENCES Applicant (ApplicantID) ON UPDATE Cascade ON DELETE Cascade;
+ADD CONSTRAINT submits ;
 
 ALTER TABLE `Supervise as`
 ADD INDEX `will supervise2` (ApplicationID),
-ADD CONSTRAINT `will supervise2` FOREIGN KEY (ApplicationID)
-  REFERENCES Application (ApplicationID) ON UPDATE Cascade ON DELETE Cascade;
+ADD CONSTRAINT `will supervise2` ;
 
 ALTER TABLE `Supervise as`
 ADD INDEX `will supervise` (StaffID),
-ADD CONSTRAINT `will supervise` FOREIGN KEY (StaffID)
-  REFERENCES `University Staff Member` (StaffID)
-  ON UPDATE Cascade ON DELETE Cascade;
+ADD CONSTRAINT `will supervise` ;
 
 ALTER TABLE `Application_Research Area`
 ADD INDEX `in` (ApplicationID),
 
-ADD CONSTRAINT `in` FOREIGN KEY (ApplicationID)
-  REFERENCES Application (ApplicationID) ON UPDATE Cascade ON DELETE Cascade;
+ADD CONSTRAINT `in` ;
 
 ALTER TABLE `Application_Research Area`
 ADD INDEX in2 (FORCode),
 
-ADD CONSTRAINT in2 FOREIGN KEY (FORCode)
-  REFERENCES `Research Area` (FORCode) ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT in2 ;
 
 ALTER TABLE `University Staff Member_Research Area`
 ADD INDEX `works in` (StaffID),
 
-ADD CONSTRAINT `works in` FOREIGN KEY (StaffID)
-  REFERENCES `University Staff Member` (StaffID) ON UPDATE Cascade ON DELETE Cascade;
+ADD CONSTRAINT `works in` ;
 
 ALTER TABLE `University Staff Member_Research Area`
 ADD INDEX `works in2` (FORCode),
 
-ADD CONSTRAINT `works in2` FOREIGN KEY (FORCode)
-  REFERENCES `Research Area` (FORCode) ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT `works in2` ;
 
 ALTER TABLE `University Staff Member_Research Area2`
 ADD INDEX Oversees (StaffID),
 
-ADD CONSTRAINT Oversees FOREIGN KEY (StaffID)
-  REFERENCES `University Staff Member` (StaffID) ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT Oversees ;
 
 ALTER TABLE `University Staff Member_Research Area2`
 ADD INDEX Oversees2 (FORCode),
 
-ADD CONSTRAINT Oversees2 FOREIGN KEY (FORCode)
-  REFERENCES `Research Area` (FORCode) ON UPDATE Cascade ON DELETE Cascade;
+ADD CONSTRAINT Oversees2 ;
 
 ALTER TABLE Decision
 ADD INDEX Decides (ApplicationID),
-ADD CONSTRAINT Decides FOREIGN KEY (ApplicationID)
-  REFERENCES Application (ApplicationID) ON UPDATE Cascade ON DELETE Cascade;
+ADD CONSTRAINT Decides ;
 
 ALTER TABLE Decision
 ADD INDEX Decides2 (StaffID),
-ADD CONSTRAINT Decides2 FOREIGN KEY (StaffID)
-  REFERENCES `University Staff Member` (StaffID)
-  ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT Decides2 ;
 
 ALTER TABLE Visa
 ADD INDEX `categorised by` (VisaStatusID),
-ADD CONSTRAINT `categorised by` FOREIGN KEY (VisaStatusID)
-  REFERENCES `Visa Status` (VisaStatusID) ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT `categorised by` ;
 
 ALTER TABLE Application
 ADD INDEX `defined by` (applicationStatusID),
-ADD CONSTRAINT `defined by` FOREIGN KEY (applicationStatusID)
-  REFERENCES `Application Status` (ApplicationStatusID)
-  ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT `defined by` ;
 
 ALTER TABLE Document
 ADD INDEX `has a` (DocStatusID),
-ADD CONSTRAINT `has a` FOREIGN KEY (DocStatusID)
-  REFERENCES `Document Status` (DocStatusID)
-  ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT `has a` ;
 
 ALTER TABLE `University Staff Member_Application`
 ADD INDEX flags (StaffID),
-ADD CONSTRAINT flags FOREIGN KEY (StaffID)
-  REFERENCES `University Staff Member` (StaffID)
-  ON UPDATE Cascade ON DELETE Cascade;
+ADD CONSTRAINT flags ;
 
 ALTER TABLE `University Staff Member_Application`
 ADD INDEX flags2 (ApplicationID),
-ADD CONSTRAINT flags2 FOREIGN KEY (ApplicationID)
-  REFERENCES Application (ApplicationID) ON UPDATE Cascade ON DELETE Cascade;
+ADD CONSTRAINT flags2 ;
 
 ALTER TABLE Referee
 ADD INDEX `supported by` (ApplicationID),
-ADD CONSTRAINT `supported by` FOREIGN KEY (ApplicationID)
-  REFERENCES Application (ApplicationID) ON UPDATE Cascade ON DELETE Cascade;
+ADD CONSTRAINT `supported by` ;
 
 ALTER TABLE Correspondence
 ADD INDEX `corresponds with` (ApplicationID),
-ADD CONSTRAINT `corresponds with` FOREIGN KEY (ApplicationID)
-  REFERENCES Application (ApplicationID) ON UPDATE Cascade ON DELETE Cascade;
+ADD CONSTRAINT `corresponds with` ;
 
 ALTER TABLE Correspondence
 ADD INDEX `corresponds with2` (StaffID),
@@ -508,52 +545,39 @@ ADD CONSTRAINT `corresponds with2` FOREIGN KEY (StaffID)
 
 ALTER TABLE Document
 ADD INDEX `of` (DocTypeID),
-ADD CONSTRAINT `of` FOREIGN KEY (DocTypeID)
-  REFERENCES `Document Type` (DocTypeID) ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT `of` ;
 
 ALTER TABLE Application
 ADD INDEX Manages (ManagedByStaffID),
-ADD CONSTRAINT Manages FOREIGN KEY (ManagedByStaffID)
-  REFERENCES `University Staff Member` (StaffID)
-  ON UPDATE Cascade ON DELETE Set null;
+ADD CONSTRAINT Manages ;
 
 ALTER TABLE Degree
 ADD INDEX holds (ApplicantID),
-ADD CONSTRAINT holds FOREIGN KEY (ApplicantID)
-  REFERENCES Applicant (ApplicantID) ON UPDATE Cascade ON DELETE Cascade;
+ADD CONSTRAINT holds ;
 
 ALTER TABLE Publication
 ADD INDEX authored (ApplicantID),
-ADD CONSTRAINT authored FOREIGN KEY (ApplicantID)
-  REFERENCES Applicant (ApplicantID) ON UPDATE Cascade ON DELETE Cascade;
+ADD CONSTRAINT authored ;
 
 ALTER TABLE Visa
 ADD INDEX `may have` (ApplicantID),
-ADD CONSTRAINT `may have` FOREIGN KEY (ApplicantID)
-  REFERENCES Applicant (ApplicantID) ON UPDATE Cascade ON DELETE Cascade;
+ADD CONSTRAINT `may have` ;
 
 ALTER TABLE Application
 ADD INDEX seeks (awardID),
-ADD CONSTRAINT seeks FOREIGN KEY (awardID)
-  REFERENCES `Award Type` (AwardID) ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT seeks ;
 
 ALTER TABLE Application
 ADD INDEX `last to update` (LastModifiedByStaffID),
-ADD CONSTRAINT `last to update` FOREIGN KEY (LastModifiedByStaffID)
-  REFERENCES `University Staff Member` (StaffID)
-  ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT `last to update` ;
 
 ALTER TABLE Applicant
 ADD INDEX `last to modify` (LastModifiedByStaffID),
-ADD CONSTRAINT `last to modify` FOREIGN KEY (LastModifiedByStaffID)
-  REFERENCES `University Staff Member` (StaffID)
-  ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT `last to modify` ;
 
 ALTER TABLE Correspondence
 ADD INDEX `using` (CorrMethodID),
-ADD CONSTRAINT `using` FOREIGN KEY (CorrMethodID)
-  REFERENCES `Correspondence Method` (CorrMethodID)
-  ON UPDATE Cascade ON DELETE Restrict;
+ADD CONSTRAINT `using` ;
 
 
 -- Load up other parts
